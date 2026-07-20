@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve the Neotree Data Pipeline.
+Thanks for helping improve the Neotree Cleaning Pipeline.
 
 ## Ground rules
 
@@ -10,9 +10,10 @@ Thanks for helping improve the Neotree Data Pipeline.
    (`git diff --cached`).
 2. **Keep the two installation methods in sync.** If you change the package set,
    update both `install_packages.r` (CRAN) and `install_packages_dsh.r`
-   (Artifactory) in the affected pipeline.
-3. **Document module changes** in the relevant module `README.md` (cleaning) or
-   `README_files/` (sample maker).
+   (Artifactory).
+3. **Document module changes** in that module's `README.md`.
+4. **Regenerate `MANUAL.txt`** after editing any README, or the compiled manual
+   and the source documentation drift apart.
 
 ## Workflow
 
@@ -28,3 +29,14 @@ Thanks for helping improve the Neotree Data Pipeline.
   existing modules.
 - Comments explain *why*, not *what*.
 - UK English in prose; ASCII-only in code.
+
+## Relationship to the sample maker
+
+Downstream joining and subsampling lives in
+[neotree-sample-maker](https://github.com/neotree/neotree-sample-maker). The
+coupling is deliberately loose: this pipeline writes cleaned datasets to
+`output/`, and the sample maker reads whatever it is given.
+
+If you change the output directory naming convention
+(`{country}_{source}_{dataset}_{date}/`), update `modules/pipeline_file_resolver.R`
+and `modules/file_finder.R` in that repository to match.

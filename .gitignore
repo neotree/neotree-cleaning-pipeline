@@ -23,21 +23,13 @@ ehthumbs.db
 
 # --- Pipeline run artifacts (regenerated on every run) -----------------------
 cleaning_pipeline_R/output/
-sample_maker_R/outputs/
 *.log
 
 # --- Raw and processed patient data (NEVER COMMIT) ---------------------------
-# Ignore EVERYTHING dropped into the pipeline input and subsample folders,
-# whatever the file type, keeping only the placeholder that preserves the
-# directory in git.
+# Ignore EVERYTHING dropped into the pipeline input folder, whatever the file
+# type, keeping only the placeholder that preserves the directory in git.
 cleaning_pipeline_R/input/*
 !cleaning_pipeline_R/input/.gitkeep
-
-sample_maker_R/subsamples/*
-!sample_maker_R/subsamples/.gitkeep
-
-# Sample maker input (cleaning pipeline output copied across)
-sample_maker_R/input/
 
 # NA-coded data extracts
 *_na_coded.csv

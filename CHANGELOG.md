@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Neotree Data Pipeline are documented here.
+All notable changes to the Neotree Cleaning Pipeline are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Repository releases are published as git tags / GitHub releases, starting at
@@ -43,24 +43,24 @@ v8 Neotree data dictionaries).
   value that is missing because the form never asked for it is distinguishable
   from one that is genuinely absent.
 
-### Sample maker (`sample_maker_R/`)
-- Pipeline 1 (`run_sample_maker.R` / `run_all.R`): join admissions to
-  discharges, deduplicate, probabilistic matching, master dataset build.
-- Pipeline 2 (`run_subsample_maker.R`): researcher-specific extracts by date,
-  facility and variable set.
-- Utilities: anonymiser, data profiler, and researcher data-dictionary workbook
-  builder.
+### Repository scope
+- The sample maker (joining, deduplication, probabilistic matching and
+  subsampling) now lives in its own repository,
+  [neotree-sample-maker](https://github.com/neotree/neotree-sample-maker), so
+  that each half can be versioned, released and depended on independently. It
+  was briefly published alongside the cleaning pipeline in this repository
+  before the split.
 
 ### Documentation
-- `MANUAL.txt`: every README from both pipelines compiled into one searchable
+- `MANUAL.txt`: every README in this repository compiled into one searchable
   document with a table of contents.
-- Appendix (`MANUAL.txt` Part VII): catalogue of known variable-level issues in
+- Appendix (`MANUAL.txt` Part IV): catalogue of known variable-level issues in
   the raw Neotree exports, stating for each whether the pipeline fixes it or the
   analyst must handle it.
 
 ### Packaging
-- CRAN installers (`install_packages.r`) and UCL Data Safe Haven / Artifactory
-  installers (`install_packages_dsh.r`) for both pipelines.
+- CRAN installer (`install_packages.r`) and UCL Data Safe Haven / Artifactory
+  installer (`install_packages_dsh.r`).
 - MIT licence, contribution guide, and `.gitignore` that excludes all
   patient-level data, run artifacts and credentials.
 
