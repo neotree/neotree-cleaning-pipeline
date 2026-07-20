@@ -64,4 +64,4 @@ v8 Neotree data dictionaries).
 - MIT licence, contribution guide, and `.gitignore` that excludes all
   patient-level data, run artifacts and credentials.
 
-[v1.0.0]: https://github.com/neotree/neotree-data-pipeline-r/releases/tag/v1.0.0
+[v1.0.0]: https://github.com/neotree/neotree-cleaning-pipeline/releases/tag/v1.0.0
