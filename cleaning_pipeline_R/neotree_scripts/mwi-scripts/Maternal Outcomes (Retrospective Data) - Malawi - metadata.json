@@ -1,0 +1,972 @@
+[
+    {
+        "scriptId": "1630f7ea-1e2d-45e6-ba0a-01f16de5b456",
+        "title": "Maternal Outcomes (Retrospective Data) - Malawi",
+        "hospitalName": "",
+        "diagnoses": [],
+        "problems": [],
+        "screens": [
+            {
+                "screenId": "5444a4a6-8ccc-4896-ab5f-f7c49189bba4",
+                "type": "form",
+                "title": "NEOTREE OUTCOME",
+                "ref": "All",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "NEOTREE ID",
+                        "key": "NUID",
+                        "type": "text",
+                        "dataType": "uid",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Mother's Initials",
+                        "key": "MothInitials",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date of Admission",
+                        "key": "DateAdmission",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Do you know the Date of Birth?",
+                        "key": "DOBYN",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Date of Birth",
+                        "key": "BirthDateDis",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$DOBYN = 'Y'"
+                    },
+                    {
+                        "label": "Gender",
+                        "key": "SexDis",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "M",
+                                "valueLabel": "Male"
+                            },
+                            {
+                                "value": "F",
+                                "valueLabel": "Female"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unsure"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Admission Source",
+                        "key": "MaternalAdmissionSource",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Within",
+                                "valueLabel": "Within KCH"
+                            },
+                            {
+                                "value": "ExtRef",
+                                "valueLabel": "External Referral"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Where was the patient referred from?",
+                        "key": "OutFacility",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$MaternalAdmissionSource = 'ExtRef'",
+                        "options": [
+                            {
+                                "value": "HSR",
+                                "valueLabel": "Home Self Referral"
+                            },
+                            {
+                                "value": "Oth",
+                                "valueLabel": "Other Facility"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Name of referring Facility",
+                        "key": "ReferredFrom",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$OutFacility = 'Oth'",
+                        "options": [
+                            {
+                                "value": "ABC",
+                                "valueLabel": "ABC Clinic"
+                            },
+                            {
+                                "value": "A18",
+                                "valueLabel": "Area 18 HC"
+                            },
+                            {
+                                "value": "A25",
+                                "valueLabel": "Area 25 HC"
+                            },
+                            {
+                                "value": "Bwai",
+                                "valueLabel": "Bwaila Hospital"
+                            },
+                            {
+                                "value": "CLI",
+                                "valueLabel": "Child Legacy International"
+                            },
+                            {
+                                "value": "DLH",
+                                "valueLabel": "Daeyang Luke Mission Hospital"
+                            },
+                            {
+                                "value": "Dedza",
+                                "valueLabel": "Dedza District Hospital"
+                            },
+                            {
+                                "value": "Dowa",
+                                "valueLabel": "Dowa District Hospital"
+                            },
+                            {
+                                "value": "Kab",
+                                "valueLabel": "Kabudula rural hospital"
+                            },
+                            {
+                                "value": "Kang",
+                                "valueLabel": "Kang'oma HC"
+                            },
+                            {
+                                "value": "Kany",
+                                "valueLabel": "Kanyezi HC"
+                            },
+                            {
+                                "value": "Kas",
+                                "valueLabel": "Kasungu District hospital"
+                            },
+                            {
+                                "value": "Kaw",
+                                "valueLabel": "Kawale HC"
+                            },
+                            {
+                                "value": "Lumb",
+                                "valueLabel": "Lumbadzi HC"
+                            },
+                            {
+                                "value": "Lik",
+                                "valueLabel": "Likuni Mission Hospital"
+                            },
+                            {
+                                "value": "Mchi",
+                                "valueLabel": "Mchinji District Hospital"
+                            },
+                            {
+                                "value": "Mit",
+                                "valueLabel": "Mitundu Community Hospital"
+                            },
+                            {
+                                "value": "Mzuzu",
+                                "valueLabel": "Mzuzu Central Cospital"
+                            },
+                            {
+                                "value": "Nam",
+                                "valueLabel": "Nambuma HC"
+                            },
+                            {
+                                "value": "Ntcheu",
+                                "valueLabel": "Ntcheu Hospital"
+                            },
+                            {
+                                "value": "Ntchis",
+                                "valueLabel": "Ntchisi District Hospital"
+                            },
+                            {
+                                "value": "Ngon",
+                                "valueLabel": "Ngoni HC"
+                            },
+                            {
+                                "value": "Nko",
+                                "valueLabel": "Nkhoma Mission Hospital"
+                            },
+                            {
+                                "value": "Nkhot",
+                                "valueLabel": "Nkhotakota District hospital"
+                            },
+                            {
+                                "value": "Sal",
+                                "valueLabel": "Salima District hospital"
+                            },
+                            {
+                                "value": "StAnn",
+                                "valueLabel": "St Anne's Hospital"
+                            },
+                            {
+                                "value": "StAug",
+                                "valueLabel": "St Augustine Mission Hospital"
+                            },
+                            {
+                                "value": "StGab",
+                                "valueLabel": "St Gabriel's Hospital"
+                            },
+                            {
+                                "value": "Tem",
+                                "valueLabel": "Tembwe HC"
+                            },
+                            {
+                                "value": "O",
+                                "valueLabel": "Other"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Reason for patient to be referred",
+                        "key": "ReasonForReferral",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$MaternalAdmissionSource = 'ExtRef'"
+                    },
+                    {
+                        "label": "Did the mother give birth?",
+                        "key": "DidMotherGaveBirth",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Type of Birth\t",
+                        "key": "TypeBirth",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$DidMotherGaveBirth = 'Y'",
+                        "options": [
+                            {
+                                "value": "S",
+                                "valueLabel": "Single"
+                            },
+                            {
+                                "value": "Tw1",
+                                "valueLabel": "1st Twin"
+                            },
+                            {
+                                "value": "Tw2",
+                                "valueLabel": "2nd Twin"
+                            },
+                            {
+                                "value": "Tr1",
+                                "valueLabel": "1st Triplet"
+                            },
+                            {
+                                "value": "Tr2",
+                                "valueLabel": "2nd Triplet"
+                            },
+                            {
+                                "value": "Tr3",
+                                "valueLabel": "3rd Triplet"
+                            },
+                            {
+                                "value": "Q1",
+                                "valueLabel": "1st Quadruplet"
+                            },
+                            {
+                                "value": "Q2",
+                                "valueLabel": "2nd Quadruplet"
+                            },
+                            {
+                                "value": "Q3",
+                                "valueLabel": "3rd Quadruplet"
+                            },
+                            {
+                                "value": "Q4",
+                                "valueLabel": "4th Quadruplet"
+                            },
+                            {
+                                "value": "Abt",
+                                "valueLabel": "Abortion"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Gestation",
+                        "key": "Gestation",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "45",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Outcome",
+                        "key": "NeoTreeOutcome",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$TypeBirth != 'Abt'",
+                        "options": [
+                            {
+                                "value": "LB",
+                                "valueLabel": "Live Birth"
+                            },
+                            {
+                                "value": "SBM",
+                                "valueLabel": "Stillbirth Mascerated"
+                            },
+                            {
+                                "value": "SBF",
+                                "valueLabel": "Stillbirth Fresh"
+                            },
+                            {
+                                "value": "UNK",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Birth weight (g)\t",
+                        "key": "BWTDis",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "6000",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Maternal Outcome",
+                        "key": "MatOutcome",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "D",
+                                "valueLabel": "Died"
+                            },
+                            {
+                                "value": "S",
+                                "valueLabel": "Survived"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Enter Cause of Death",
+                        "key": "MaternalCauseOfDeath",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$MatOutcome = 'D'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "c5806124-0cf7-43fd-93c1-3fda4652be5b",
+                "type": "form",
+                "title": "BIRTH HISTORY ",
+                "ref": "Pres & Deliv",
+                "condition": "$TypeBirth != 'Abt'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Presentation",
+                        "key": "Presentation",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Vertex",
+                                "valueLabel": "Vertex"
+                            },
+                            {
+                                "value": "Brow",
+                                "valueLabel": "Brow"
+                            },
+                            {
+                                "value": "Breech",
+                                "valueLabel": "Breech"
+                            },
+                            {
+                                "value": "Face",
+                                "valueLabel": "Face"
+                            },
+                            {
+                                "value": "Unk",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Mode of Delivery",
+                        "key": "ModeDelivery",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$DidMotherGaveBirth = 'Y'",
+                        "options": [
+                            {
+                                "value": "1",
+                                "valueLabel": "Spontaneous Vaginal Delivery (SVD)"
+                            },
+                            {
+                                "value": "6",
+                                "valueLabel": "Breech extraction (vaginal)"
+                            },
+                            {
+                                "value": "2",
+                                "valueLabel": "Vacuum extraction"
+                            },
+                            {
+                                "value": "3",
+                                "valueLabel": "Forceps extraction"
+                            },
+                            {
+                                "value": "4",
+                                "valueLabel": "Elective Ceasarian Section (ELCS)"
+                            },
+                            {
+                                "value": "5",
+                                "valueLabel": "Emergency Ceasarian Section (EMCS)"
+                            },
+                            {
+                                "value": "7",
+                                "valueLabel": "Ceasarian Section (Uncategorized)"
+                            },
+                            {
+                                "value": "8",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Reason for CS:",
+                        "key": "Reason",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$ModeDelivery = '4' or $ModeDelivery = '5'",
+                        "options": [
+                            {
+                                "value": "FD",
+                                "valueLabel": "Foetal Distress"
+                            },
+                            {
+                                "value": "Pres",
+                                "valueLabel": "Malpresentation (e.g. breech)"
+                            },
+                            {
+                                "value": "Scar",
+                                "valueLabel": "Previous scar(s)"
+                            },
+                            {
+                                "value": "E",
+                                "valueLabel": "Eclampsia"
+                            },
+                            {
+                                "value": "PE",
+                                "valueLabel": "Pre-Eclampsia"
+                            },
+                            {
+                                "value": "Fi",
+                                "valueLabel": "Fibroids"
+                            },
+                            {
+                                "value": "Fund",
+                                "valueLabel": "Big Fundus"
+                            },
+                            {
+                                "value": "Mult",
+                                "valueLabel": "Multiple gestation"
+                            },
+                            {
+                                "value": "Pr",
+                                "valueLabel": "Prolonged labour"
+                            },
+                            {
+                                "value": "Post",
+                                "valueLabel": "Post Term"
+                            },
+                            {
+                                "value": "CPD",
+                                "valueLabel": "Cephalopelvic Disproportion"
+                            },
+                            {
+                                "value": "O",
+                                "valueLabel": "Other"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Other Reason for CS",
+                        "key": "ReasonOther",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "($ModeDelivery = '4' or $ModeDelivery = '5') and $Reason = 'O'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "f036d73d-f362-4b46-b9db-f82f1b170b25",
+                "type": "form",
+                "title": "BIRTH HISTORY ",
+                "ref": "Apgars",
+                "condition": "$TypeBirth != 'Abt'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Did the baby cry straight after birth? ",
+                        "key": "CryBirth",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": true,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Apgar Score at 1 min\t",
+                        "key": "Apgar1",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Apgar Score at 5 min\t",
+                        "key": "Apgar5",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Apgar Score at 10 min",
+                        "key": "Apgar10",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Is the baby in Nursery?",
+                        "key": "BabyNursery",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "713762e9-0539-4589-ab76-bb1debe54e6b",
+                "type": "multi_select",
+                "title": "ANTENATAL HISTORY",
+                "ref": "Condition",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Medical conditions in pregnancy",
+                        "key": "PregConditions",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "HTN",
+                                "valueLabel": "Hypertencion or pre-eclampsia\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "DM",
+                                "valueLabel": "Diabetes",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "MAL",
+                                "valueLabel": "Malaria",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "STD",
+                                "valueLabel": "Sexually Transmitted Disease (Other than HIV/syphilis)\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "HD",
+                                "valueLabel": "Heart disease",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "THY",
+                                "valueLabel": "Thyroid disease / goitre",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AN",
+                                "valueLabel": "Anaemia",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NONE",
+                                "valueLabel": "NONE",
+                                "disabledOtherOptionsIfSelected": true,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "b44e800f-f8c8-4f23-b054-7af1d1edc66b",
+                "type": "multi_select",
+                "title": "Diagnosis",
+                "ref": "",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Diagnosis",
+                        "key": "MaternalDiagnosis",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "ECLAM",
+                                "valueLabel": "Eclampsia",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "MAL",
+                                "valueLabel": "Malaria",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PPH",
+                                "valueLabel": "Postpartum Hemorrhage (PPH)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PS",
+                                "valueLabel": "Previous Scar",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PRE",
+                                "valueLabel": "Preeclampsia",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PER",
+                                "valueLabel": "Peritonitis",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "UNK",
+                                "valueLabel": "Unknown",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NON",
+                                "valueLabel": "NONE",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "04f5b03c-d33a-45b5-8db8-79628ac202ef",
+                "type": "form",
+                "title": "Other Maternal Diagnosis",
+                "ref": "Diagnosis",
+                "condition": "$MaternalDiagnosis = 'OTH'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Other Diagnosis",
+                        "key": "OtherMatDiag",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$MaternalDiagnosis = 'OTH'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "b25fb648-ea4c-4c62-b49d-eae91aadfc64",
+                "type": "form",
+                "title": "PERITONITIS DIAGNOSIS",
+                "ref": "Peritonitis",
+                "condition": "$MaternalDiagnosis = 'PER'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "What was the treatment?",
+                        "key": "PeritonitisTreatment",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "THRE",
+                                "valueLabel": "Theater"
+                            },
+                            {
+                                "value": "ANT",
+                                "valueLabel": "Antibiotics"
+                            },
+                            {
+                                "value": "UNK",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Number of times the mother went to the theater?",
+                        "key": "NoOfTimesInTheater",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$PeritonitisTreatment = 'THRE'"
+                    },
+                    {
+                        "label": "Duration in the Ward",
+                        "key": "DurationInWard",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "5815ccbc-bcb5-455f-9467-915884cdb9b4",
+                "type": "form",
+                "title": "Well done for finishing the NeoTree!",
+                "ref": "Script End",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Datetime of completion",
+                        "key": "EndScriptDatetime",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "date_now",
+                        "maxValue": "date_now",
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            }
+        ]
+    }
+]

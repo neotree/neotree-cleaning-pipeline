@@ -1,0 +1,37 @@
+Neotree Cleaning Pipeline -- Required R Packages
+=================================================
+
+The pipeline requires 12 CRAN packages. All must be installed via Artifactory
+before running any scripts.
+
+  Package       Version   Purpose
+  ----------    -------   -------
+  jsonlite      >= 1.8    Read JSON data-key files (used by 00_build_dictionary)
+  readr         >= 2.1    Fast CSV reading
+  readxl        >= 1.4    Load Excel dictionary files (.xlsx)
+  writexl       >= 1.4    Write Excel dictionary files (.xlsx)
+  dplyr         >= 1.1    Data manipulation (filter, mutate, select, join)
+  tidyr         >= 1.3    Reshaping helpers (pivot, fill)
+  stringr       >= 1.5    String operations (str_detect, str_replace)
+  lubridate     >= 1.9    Datetime parsing and validation
+  purrr         >= 1.0    Functional helpers (map, walk)
+  logger        >= 0.3    Structured pipeline logging
+  janitor       >= 2.2    Column name cleaning (clean_names)
+  tibble        >= 3.2    Tibble utilities (deframe)
+
+No packages beyond these 12 are required to run the full pipeline
+(modules 00_build_dictionary through 15_final_merge_output).
+
+Once packages are installed, run the pipeline in two steps:
+
+  Step 1 -- Build dictionaries (once, or after data-key updates):
+    source("00_build_dictionary/00_build_dictionary_v8.R")
+
+  Step 2 -- Configure and run the pipeline:
+    Edit the User Configuration block in 00_setup/00_setup.R, then:
+    source("run_pipeline.R")
+
+Note: the optional dictionary validation script
+(00_build_dictionary/validate_dictionaries.r) is an R utility and
+is NOT required to run the pipeline. It uses only packages already
+listed above (openxlsx).

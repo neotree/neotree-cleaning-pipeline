@@ -1,0 +1,350 @@
+[
+    {
+        "scriptId": "fd81a5ac-cece-487c-8737-c98cfd046be1",
+        "title": "Chinhoyi Maternity Outcome ",
+        "hospitalName": "Chinhoyi Provincial Hospital",
+        "diagnoses": [],
+        "problems": [],
+        "screens": [
+            {
+                "screenId": "15bdc269-98b6-462f-9025-bb8497372a9f",
+                "type": "form",
+                "title": "NEOTREE OUTCOME",
+                "ref": "All",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "NeoTree ID",
+                        "key": "UID_MO",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Mother's Initials",
+                        "key": "MothInitials",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Age Of Mother (yrs)",
+                        "key": "MatAgeYrs",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "4",
+                        "maxValue": "80",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date of Admission",
+                        "key": "DateAdmission",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date of Birth",
+                        "key": "BirthDateDis",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Gender",
+                        "key": "SexDis",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "F",
+                                "valueLabel": "Female"
+                            },
+                            {
+                                "value": "M",
+                                "valueLabel": "Male"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unsure"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Mode of Delivery",
+                        "key": "ModeDelivery",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "1",
+                                "valueLabel": "Spontaneous Vaginal Delivery"
+                            },
+                            {
+                                "value": "6",
+                                "valueLabel": "Breech extraction (vaginal)"
+                            },
+                            {
+                                "value": "2",
+                                "valueLabel": "Vacuum extraction"
+                            },
+                            {
+                                "value": "3",
+                                "valueLabel": "Forceps extraction"
+                            },
+                            {
+                                "value": "4",
+                                "valueLabel": "Elective Caesarian Section (ELCS)"
+                            },
+                            {
+                                "value": "5",
+                                "valueLabel": "Emergency Caesarian Section (EMCS)"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Gestation",
+                        "key": "Gestation",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "45",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Birth weight (g)",
+                        "key": "BWTDis",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "6000",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Did the baby receive any resuscitation?",
+                        "key": "Resus",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            },
+                            {
+                                "value": "Un",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What was the Apgar score at 1 minute?",
+                        "key": "Apgar1",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    },
+                    {
+                        "label": "What was the Apgar score at 5 minutes?",
+                        "key": "Apgar5",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Did the baby receive Delayed Cord Clamping?",
+                        "key": "DCC",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes (cord clamped MORE than 1 min after birth)"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No (cord clamped LESS than 1 min after birth)"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Did the baby receive early skin to skin care within the first hour of life?",
+                        "key": "S2S",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Outcome",
+                        "key": "NeoTreeOutcome",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "LB",
+                                "valueLabel": "Live Birth"
+                            },
+                            {
+                                "value": "ENND",
+                                "valueLabel": "Early Neonatal Death"
+                            },
+                            {
+                                "value": "STBM",
+                                "valueLabel": "Stillbirth Mascerated"
+                            },
+                            {
+                                "value": "STBF",
+                                "valueLabel": "Stillbirth Fresh"
+                            },
+                            {
+                                "value": "MISC",
+                                "valueLabel": "Miscarriage - death before 22 weeks' gestation"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "MatOutcome",
+                        "key": "MatOutcome",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "D",
+                                "valueLabel": "Died"
+                            },
+                            {
+                                "value": "S",
+                                "valueLabel": "Survived"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "4dd0aea8-b1f1-4a2e-b1a9-99afd437d104",
+                "type": "management",
+                "title": "MANAGEMENT",
+                "ref": "Birth Asphyxia",
+                "condition": "$Diagnoses = 'BA'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": {
+                    "actionText": "Birth Asphyxia / HIE ",
+                    "contentText": "Provide supportive care with the following ",
+                    "infoText": "",
+                    "title": "MANAGEMENT",
+                    "title1": "1. Keep warm ",
+                    "title2": "2. Respiratory support ",
+                    "title3": "3. Feeding support, anticonvulsants and antibiotics",
+                    "title4": "",
+                    "text1": "Kangaroo mother care / radiant warmer\n\n(unless the patient is hyperthermic)",
+                    "text2": "Put on appropriate respiratory support",
+                    "text3": "For mild/moderate\n- Give NG feeds: most will have a poor suck reflex \n- Mother can still offer breast to develop the suck reflex\n- Check blood glucose & give dextrose bolus if BS <45mg/dL or < 2.6mmol/L\n\nFor severe birth asphyxia, where feeds are not tolerated, consider IV fluids\n\nIf evidence of seizure activity:\n- give PHENOBARBITONE loading dose and go to the CONVULSIONS page \n- reassess suck, tone, coma, seizures every 8 hours for 72 hrs in hospital \n\nTreat for sepsis with antibiotics",
+                    "instructions": "",
+                    "instructions2": "",
+                    "instructions3": "",
+                    "instructions4": "",
+                    "notes": "",
+                    "refKey": "",
+                    "images": {
+                        "contentTextImage": null,
+                        "image1": null,
+                        "image2": null,
+                        "image3": null
+                    }
+                },
+                "fields": [],
+                "items": []
+            }
+        ]
+    }
+]

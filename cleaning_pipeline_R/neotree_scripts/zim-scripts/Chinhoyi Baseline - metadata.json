@@ -1,0 +1,1449 @@
+[
+    {
+        "scriptId": "b3354f32-dd63-4a40-9c3d-5645581d39c7",
+        "title": "Chinhoyi Baseline",
+        "hospitalName": "",
+        "diagnoses": [],
+        "problems": [],
+        "screens": [
+            {
+                "screenId": "1fd244a3-85ef-4271-bf2b-155fd052d41c",
+                "type": "form",
+                "title": "PATIENT INFORMATION",
+                "ref": "DOADOB",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Date and time of birth",
+                        "key": "DOBTOB",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date & time of admission",
+                        "key": "DateTimeAdmission",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "72a1dda7-d168-4839-a3f0-d94ca924ed6b",
+                "type": "single_select",
+                "title": "PATIENT INFORMATION",
+                "ref": "Sex",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Sex",
+                        "key": "Gender",
+                        "type": "single_select",
+                        "dataType": "single_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "M",
+                                "valueLabel": "Male",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "F",
+                                "valueLabel": "Female",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NS",
+                                "valueLabel": "Not Sure",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ],
+                "items": [
+                    {
+                        "itemId": "e259a326-29f8-4990-b188-4bd4a63d78cc",
+                        "key": "M",
+                        "value": "M",
+                        "label": "Male",
+                        "valueLabel": "Male",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "0080707f-946b-461b-b225-6755c2d314ea",
+                        "key": "F",
+                        "value": "F",
+                        "label": "Female",
+                        "valueLabel": "Female",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "f8eabd29-633d-4346-b6b7-e4542f9aef7c",
+                        "key": "NS",
+                        "value": "NS",
+                        "label": "Not Sure",
+                        "valueLabel": "Not Sure",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    }
+                ]
+            },
+            {
+                "screenId": "4755f95b-924c-4b38-877c-a701f0239138",
+                "type": "form",
+                "title": "PATIENT INFORMATION",
+                "ref": "Age ",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Is the baby aged less than 1 week?",
+                        "key": "AgeA",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$AdmReason != 'DUM'",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Age Category?",
+                        "key": "AgeCat",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$AgeA = 'Y'",
+                        "options": [
+                            {
+                                "value": "FNB",
+                                "valueLabel": "Fresh Newborn (< 2 hours old)"
+                            },
+                            {
+                                "value": "NB24",
+                                "valueLabel": "Newborn (2 - 23 hrs old)"
+                            },
+                            {
+                                "value": "NB36",
+                                "valueLabel": "Newborn (24 - 47hrs old)"
+                            },
+                            {
+                                "value": "NB42",
+                                "valueLabel": "Newborn (48hrs - 71hrs)"
+                            },
+                            {
+                                "value": "NB",
+                                "valueLabel": "Newborn (> 3 days old)"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Age of baby in days",
+                        "key": "AgeC",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "8",
+                        "maxValue": "90",
+                        "condition": "$AgeA = 'N'"
+                    },
+                    {
+                        "label": "Type of Birth",
+                        "key": "TypeBirth",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "S",
+                                "valueLabel": "Single"
+                            },
+                            {
+                                "value": "Tw1",
+                                "valueLabel": "1st Twin"
+                            },
+                            {
+                                "value": "Tw2",
+                                "valueLabel": "2nd Twin"
+                            },
+                            {
+                                "value": "Tr1",
+                                "valueLabel": "1st Triplet"
+                            },
+                            {
+                                "value": "Tr2",
+                                "valueLabel": "2nd Triplet"
+                            },
+                            {
+                                "value": "Tr3",
+                                "valueLabel": "3rd Triplet"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "20be8281-3a3a-4f72-9e1a-cbd84c3ec115",
+                "type": "form",
+                "title": "PATIENT INFORMATION",
+                "ref": "Gestation",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Gestational age at birth (weeks)",
+                        "key": "Gestation",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "20",
+                        "maxValue": "43",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Method of gestational estimation antenatally",
+                        "key": "MethodEstGest",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": true,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "LMP",
+                                "valueLabel": "Last Menstrual Period (LMP)"
+                            },
+                            {
+                                "value": "FH",
+                                "valueLabel": "Fundal height"
+                            },
+                            {
+                                "value": "USS",
+                                "valueLabel": "USS"
+                            },
+                            {
+                                "value": "UK",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "57361b50-3537-4da4-be0d-3a0149301283",
+                "type": "form",
+                "title": "MATERNAL DETAILS",
+                "ref": "Maternal Age",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Age of Mother (yrs)",
+                        "key": "MatAgeYrs",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Maternal Parity",
+                        "key": "PAR",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Pregnancy Booking Status",
+                        "key": "ReceivedAntenatalCare",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Bkd",
+                                "valueLabel": "Booked"
+                            },
+                            {
+                                "value": "Ubkd",
+                                "valueLabel": "Unbooked"
+                            },
+                            {
+                                "value": "UK",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "baa9a499-812d-4602-8919-7ca4cc18e1a0",
+                "type": "form",
+                "title": "Weight and OFC",
+                "ref": "Weight & OFC",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Birth Weight (g)",
+                        "key": "BW",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "5000",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Head Circumference (cm)",
+                        "key": "OFC",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "20",
+                        "maxValue": "50",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Length (cm)",
+                        "key": "Length",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "20",
+                        "maxValue": "100",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Temperature (degs C)",
+                        "key": "Temperature",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "30",
+                        "maxValue": "42",
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "076ba86c-fb2e-4bfd-8d38-652660d0ee48",
+                "type": "form",
+                "title": "BIRTH HISTORY ",
+                "ref": "Pres & Deliv",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Presentation",
+                        "key": "Presentation",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Vertex",
+                                "valueLabel": "Vertex"
+                            },
+                            {
+                                "value": "Brow",
+                                "valueLabel": "Brow"
+                            },
+                            {
+                                "value": "Breech",
+                                "valueLabel": "Breech"
+                            },
+                            {
+                                "value": "Face",
+                                "valueLabel": "Face"
+                            },
+                            {
+                                "value": "Unk",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Mode of Delivery",
+                        "key": "ModeDelivery",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "1",
+                                "valueLabel": "Spontaneous Vaginal Delivery"
+                            },
+                            {
+                                "value": "6",
+                                "valueLabel": "Breech extraction (vaginal)"
+                            },
+                            {
+                                "value": "2",
+                                "valueLabel": "Vacuum extraction"
+                            },
+                            {
+                                "value": "3",
+                                "valueLabel": "Forceps extraction"
+                            },
+                            {
+                                "value": "4",
+                                "valueLabel": "Elective Ceasarian Section (ELCS)"
+                            },
+                            {
+                                "value": "5",
+                                "valueLabel": "Emergency Ceasarian Section (EMCS)"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Reason for CS:",
+                        "key": "Reason",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$ModeDelivery = '4' or $ModeDelivery = '5'",
+                        "options": [
+                            {
+                                "value": "FD",
+                                "valueLabel": "Foetal Distress"
+                            },
+                            {
+                                "value": "Pres",
+                                "valueLabel": "Malpresentation (e.g. breech)"
+                            },
+                            {
+                                "value": "Scar",
+                                "valueLabel": "Previous scar(s)"
+                            },
+                            {
+                                "value": "E",
+                                "valueLabel": "Eclampsia"
+                            },
+                            {
+                                "value": "PE",
+                                "valueLabel": "Pre-Eclampsia"
+                            },
+                            {
+                                "value": "Fi",
+                                "valueLabel": "Fibroids"
+                            },
+                            {
+                                "value": "Fund",
+                                "valueLabel": "Big Fundus"
+                            },
+                            {
+                                "value": "Mult",
+                                "valueLabel": "Multiple gestation"
+                            },
+                            {
+                                "value": "Pr",
+                                "valueLabel": "Prolonged labour"
+                            },
+                            {
+                                "value": "Post",
+                                "valueLabel": "Post Term"
+                            },
+                            {
+                                "value": "CPD",
+                                "valueLabel": "Cephalopelvic Disproportion"
+                            },
+                            {
+                                "value": "O",
+                                "valueLabel": "Other"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "d6c25e1c-b7d7-4999-95c3-e9298cffa5fe",
+                "type": "form",
+                "title": "BIRTH HISTORY ",
+                "ref": "Apgars",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Cried at Birth",
+                        "key": "CryBirth",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Apgar Score at 1 min",
+                        "key": "Apgar1",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Apgar Score at 5 mins",
+                        "key": "Apgar5",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "9fe97f51-1edd-4716-83ce-8084f2dd8679",
+                "type": "multi_select",
+                "title": "RESUSCITATION",
+                "ref": "Resus",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Resuscitation given",
+                        "key": "Resus",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Stim",
+                                "valueLabel": "Stimulation",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Suc",
+                                "valueLabel": "Suctioning",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "O2",
+                                "valueLabel": "Oxygen",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "BVM",
+                                "valueLabel": "Bag Valve Mask Ventilation (BVM)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CPR",
+                                "valueLabel": "Cardio Pulmonary Resuscitation (CPR)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Unk",
+                                "valueLabel": "Unknown",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Norm",
+                                "valueLabel": "NONE",
+                                "disabledOtherOptionsIfSelected": true,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "6221ecf9-7944-4617-a74c-92e6b94a360d",
+                "type": "multi_select",
+                "title": "PROVISIONAL DIAGNOSIS ",
+                "ref": "Diagnosis",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Admission Diagnoses",
+                        "key": "Diagnoses",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "An",
+                                "valueLabel": "Anaemia",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "BBA",
+                                "valueLabel": "Born Before Arrival",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "BI",
+                                "valueLabel": "Birth Injury",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cong",
+                                "valueLabel": "Congenital Abnormality",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CHD",
+                                "valueLabel": "Congenital Heart Disease",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Dhyd",
+                                "valueLabel": "Dehydration",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "DUM",
+                                "valueLabel": "Abandoned baby",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "DF",
+                                "valueLabel": "Difficulty Feeding",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "HIVX",
+                                "valueLabel": "HIV Exposed HIGH RISK",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "HIVXL",
+                                "valueLabel": "HIV exposed low risk",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "BA",
+                                "valueLabel": "Hypoxic Ischaemic Encephalopathy",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "GSchis",
+                                "valueLabel": "Gastroschisis",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "JA",
+                                "valueLabel": "Jaundice",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "LBW",
+                                "valueLabel": "Low Birth Weight",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "HBW",
+                                "valueLabel": "Macrosomia (>4000g)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "MA",
+                                "valueLabel": "Meconium Aspiration",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "MecEx",
+                                "valueLabel": "Meconium exposure (asymptomatic baby)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NEC",
+                                "valueLabel": "NEC",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "SEPS",
+                                "valueLabel": "Neonatal Sepsis",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OMP",
+                                "valueLabel": "OMPHALOCELE",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PN",
+                                "valueLabel": "Pneumonia",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PREM",
+                                "valueLabel": "Prematurity",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PREMRDS",
+                                "valueLabel": "Prematurity with RDS",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Risk",
+                                "valueLabel": "Risk factors for sepsis (asymptomatic baby)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Safe",
+                                "valueLabel": "Safekeeping",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Twin",
+                                "valueLabel": "Accompanying Twin (asymptomatic)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "TTN",
+                                "valueLabel": "Transient Tachypnoea of Newborn (TTN)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "0204c64f-9f7d-4078-ab2a-6b9c0b035f30",
+                "type": "form",
+                "title": "PROVISIONAL DIAGNOSIS",
+                "ref": "",
+                "condition": "$Diagnoses = 'Oth'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "If other diagnosis then what?",
+                        "key": "DiagnosesOth",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "a4bade79-e98f-460c-982e-bfd1f6ed087e",
+                "type": "form",
+                "title": "NEOTREE OUTCOME",
+                "ref": "Outcome",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Outcome",
+                        "key": "NeotreeOutcome",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "DC",
+                                "valueLabel": "Discharged"
+                            },
+                            {
+                                "value": "NND",
+                                "valueLabel": "Died"
+                            },
+                            {
+                                "value": "ABS",
+                                "valueLabel": "Absconded"
+                            },
+                            {
+                                "value": "STB",
+                                "valueLabel": "Stillbirth"
+                            },
+                            {
+                                "value": "TRH",
+                                "valueLabel": "Transferred to other Hospital"
+                            },
+                            {
+                                "value": "TRO",
+                                "valueLabel": "Transferred to other ward"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "119ceea4-6b9c-434c-a059-a3bdf0a6d43b",
+                "type": "form",
+                "title": "NEOTREE OUTCOME",
+                "ref": "Discharge Dx",
+                "condition": "$NeotreeOutcome = 'DC' or $NeotreeOutcome =  'ABS' or $NeotreeOutcome = 'TRH' or $NeotreeOutcome = 'TRO'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Date and Time of Discharge (or left department)",
+                        "key": "DateTimeDischarge",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Primary discharge diagnosis",
+                        "key": "DIAGDIS1",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "AN",
+                                "valueLabel": "Anaemia"
+                            },
+                            {
+                                "value": "HIE",
+                                "valueLabel": "Hypoxic Ischaemic Encephalopathy"
+                            },
+                            {
+                                "value": "BI",
+                                "valueLabel": "Birth Injury"
+                            },
+                            {
+                                "value": "BBA",
+                                "valueLabel": "Born before arrival"
+                            },
+                            {
+                                "value": "BO",
+                                "valueLabel": "Bowel Obstruction"
+                            },
+                            {
+                                "value": "CHD",
+                                "valueLabel": "Congenital Heart Disease"
+                            },
+                            {
+                                "value": "Dhyd",
+                                "valueLabel": "Dehydration"
+                            },
+                            {
+                                "value": "DF",
+                                "valueLabel": "Difficulty Feeding"
+                            },
+                            {
+                                "value": "GSchis",
+                                "valueLabel": "Gastroschisis"
+                            },
+                            {
+                                "value": "HIVXH",
+                                "valueLabel": "HIV Exposed High Risk"
+                            },
+                            {
+                                "value": "HIVXL",
+                                "valueLabel": "HIV Exposed Low Risk"
+                            },
+                            {
+                                "value": "JAUN",
+                                "valueLabel": "Jaundice"
+                            },
+                            {
+                                "value": "LBW",
+                                "valueLabel": "Low Birth Weight"
+                            },
+                            {
+                                "value": "MA",
+                                "valueLabel": "Meconium Aspiration"
+                            },
+                            {
+                                "value": "HBW",
+                                "valueLabel": "Macrosomia (>4000g)"
+                            },
+                            {
+                                "value": "MD",
+                                "valueLabel": "Musculoskeletal Abnormalities"
+                            },
+                            {
+                                "value": "NEC",
+                                "valueLabel": "Necrotising Enterocolitis"
+                            },
+                            {
+                                "value": "NNS",
+                                "valueLabel": "Neonatal Sepsis"
+                            },
+                            {
+                                "value": "NB",
+                                "valueLabel": "Normal baby"
+                            },
+                            {
+                                "value": "OM",
+                                "valueLabel": "Omphalocele"
+                            },
+                            {
+                                "value": "OCA",
+                                "valueLabel": "Other congenital abnormality"
+                            },
+                            {
+                                "value": "Prem",
+                                "valueLabel": "Premature (32 to 36.6 weeks)"
+                            },
+                            {
+                                "value": "PremRD",
+                                "valueLabel": "Premature baby with Respiratory Distress"
+                            },
+                            {
+                                "value": "PN",
+                                "valueLabel": "Pneumonia"
+                            },
+                            {
+                                "value": "Ri",
+                                "valueLabel": "Risk of sepsis"
+                            },
+                            {
+                                "value": "Safe",
+                                "valueLabel": "Safekeeping"
+                            },
+                            {
+                                "value": "Twin",
+                                "valueLabel": "Accompanying Twin"
+                            },
+                            {
+                                "value": "TTN",
+                                "valueLabel": "Transient Tachypnoea Newborn"
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "0e347f65-b115-41ad-923f-d037a24e39a4",
+                "type": "multi_select",
+                "title": "MEDICATIONS GIVEN",
+                "ref": "Meds given",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Medications given during admission",
+                        "key": "MedsGiven",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "BP",
+                                "valueLabel": "X penicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "GENT",
+                                "valueLabel": "Gentamicin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "BCG",
+                                "valueLabel": "BCG Vaccine",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AMOX",
+                                "valueLabel": "Amoxicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AMIK",
+                                "valueLabel": "Amikacin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AMIN",
+                                "valueLabel": "Aminophylline",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AMP",
+                                "valueLabel": "Ampicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AZT",
+                                "valueLabel": "AZT (Zidovudine)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CAF",
+                                "valueLabel": "Caffeine",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CEF",
+                                "valueLabel": "Ceftriaxone",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CHLO",
+                                "valueLabel": "Chloramphenicol",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CLOX",
+                                "valueLabel": "Cloxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "FOL",
+                                "valueLabel": "Folate",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "IMI",
+                                "valueLabel": "Imipenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "IRON",
+                                "valueLabel": "Iron",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "MET",
+                                "valueLabel": "Metronidazole",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NVP",
+                                "valueLabel": "Nevirapine",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PHEN",
+                                "valueLabel": "Phenobarbitone",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PROC",
+                                "valueLabel": "Procaine Penicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "TTV",
+                                "valueLabel": "Tetanus Vaccine",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "VAN",
+                                "valueLabel": "Vancomycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "VITD",
+                                "valueLabel": "Vitamin D",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Norm",
+                                "valueLabel": "NONE",
+                                "disabledOtherOptionsIfSelected": true,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "UK",
+                                "valueLabel": "Unknown",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "c531cab6-d0b5-494f-b7ca-ede0bc56ab56",
+                "type": "multi_select",
+                "title": "DISCHARGE MEDICATIONS",
+                "ref": "Meds on Disch",
+                "condition": "$NeotreeOutcome = 'DC' or $NeotreeOutcome = 'TRH' or $NeotreeOutcome = 'TRO'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Discharge Medications (Dose/ Duration)",
+                        "key": "MEDSDIS",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$NeotreeOutcome = 'DC' or $NeotreeOutcome = 'TRH' or $NeotreeOutcome = 'TRO'",
+                        "options": [
+                            {
+                                "value": "AMOX",
+                                "valueLabel": "Amoxicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "FOL",
+                                "valueLabel": "Folic acid",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "FE",
+                                "valueLabel": "Iron (Ferrous sulphate)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "VITD",
+                                "valueLabel": "Vitamin D",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PROC",
+                                "valueLabel": "Intramuscular procaine penicillin (syphillis)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NVP",
+                                "valueLabel": "NVP (Nevirapine)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AZT",
+                                "valueLabel": "AZT (Zidovudine)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Norm",
+                                "valueLabel": "NONE",
+                                "disabledOtherOptionsIfSelected": true,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "UK",
+                                "valueLabel": "Unknown",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "d397610b-9483-402f-b08e-c2e47f31afc6",
+                "type": "multi_select",
+                "title": "Admission location",
+                "ref": "",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Admission Location",
+                        "key": "AdmissionLocation",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "NNU",
+                                "valueLabel": "NEONATAL UNIT",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PAEDWARD",
+                                "valueLabel": "PAEDIATRIC WARD",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "f307acc7-fde7-446f-bbe0-ca6ea5e1826e",
+                "type": "multi_select",
+                "title": "PLACE OF DELIVERY",
+                "ref": "",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Place of Delivery",
+                        "key": "PlaceofDelivery",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "CH",
+                                "valueLabel": "Chinhoyi hospital",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CL",
+                                "valueLabel": "Clinic",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "HOME",
+                                "valueLabel": "Home",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "792eb495-28bb-4605-acd8-403f5eedb84d",
+                "type": "form",
+                "title": "PLACE OF DELIVERY",
+                "ref": "",
+                "condition": "$PlaceofDelivery = 'Oth'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Place of Delivery (Other)",
+                        "key": "PlaceofDeliveryOth",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$PlaceofDelivery = 'Oth'"
+                    }
+                ],
+                "items": []
+            }
+        ]
+    }
+]

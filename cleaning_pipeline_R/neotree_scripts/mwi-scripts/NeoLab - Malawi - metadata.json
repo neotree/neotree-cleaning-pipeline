@@ -1,0 +1,1337 @@
+[
+    {
+        "scriptId": "a5085256-3514-4be3-bf40-56074cd92e3f",
+        "title": "NeoLab - Malawi",
+        "hospitalName": "Kamuzu Central Hospital",
+        "diagnoses": [],
+        "problems": [],
+        "screens": [
+            {
+                "screenId": "6172aed1-3738-4f85-8ba5-c09d82be4a37",
+                "type": "form",
+                "title": "Blood culture details",
+                "ref": "",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "NEOTREE ID",
+                        "key": "NUID",
+                        "type": "text",
+                        "dataType": "uid",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Hospital Number",
+                        "key": "HospNu",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Mother's First Name",
+                        "key": "MoFirstNameBC\t",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Mother's Surname",
+                        "key": "MoSurNameBC",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date and time blood culture taken",
+                        "key": "DateBCT",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date and time blood culture reported",
+                        "key": "DateBCR",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "9cf299e7-5da7-4cda-8ac7-3c570463fad2",
+                "type": "single_select",
+                "title": "BLOOD CULTURE RESULT",
+                "ref": "",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "What was the result of the blood culture?",
+                        "key": "BCResult",
+                        "type": "single_select",
+                        "dataType": "single_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Pos",
+                                "valueLabel": "Positive",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NegP",
+                                "valueLabel": "Negative (PRELIMINARY)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PosP",
+                                "valueLabel": "Positive (Preliminary awaiting AST)\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Neg",
+                                "valueLabel": "Negative (FINAL)\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PC\t",
+                                "valueLabel": "Possible Contaminant",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ],
+                "items": [
+                    {
+                        "itemId": "894361cd-939e-40a1-964b-7c558046689c",
+                        "key": "Pos",
+                        "value": "Pos",
+                        "label": "Positive",
+                        "valueLabel": "Positive",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "a895ee13-1bd8-42ed-a8ac-d526e46fb368",
+                        "key": "NegP",
+                        "value": "NegP",
+                        "label": "Negative (PRELIMINARY)",
+                        "valueLabel": "Negative (PRELIMINARY)",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "8fcba0bb-d762-4d69-a7eb-d12e8226224b",
+                        "key": "PosP",
+                        "value": "PosP",
+                        "label": "Positive (Preliminary awaiting AST)\t",
+                        "valueLabel": "Positive (Preliminary awaiting AST)\t",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "d81e9bdb-da19-4bf7-bf47-b116befbe33b",
+                        "key": "Neg",
+                        "value": "Neg",
+                        "label": "Negative (FINAL)\t",
+                        "valueLabel": "Negative (FINAL)\t",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "f588a60b-80fe-4d4c-be60-ca49527f8f6e",
+                        "key": "PC\t",
+                        "value": "PC\t",
+                        "label": "Possible Contaminant",
+                        "valueLabel": "Possible Contaminant",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    }
+                ]
+            },
+            {
+                "screenId": "1b68d927-dd0a-466c-a0b2-ef7da566f4c0",
+                "type": "single_select",
+                "title": "Number of organisms identified\t",
+                "ref": "Pos",
+                "condition": "$BCResult = 'Pos'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Number of organisms identified",
+                        "key": "OrgNo",
+                        "type": "single_select",
+                        "dataType": "single_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$BCResult = 'Pos'",
+                        "options": [
+                            {
+                                "value": "1",
+                                "valueLabel": "One",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "2",
+                                "valueLabel": "Two",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ],
+                "items": [
+                    {
+                        "itemId": "9b61ef19-23d0-494b-9d60-d15e13880a3e",
+                        "key": "1",
+                        "value": "1",
+                        "label": "One",
+                        "valueLabel": "One",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "54d3cd93-b8d9-470b-ae1b-eecf789f97c8",
+                        "key": "2",
+                        "value": "2",
+                        "label": "Two",
+                        "valueLabel": "Two",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    }
+                ]
+            },
+            {
+                "screenId": "8c15f480-4606-4632-8df8-f790816e86f7",
+                "type": "form",
+                "title": "Blood culture result organisms\t",
+                "ref": "Pos",
+                "condition": "$BCResult = 'Pos'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Organism 1\t",
+                        "key": "Org1",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "GBS",
+                                "valueLabel": "Group B Streptococcus"
+                            },
+                            {
+                                "value": "EC",
+                                "valueLabel": "E Coli"
+                            },
+                            {
+                                "value": "Kl",
+                                "valueLabel": "Klebsiella pneumoniae"
+                            },
+                            {
+                                "value": "CONS",
+                                "valueLabel": "Coagulase negative staph"
+                            },
+                            {
+                                "value": "SA",
+                                "valueLabel": "Staph aureus"
+                            },
+                            {
+                                "value": "Pseud",
+                                "valueLabel": "Pseudomonas aeruginosa"
+                            },
+                            {
+                                "value": "GDS",
+                                "valueLabel": "Group D Strep"
+                            },
+                            {
+                                "value": "Bac",
+                                "valueLabel": "Bacillus sp"
+                            },
+                            {
+                                "value": "NLFC",
+                                "valueLabel": "Non-lactose fermenting coliform"
+                            },
+                            {
+                                "value": "LFC",
+                                "valueLabel": "Lactose fermenting coliform"
+                            },
+                            {
+                                "value": "OGN",
+                                "valueLabel": "Other Gram negative"
+                            },
+                            {
+                                "value": "OGP",
+                                "valueLabel": "Other Gram positive"
+                            },
+                            {
+                                "value": "Oth",
+                                "valueLabel": "Other"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "If other what\t",
+                        "key": "OtherOrg1",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Organism 2\t",
+                        "key": "Org2",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "GBS",
+                                "valueLabel": "Group B Streprococcus"
+                            },
+                            {
+                                "value": "EC",
+                                "valueLabel": "E Coli"
+                            },
+                            {
+                                "value": "Kl",
+                                "valueLabel": "Klebsiella pneumoniae"
+                            },
+                            {
+                                "value": "CONS",
+                                "valueLabel": "Coagulase negative staph"
+                            },
+                            {
+                                "value": "SA",
+                                "valueLabel": "Staphylococcus aureus"
+                            },
+                            {
+                                "value": "Pseu",
+                                "valueLabel": "Pseudomonas aeruginosa"
+                            },
+                            {
+                                "value": "GDS",
+                                "valueLabel": "Group D Streptococcus"
+                            },
+                            {
+                                "value": "Bac",
+                                "valueLabel": "Bacillus sp"
+                            },
+                            {
+                                "value": "NLFC",
+                                "valueLabel": "Non-lactose fermenting coliform"
+                            },
+                            {
+                                "value": "LFC",
+                                "valueLabel": "Lactose fermenting coliform"
+                            },
+                            {
+                                "value": "OGN",
+                                "valueLabel": "Other gram negative"
+                            },
+                            {
+                                "value": "OGP",
+                                "valueLabel": "Other gram positive"
+                            },
+                            {
+                                "value": "Oth",
+                                "valueLabel": "Other"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "If other what",
+                        "key": "OtherOrg2",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "7b7ee8d0-e452-41f6-9b5a-74278d4911d5",
+                "type": "multi_select",
+                "title": "Blood Culture Sensitivities 1",
+                "ref": "Pos",
+                "condition": "$BCResult = 'Pos'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Sensitivities",
+                        "key": "Sens",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$BCResult = 'Pos'",
+                        "options": [
+                            {
+                                "value": "Amik",
+                                "valueLabel": "Amikacin\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Amox",
+                                "valueLabel": "Amoxicillin\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Amp",
+                                "valueLabel": "Ampicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AUG",
+                                "valueLabel": "Augmentin\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Azith",
+                                "valueLabel": "Azithromycin\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefep",
+                                "valueLabel": "Cefepime",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefox",
+                                "valueLabel": "Cefoxitin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefpod",
+                                "valueLabel": "Cefpodoxime\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Ceftaz",
+                                "valueLabel": "Ceftazidime",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Ceftriax",
+                                "valueLabel": "Ceftriaxone",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cipro",
+                                "valueLabel": "Ciprofloxacin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Chlor",
+                                "valueLabel": "Chloramphenicol\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Clinda",
+                                "valueLabel": "Clindamycin\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Clox",
+                                "valueLabel": "Cloxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Coam",
+                                "valueLabel": "Co-amoxiclav\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CS",
+                                "valueLabel": "Colistin Sulphate\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cotrim",
+                                "valueLabel": "Cotrimoxazole",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Eryth",
+                                "valueLabel": "Erythromycin\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Gent",
+                                "valueLabel": "Gentamicin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Imip",
+                                "valueLabel": "Imipenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Mero",
+                                "valueLabel": "Meropenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Nitro",
+                                "valueLabel": "Nitrofurantoin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Oxa",
+                                "valueLabel": "Oxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Pen",
+                                "valueLabel": "Penicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Trim",
+                                "valueLabel": "Trimethaprim",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Vanc",
+                                "valueLabel": "Vancomycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NONE",
+                                "valueLabel": "None",
+                                "disabledOtherOptionsIfSelected": true,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "650fd882-18cf-475e-823b-fc3a763dd6c4",
+                "type": "form",
+                "title": "Other Blood Culture Sensitivity to Organism 1",
+                "ref": "Pos",
+                "condition": "$Sens = 'OTH'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Other Blood Culture organism1 is sensitivity to?",
+                        "key": "OtherBloodCulSen1",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$Sens = 'OTH'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "88bce8c6-3fe6-4690-8319-74f67319d012",
+                "type": "multi_select",
+                "title": "Resistances to organism 1",
+                "ref": "Pos",
+                "condition": "$BCResult = 'Pos'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Blood Culture Resistance Organism 1",
+                        "key": "Resistance",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$BCResult = 'Pos'",
+                        "options": [
+                            {
+                                "value": "Amik",
+                                "valueLabel": "Amikacin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Amox",
+                                "valueLabel": "Amoxicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Amp",
+                                "valueLabel": "Ampicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AUG",
+                                "valueLabel": "AUG",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Azith",
+                                "valueLabel": "Azithromycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefep",
+                                "valueLabel": "Cefepime",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefox",
+                                "valueLabel": "Cefoxitin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefpod",
+                                "valueLabel": "Cefpodoxime",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Ceftaz",
+                                "valueLabel": "Ceftazidine",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Ceftriax",
+                                "valueLabel": "Ceftriaxone",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cipro",
+                                "valueLabel": "Ciprofloxacin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Chlor",
+                                "valueLabel": "Chloramphenicol",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Clinda",
+                                "valueLabel": "Clindamycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "clox",
+                                "valueLabel": "Cloxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Coam",
+                                "valueLabel": "Co-Amoxiclav\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CS",
+                                "valueLabel": "Colistin Sulphate\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cotrim",
+                                "valueLabel": "Cotrimoxazole",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Eryth",
+                                "valueLabel": "Erythromycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Gent",
+                                "valueLabel": "Gentamicin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Imip",
+                                "valueLabel": "Imipenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Mero",
+                                "valueLabel": "Meropenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Nitro",
+                                "valueLabel": "Nitrofurantoin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Oxa",
+                                "valueLabel": "Oxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Pen",
+                                "valueLabel": "Penicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Trim",
+                                "valueLabel": "Trimethoprim",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Vanc",
+                                "valueLabel": "Vancomycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NONE",
+                                "valueLabel": "None",
+                                "disabledOtherOptionsIfSelected": true,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "161b6151-c151-4261-b0a7-b2ce7a3e4157",
+                "type": "form",
+                "title": "Other Resistant Antibiotics / Drugs to Organism 1",
+                "ref": "Pos",
+                "condition": "$Resistance = 'OTH'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Indicate other antibiotic/drug organism1 is resistant to?",
+                        "key": "OtherOrg1Resistance",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$Resistance = 'OTH'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "f2485176-1aeb-449a-afd3-6246f6da44de",
+                "type": "multi_select",
+                "title": "Blood Culture Sensitivities 2",
+                "ref": "Pos & 2orgs",
+                "condition": "$BCResult = 'Pos' and $OrgNo = '2'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Sensitivities2",
+                        "key": "Sens2",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$BCResult = 'Pos' and $OrgNo = '2'",
+                        "options": [
+                            {
+                                "value": "Amik",
+                                "valueLabel": "Amikacin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Amox",
+                                "valueLabel": "Amoxicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Amp",
+                                "valueLabel": "Ampicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AUG",
+                                "valueLabel": "Augmentin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Azith",
+                                "valueLabel": "Azithromycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefep",
+                                "valueLabel": "Cefepime",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefox",
+                                "valueLabel": "Cefoxitin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefpod",
+                                "valueLabel": "Cefpodoxime",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Ceftaz",
+                                "valueLabel": "Ceftazidine",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Ceftriax",
+                                "valueLabel": "Ceftriaxone",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cipro",
+                                "valueLabel": "Ciprofloxacin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Chlor",
+                                "valueLabel": "Chloramphenicol",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Clinda",
+                                "valueLabel": "Clindamycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Clox",
+                                "valueLabel": "Cloxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Coam",
+                                "valueLabel": "Co-amoxiclav\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CS",
+                                "valueLabel": "Colistin Sulphate\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cotrim\t",
+                                "valueLabel": "Cotrimoxzole",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Eryth",
+                                "valueLabel": "Erythromycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Gent",
+                                "valueLabel": "Gentamicin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Imip",
+                                "valueLabel": "Imipenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Mero",
+                                "valueLabel": "Meropenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Nitro",
+                                "valueLabel": "Nitrofurantoin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Oxa",
+                                "valueLabel": "Oxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Pen",
+                                "valueLabel": "Penicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Trim",
+                                "valueLabel": "Trimethoprim",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Vanc",
+                                "valueLabel": "Vancomycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NONE",
+                                "valueLabel": "None",
+                                "disabledOtherOptionsIfSelected": true,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "52d5d09a-d21c-462e-9ef7-85867e85b004",
+                "type": "form",
+                "title": "Other Blood Culture Sensitivity to Organism 2",
+                "ref": "Pos",
+                "condition": "$Sens2 = 'OTH'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Other Blood Culture organism2 is sensitivity to?",
+                        "key": "OtherBloodCulSen2",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$Sens2 = 'OTH'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "43281bcc-76c6-48bc-98ca-126417dfb04c",
+                "type": "multi_select",
+                "title": "Resistances to organism 2",
+                "ref": "Pos & 2orgs",
+                "condition": "$BCResult = 'Pos' and $OrgNo = '2'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Blood culture resistances (Org 2)",
+                        "key": "Resistance",
+                        "type": "multi_select",
+                        "dataType": "multi_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$BCResult = 'Pos' and $OrgNo = '2'",
+                        "options": [
+                            {
+                                "value": "Amik",
+                                "valueLabel": "Amikacin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Amox",
+                                "valueLabel": "Amoxicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Amp",
+                                "valueLabel": "Ampicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AUG",
+                                "valueLabel": "Augmentin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Azith",
+                                "valueLabel": "Azithromycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefep",
+                                "valueLabel": "Cefepime",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefox",
+                                "valueLabel": "Cefoxitin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cefpod",
+                                "valueLabel": "Cefpodoxime",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Caftaz",
+                                "valueLabel": "Ceftazidine",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Ceftriax",
+                                "valueLabel": "Ceftriaxone",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cipro",
+                                "valueLabel": "Ciprofloxacin\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Chlor",
+                                "valueLabel": "Chloramphenicol",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Clinda",
+                                "valueLabel": "Clindamycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Clox",
+                                "valueLabel": "Cloxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Coam",
+                                "valueLabel": "Co-amoxiclav\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "CS",
+                                "valueLabel": "Colistin Sulphide\t",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Cotrim",
+                                "valueLabel": "Cotrimoxazole",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Eryth",
+                                "valueLabel": "Erythromycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Gent",
+                                "valueLabel": "Gentamycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Imip",
+                                "valueLabel": "Imipenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Mero",
+                                "valueLabel": "Meropenem",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Nitro",
+                                "valueLabel": "Nitrofurantoin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Oxa",
+                                "valueLabel": "Oxacillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Pen",
+                                "valueLabel": "Penicillin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Trim",
+                                "valueLabel": "Trimethoprim",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "Vanc",
+                                "valueLabel": "Vancomycin",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "NONE",
+                                "valueLabel": "None",
+                                "disabledOtherOptionsIfSelected": true,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "screenId": "2db11b55-d22f-42e2-b974-2ff9ba9c2918",
+                "type": "form",
+                "title": "Other Resistant Antibiotics / Drugs to Organism 2",
+                "ref": "Pos",
+                "condition": "$Resistance = 'OTH'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Indicate other antibiotic/drug organism2 is resistant to?",
+                        "key": "OtherOrg2Resistance",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": "$Resistance = 'OTH'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "5a45e96f-23fb-40ea-818b-05c629d1513c",
+                "type": "form",
+                "title": "SIGNATURE",
+                "ref": "HcwID",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Healthcare worker ID",
+                        "key": "HcwID",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "5412799e-431c-4dfc-87af-9503405c8652",
+                "type": "form",
+                "title": "Well done for finishing the NeoTree!",
+                "ref": "Script End",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Datetime of completion",
+                        "key": "EndScriptDatetime",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "date_now",
+                        "maxValue": "date_now",
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            }
+        ]
+    }
+]

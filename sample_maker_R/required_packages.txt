@@ -1,0 +1,43 @@
+Neotree Sample Maker -- Required R Packages
+============================================
+
+CORE PIPELINE (base R only)
+----------------------------
+The core pipeline uses only base R.  No CRAN packages are needed for:
+
+  run_sample_maker.R           -- join, deduplicate, probabilistic match
+  run_subsample_maker.R        -- create subsamples (master or cleaned mode)
+  run_all.R                    -- batch runner
+  run_anonymizer.R             -- anonymise outputs
+  run_data_profiler.R          -- variable profile CSV + TXT
+
+All functions used (read.csv, write.csv, as.POSIXct, merge, paste, sprintf, etc.)
+belong to the base, utils, and tools packages, which ship with every standard
+R installation.
+
+The only CRAN package referenced for interactive RStudio use is rstudioapi,
+used solely to detect the script path when sourcing interactively.  It is
+wrapped in tryCatch and is NOT required when running via Rscript:
+
+  Rscript run_sample_maker.R
+  Rscript run_subsample_maker.R
+  Rscript run_anonymizer.R
+
+If running interactively in RStudio on the DSH, install:
+
+  install.packages("rstudioapi")
+
+
+RESEARCHER DATA PACKAGE (openxlsx required)
+--------------------------------------------
+run_subsample_user_dict.R requires the openxlsx CRAN package to write the
+combined Excel workbook (user dictionary + data profile).
+
+  install.packages("openxlsx")
+
+openxlsx depends only on base R packages plus the Rcpp compiler toolchain,
+which is available on all standard R installations.  It does not require Java.
+
+To verify openxlsx is available before running:
+
+  Rscript -e "library(openxlsx); cat('openxlsx OK\n')"

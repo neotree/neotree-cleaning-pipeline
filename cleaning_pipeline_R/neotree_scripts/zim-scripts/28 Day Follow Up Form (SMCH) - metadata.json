@@ -1,0 +1,1321 @@
+[
+    {
+        "scriptId": "9de01fe4-e18c-4051-83f6-90efa3354e13",
+        "title": "28 Day Follow Up Form (SMCH)",
+        "hospitalName": "Sally Mugabe Central Hospital",
+        "diagnoses": [],
+        "problems": [],
+        "screens": [
+            {
+                "screenId": "ae386630-eaac-489a-89d6-5618cf99e2ec",
+                "type": "form",
+                "title": "Mother & Baby IDs",
+                "ref": "Iden",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "NEOTREE ID",
+                        "key": "NUID",
+                        "type": "text",
+                        "dataType": "uid",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Mother's First Name",
+                        "key": "MotherFirstName",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Mother's Surname",
+                        "key": "MotherSurname",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Baby's Date of Birth",
+                        "key": "DOBTOB",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Age (Days & Hours)",
+                        "key": "Age",
+                        "type": "period",
+                        "dataType": "",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date & Time of Admission to facility",
+                        "key": "DateTimeAdmission",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date and Time of Discharge (or left department)",
+                        "key": "DateTimeDischarge",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Outcome",
+                        "key": "NeoTreeOutcome",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "DC",
+                                "valueLabel": "Discharged"
+                            },
+                            {
+                                "value": "NND",
+                                "valueLabel": "Died"
+                            },
+                            {
+                                "value": "ABS",
+                                "valueLabel": "Absconded"
+                            },
+                            {
+                                "value": "TRH",
+                                "valueLabel": "Transferred to other Hospital"
+                            },
+                            {
+                                "value": "TRO",
+                                "valueLabel": "Transferred to another ward (example: paediatric ward)"
+                            },
+                            {
+                                "value": "DAMA",
+                                "valueLabel": "Discharged against medical advice"
+                            },
+                            {
+                                "value": "STB",
+                                "valueLabel": "Stillbirth"
+                            },
+                            {
+                                "value": "BID",
+                                "valueLabel": "Brought in dead"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "3a82ab53-69bd-4790-8560-fb0cbf487f73",
+                "type": "single_select",
+                "title": "Baby's Current Condition",
+                "ref": "CurrCond",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "How is Your baby?",
+                        "key": "CurrCond",
+                        "type": "single_select",
+                        "dataType": "single_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "AlivWell",
+                                "valueLabel": "Alive & Well (Home)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AlivNotWell",
+                                "valueLabel": "Alive & Not Well (Home)",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "AlivAdmi",
+                                "valueLabel": "Alive & Admitted",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "PassAway",
+                                "valueLabel": "Passed Away",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ],
+                "items": [
+                    {
+                        "itemId": "8850d4c5-e2f0-420a-ab82-55e311d5b184",
+                        "key": "AlivWell",
+                        "value": "AlivWell",
+                        "label": "Alive & Well (Home)",
+                        "valueLabel": "Alive & Well (Home)",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "cc59a7cf-e775-43d7-8ab2-ef4701d6bc8c",
+                        "key": "AlivNotWell",
+                        "value": "AlivNotWell",
+                        "label": "Alive & Not Well (Home)",
+                        "valueLabel": "Alive & Not Well (Home)",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "02a03f3d-9c0e-42c2-8453-d1e74a0df1d9",
+                        "key": "AlivAdmi",
+                        "value": "AlivAdmi",
+                        "label": "Alive & Admitted",
+                        "valueLabel": "Alive & Admitted",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "bbbc5adf-8518-4dc4-badb-673bf5ff5e2c",
+                        "key": "PassAway",
+                        "value": "PassAway",
+                        "label": "Passed Away",
+                        "valueLabel": "Passed Away",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    }
+                ]
+            },
+            {
+                "screenId": "42ea4f8b-9a1e-462e-9019-d24a97bdad6d",
+                "type": "single_select",
+                "title": "Baby Has Passed Away",
+                "ref": "BabyPass",
+                "condition": "$CurrCond = 'PassAway'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Are They Ok to Continue with The Rest of The Questions?",
+                        "key": "BabyPass",
+                        "type": "single_select",
+                        "dataType": "single_select_option",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$CurrCond = 'PassAway'",
+                        "options": [
+                            {
+                                "value": "ContYes",
+                                "valueLabel": "Yes - They Can Continue",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "ContNo",
+                                "valueLabel": "No - They Can't Continue",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ],
+                "items": [
+                    {
+                        "itemId": "5121259e-7bfb-4179-81a0-c929d3ef0fff",
+                        "key": "ContYes",
+                        "value": "ContYes",
+                        "label": "Yes - They Can Continue",
+                        "valueLabel": "Yes - They Can Continue",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "e0040f09-01f3-42df-95df-027f1091a87b",
+                        "key": "ContNo",
+                        "value": "ContNo",
+                        "label": "No - They Can't Continue",
+                        "valueLabel": "No - They Can't Continue",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    }
+                ]
+            },
+            {
+                "screenId": "1a90fef6-6c78-4534-92bb-3a32058af6c3",
+                "type": "form",
+                "title": "Reasons for ending session",
+                "ref": "DetaQuit",
+                "condition": "$BabyPass = 'ContNo'",
+                "skipToCondition": "",
+                "skipToScreen": {
+                    "screenId": "bd9c8ca9-834c-4bb2-b2ea-eebb99300ea8",
+                    "position": 10
+                },
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Reasons for Ending Conversation",
+                        "key": "ReasQuit",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "A",
+                                "valueLabel": "Not Comfortable to Say"
+                            },
+                            {
+                                "value": "B",
+                                "valueLabel": "Open at Another Convenient Time"
+                            },
+                            {
+                                "value": "C",
+                                "valueLabel": "Other Reasons"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Other Reasons",
+                        "key": "OthReasQuit",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$ReasQuit = 'C'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "3dd89da1-ad5e-48f6-ae00-b42463b67735",
+                "type": "form",
+                "title": "Baby Death Details",
+                "ref": "DeatDeta",
+                "condition": "$BabyPass = 'ContYes'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Date of Death",
+                        "key": "DateTimeDeath",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Place of Death",
+                        "key": "PlacOfDeat",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Is The Cause of Death Known",
+                        "key": "CauseOfDeatKnow",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What Was The Cause of Death?",
+                        "key": "CauseDeath",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$CauseOfDeatKnow = 'True'",
+                        "options": [
+                            {
+                                "value": "An",
+                                "valueLabel": "Anaemia"
+                            },
+                            {
+                                "value": "BBA",
+                                "valueLabel": "Born before arrival"
+                            },
+                            {
+                                "value": "BI",
+                                "valueLabel": "Birth Trauma"
+                            },
+                            {
+                                "value": "Cong",
+                                "valueLabel": "Congenital Abnormality"
+                            },
+                            {
+                                "value": "CHD",
+                                "valueLabel": "Consider Congenital Heart Disease"
+                            },
+                            {
+                                "value": "Conv",
+                                "valueLabel": "Convulsions"
+                            },
+                            {
+                                "value": "Dhyd",
+                                "valueLabel": "Dehydration"
+                            },
+                            {
+                                "value": "DF",
+                                "valueLabel": "Feeding difficulty"
+                            },
+                            {
+                                "value": "DUM",
+                                "valueLabel": "Dumped baby"
+                            },
+                            {
+                                "value": "HIVLR",
+                                "valueLabel": "HIV low risk"
+                            },
+                            {
+                                "value": "HIVHR",
+                                "valueLabel": "HIV high risk"
+                            },
+                            {
+                                "value": "HIVU",
+                                "valueLabel": "HIV unknown"
+                            },
+                            {
+                                "value": "HypogAs",
+                                "valueLabel": "Hypoglycaemia (NOT symptomatic)"
+                            },
+                            {
+                                "value": "HypogSy",
+                                "valueLabel": "Hypoglycaemia (Symptomatic)"
+                            },
+                            {
+                                "value": "RiHypog",
+                                "valueLabel": "Hypoglycaemia risk"
+                            },
+                            {
+                                "value": "HIE",
+                                "valueLabel": "Birth Asphyxia/ Hypoxic Ischaemic Encephalopathy (HIE)"
+                            },
+                            {
+                                "value": "GSchis",
+                                "valueLabel": "Gastroschisis"
+                            },
+                            {
+                                "value": "MJ",
+                                "valueLabel": "Physiological Jaundice"
+                            },
+                            {
+                                "value": "LBW",
+                                "valueLabel": "Low Birth Weight (1500-2499g)"
+                            },
+                            {
+                                "value": "VLBW",
+                                "valueLabel": "Very Low Birth Weight (1000-1499g)"
+                            },
+                            {
+                                "value": "ExLBW",
+                                "valueLabel": "ExtremelyLow Birth Weight (<1000g)"
+                            },
+                            {
+                                "value": "PMA",
+                                "valueLabel": "Meconium aspiration (suspected)"
+                            },
+                            {
+                                "value": "MecEx",
+                                "valueLabel": "Meconium exposure (not symptomatic)"
+                            },
+                            {
+                                "value": "MiHypo",
+                                "valueLabel": "Mild Hypothermia"
+                            },
+                            {
+                                "value": "ModHypo",
+                                "valueLabel": "Moderate Hypothermia"
+                            },
+                            {
+                                "value": "SHypo",
+                                "valueLabel": "Severe Hypothermia"
+                            },
+                            {
+                                "value": "Hyperth",
+                                "valueLabel": "Hyperthermia"
+                            },
+                            {
+                                "value": "SEPS",
+                                "valueLabel": "Neonatal Sepsis"
+                            },
+                            {
+                                "value": "Risk",
+                                "valueLabel": "Risk factors for sepsis (asymptomatic baby)"
+                            },
+                            {
+                                "value": "NB",
+                                "valueLabel": "Normal baby"
+                            },
+                            {
+                                "value": "PN",
+                                "valueLabel": "Pneumonia / Bronchiolitis"
+                            },
+                            {
+                                "value": "Prem",
+                                "valueLabel": "Premature (32-36 weeks)"
+                            },
+                            {
+                                "value": "VPrem",
+                                "valueLabel": "Very Premature (28-31 weeks)"
+                            },
+                            {
+                                "value": "ExPrem",
+                                "valueLabel": "Extremely Premature (<28 weeks)"
+                            },
+                            {
+                                "value": "PremRD",
+                                "valueLabel": "Premature baby with Respiratory Distress"
+                            },
+                            {
+                                "value": "Safe",
+                                "valueLabel": "Safekeeping"
+                            },
+                            {
+                                "value": "TTN",
+                                "valueLabel": "Transient Tachypnoea of Newborn (TTN)"
+                            },
+                            {
+                                "value": "OTH",
+                                "valueLabel": "Other"
+                            },
+                            {
+                                "value": "Mac",
+                                "valueLabel": "Macrosomia (>4000g)"
+                            },
+                            {
+                                "value": "TermRD",
+                                "valueLabel": "Term with RD"
+                            },
+                            {
+                                "value": "DJ",
+                                "valueLabel": "Pathological Jaundice"
+                            },
+                            {
+                                "value": "sHIE",
+                                "valueLabel": "Suspected Hypoxic Ischaemic Encephalopathy"
+                            },
+                            {
+                                "value": "PJaundice",
+                                "valueLabel": "Prolonged Jaundice"
+                            },
+                            {
+                                "value": "CleftLip",
+                                "valueLabel": "Cleft lip"
+                            },
+                            {
+                                "value": "CleftRD",
+                                "valueLabel": "Cleft lip and/or palate with RD"
+                            },
+                            {
+                                "value": "CleftLipPalate",
+                                "valueLabel": "Cleft lip and/or palate"
+                            },
+                            {
+                                "value": "Omph",
+                                "valueLabel": "Omphalocele"
+                            },
+                            {
+                                "value": "Myelo",
+                                "valueLabel": "Myelomeningocele"
+                            },
+                            {
+                                "value": "CDH",
+                                "valueLabel": "Congenital Dislocation of the hip (CDH)"
+                            },
+                            {
+                                "value": "MiTalipes",
+                                "valueLabel": "Mild Talipes (club foot)"
+                            },
+                            {
+                                "value": "MoTalipes",
+                                "valueLabel": "Moderate Talipes (club foot)"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "If Other, What?",
+                        "key": "CauseDeathOther",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$CauseDeath = 'OTH'"
+                    },
+                    {
+                        "label": "Was Medical Help Sought?",
+                        "key": "MediHelp",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Where Did You Receive Medical Help?",
+                        "key": "MediHelpType",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$MediHelp = 'true'",
+                        "options": [
+                            {
+                                "value": "TradReli",
+                                "valueLabel": "Traditional/Religious Help"
+                            },
+                            {
+                                "value": "PolyHosp",
+                                "valueLabel": "Polyclinic/Hospital"
+                            },
+                            {
+                                "value": "Pharm",
+                                "valueLabel": "Pharmacy"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Which Poly-Clinic/ Hospital?",
+                        "key": "MediHelpWher",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$MediHelpType = 'PolyHosp'"
+                    },
+                    {
+                        "label": "Do you know the most recent weight? (in grams)",
+                        "key": "ReceWeigKnow",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes I Know"
+                            },
+                            {
+                                "value": "NS",
+                                "valueLabel": "Not Sure But Can Estimate"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No I Don't"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What was the most recent weight? (in grams)",
+                        "key": "ReceWeig",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$ReceWeigKnow = 'Y' or $ReceWeigKnow = 'NS'"
+                    },
+                    {
+                        "label": "Any Medications Given?",
+                        "key": "MediGive",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What Medication Was Given?",
+                        "key": "MediGiveType",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$MediGive = 'true'"
+                    },
+                    {
+                        "label": "Was The Baby Full Term or Pre-Term?",
+                        "key": "TermPre",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Full Term"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "Pre-Term"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "3347002a-9c2a-477b-ae19-0e502032e1bc",
+                "type": "checklist",
+                "title": "How is the baby being fed?",
+                "ref": "FeedAsse",
+                "condition": "$CurrCond = 'AlivWell'  or  $CurrCond = 'AlivNotWell'  or  $CurrCond = 'AlivAdmi' or $BabyPass = 'ContYes'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "FeedAsse",
+                        "key": "FeedAsse",
+                        "type": "checklist",
+                        "dataType": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$CurrCond = 'AlivWell'  or  $CurrCond = 'AlivNotWell'  or  $CurrCond = 'AlivAdmi' or $BabyPass = 'ContYes'",
+                        "options": [
+                            {
+                                "value": "",
+                                "valueLabel": "Formula",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "",
+                                "valueLabel": "Breast Milk",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "",
+                                "valueLabel": "Water",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "",
+                                "valueLabel": "Cooking Oil",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            },
+                            {
+                                "value": "",
+                                "valueLabel": "Solids/ Porridge",
+                                "disabledOtherOptionsIfSelected": false,
+                                "forbidWIth": []
+                            }
+                        ]
+                    }
+                ],
+                "items": [
+                    {
+                        "itemId": "c4d21c4c-b90e-49d5-8c47-51ce6bd261e8",
+                        "key": "Form",
+                        "value": "",
+                        "label": "Formula",
+                        "valueLabel": "Formula",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "bbe4f9d8-bc06-4bfb-b755-d100b1c65ea8",
+                        "key": "BresMilk",
+                        "value": "",
+                        "label": "Breast Milk",
+                        "valueLabel": "Breast Milk",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "59d07ecd-595d-4166-9904-bb57e7ea21c9",
+                        "key": "Wate",
+                        "value": "",
+                        "label": "Water",
+                        "valueLabel": "Water",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "a18b0372-26a1-44f4-8d96-61cbbc8afa01",
+                        "key": "CookOil",
+                        "value": "",
+                        "label": "Cooking Oil",
+                        "valueLabel": "Cooking Oil",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "369f546b-4b45-4c01-8530-8524ccebeac7",
+                        "key": "SoliPorr",
+                        "value": "",
+                        "label": "Solids/ Porridge",
+                        "valueLabel": "Solids/ Porridge",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    }
+                ]
+            },
+            {
+                "screenId": "67a70982-8338-4a6e-b184-25c8e2b51641",
+                "type": "form",
+                "title": "Assessment (For All Infants)",
+                "ref": "AsseForAll",
+                "condition": "$CurrCond = 'AlivWell'  or  $CurrCond = 'AlivNotWell'  or  $CurrCond = 'AlivAdmi'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "What is the baby being treated for? (IF STILL ADMITTED)",
+                        "key": "ReasAdmi",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$CurrCond = 'AlivAdmi'"
+                    },
+                    {
+                        "label": "Do you know the most recent weight? (in grams)",
+                        "key": "ReceWeigKnow",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes I Know"
+                            },
+                            {
+                                "value": "NS",
+                                "valueLabel": "Not Sure But Can Estimate"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No I Don't"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What was the most recent weight? (in grams)",
+                        "key": "ReceWeig",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$ReceWeigKnow = 'Y' or $ReceWeigKnow = 'NS'"
+                    },
+                    {
+                        "label": "Any illnesses encountered in baby? (AFTER DISCHARGE)",
+                        "key": "AnyIlln",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$CurrCond = 'AlivWell'  or  $CurrCond = 'AlivNotWell'",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What Illnesses?",
+                        "key": "NameIlln",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$AnyIlln = 'True'"
+                    },
+                    {
+                        "label": "Was Medical Help Sought?",
+                        "key": "MediHelp",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$AnyIlln = 'true'",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Where Did You Receive Medical Help?",
+                        "key": "MediHelpType",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$MediHelp = 'true' or $CurrCond = !'PassAway'",
+                        "options": [
+                            {
+                                "value": "TradReli",
+                                "valueLabel": "Traditional/ Religious Help"
+                            },
+                            {
+                                "value": "PolyHosp",
+                                "valueLabel": "Polyclinic/ Hospital"
+                            },
+                            {
+                                "value": "Pharm",
+                                "valueLabel": "Pharmacy"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Which Poly-Clinic/Hospital",
+                        "key": "MediHelpWher",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$MediHelpType = 'PolyHosp' or $CurrCond = !'PassAway'"
+                    },
+                    {
+                        "label": "Any Hospitalizations?",
+                        "key": "Hosp",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$AnyIlln = 'true'",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Where was the baby Hospitalized?",
+                        "key": "NameHosp",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$Hosp = 'True'"
+                    },
+                    {
+                        "label": "Any Medications Given?",
+                        "key": "MediGive",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$CurrCond = !'PassAway' or $CurrCond = 'AlivWell'  or  $CurrCond = 'AlivNotWell'  or  $CurrCond = 'AlivAdmi'",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What Medication Was Given?",
+                        "key": "MediGiveType",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$MediGive = 'true' or $CurrCond = !'PassAway'"
+                    },
+                    {
+                        "label": "Was The Baby Full Term or Pre-Term?",
+                        "key": "TermPre",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Full Term"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "Pre-Term"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "fe01d4db-78fb-49ac-bf64-136323fd3a72",
+                "type": "form",
+                "title": "Assessment (Pre- Term infants only)",
+                "ref": "AssePre",
+                "condition": "$TermPre = 'False'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Has your infant attended the preterm clinic?",
+                        "key": "PreTermClinAtte",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "When Did They Attend Pre-Term Clinic?",
+                        "key": "DatePreTermClinAtte",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$PreTermClinAtte = 'True'"
+                    },
+                    {
+                        "label": "Are they receiving supplements?",
+                        "key": "AnySupp",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What Supplements?",
+                        "key": "AnySuppType",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$AnySupp = 'True'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "3c035d3a-973b-47d6-a75e-2066ad9894f8",
+                "type": "form",
+                "title": "Assessment (Term Infants Only)",
+                "ref": "AsseTerm",
+                "condition": "$TermPre = 'True'",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Did infant attend Day 3 check up?",
+                        "key": "Day3Chec",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Did Infant attend Day 7 check up?",
+                        "key": "Day7Chec",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "True",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "False",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Do you know the weight at Day 7 ? (in grams)",
+                        "key": "Day7WeigKnow",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes I Know"
+                            },
+                            {
+                                "value": "NS",
+                                "valueLabel": "Not Sure But Can Estimate"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No I Don't"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What was the weight at day 7? (in grams)",
+                        "key": "Day7Weig",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": "$Day7WeigKnow = 'Y' or $Day7WeigKnow = 'NS'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "bd9c8ca9-834c-4bb2-b2ea-eebb99300ea8",
+                "type": "management",
+                "title": "END OF SCRIPT",
+                "ref": "end",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": {
+                    "actionText": "",
+                    "contentText": "",
+                    "infoText": "",
+                    "title": "END OF SCRIPT",
+                    "title1": "",
+                    "title2": "",
+                    "title3": "",
+                    "title4": "",
+                    "text1": "",
+                    "text2": "",
+                    "text3": "",
+                    "instructions": "",
+                    "instructions2": "",
+                    "instructions3": "",
+                    "instructions4": "",
+                    "notes": "",
+                    "refKey": "",
+                    "images": {
+                        "contentTextImage": null,
+                        "image1": null,
+                        "image2": null,
+                        "image3": null
+                    }
+                },
+                "fields": [],
+                "items": []
+            }
+        ]
+    }
+]

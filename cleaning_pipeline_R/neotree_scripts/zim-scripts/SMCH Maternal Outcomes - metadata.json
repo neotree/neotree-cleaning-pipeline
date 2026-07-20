@@ -1,0 +1,299 @@
+[
+    {
+        "scriptId": "9df77822-b8ff-43e6-8c3a-c455e9cf4a02",
+        "title": "SMCH Maternal Outcomes ",
+        "hospitalName": "Sally Mugabe Central Hospital",
+        "diagnoses": [],
+        "problems": [],
+        "screens": [
+            {
+                "screenId": "9fe562f5-1af9-4e0d-ad9e-5ff88e741ed7",
+                "type": "form",
+                "title": "NEOTREE OUTCOME",
+                "ref": "All",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "NeoTree ID",
+                        "key": "UID_MO",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Mother''s Initials",
+                        "key": "MothInitials",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Age of Mother (yrs)",
+                        "key": "MatAgeYrs",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "4",
+                        "maxValue": "80",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date of Admission",
+                        "key": "DateAdmission",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Date of Birth",
+                        "key": "BirthDateDis",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": true,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Gender",
+                        "key": "SexDis",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "F",
+                                "valueLabel": "Female"
+                            },
+                            {
+                                "value": "M",
+                                "valueLabel": "Male"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unsure"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Gestation",
+                        "key": "Gestation",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "45",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Mode of Delivery",
+                        "key": "ModeDelivery",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "1",
+                                "valueLabel": "Spontaneous Vaginal Delivery"
+                            },
+                            {
+                                "value": "6",
+                                "valueLabel": "Breech extraction (vaginal)"
+                            },
+                            {
+                                "value": "2",
+                                "valueLabel": "Vacuum extraction"
+                            },
+                            {
+                                "value": "3",
+                                "valueLabel": "Forceps extraction"
+                            },
+                            {
+                                "value": "4",
+                                "valueLabel": "Elective Caesarean Section (ELCS)"
+                            },
+                            {
+                                "value": "5",
+                                "valueLabel": "Emergency Caesarean Section (EMCS)"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Did the baby require immediate resuscitation?",
+                        "key": "Resus",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What was the Apgar score at 1 minute?",
+                        "key": "Apgar1",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "10",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Did the baby receive Delayed Cord Clamping?",
+                        "key": "DCC",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes (cord clamped MORE than 1 min after birth)"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No (cord clamped LESS than 1 min after birth)"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Did the baby receive early skin to skin care within the first hour of life?",
+                        "key": "S2S",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            },
+                            {
+                                "value": "U",
+                                "valueLabel": "Unknown"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Outcome",
+                        "key": "NeoTreeOutcome",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "LB",
+                                "valueLabel": "Live Birth"
+                            },
+                            {
+                                "value": "ENND",
+                                "valueLabel": "Early Neonatal Death"
+                            },
+                            {
+                                "value": "STBM",
+                                "valueLabel": "Stillbirth Macerated"
+                            },
+                            {
+                                "value": "STBF",
+                                "valueLabel": "Stillbirth Fresh"
+                            },
+                            {
+                                "value": "MISC",
+                                "valueLabel": "Miscarriage - born with no signs of life at under 22 weeks gestation"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Birth weight (g)",
+                        "key": "BWTDis",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "6000",
+                        "condition": ""
+                    },
+                    {
+                        "label": "MatOutcome",
+                        "key": "MatOutcome",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "D",
+                                "valueLabel": "Died"
+                            },
+                            {
+                                "value": "S",
+                                "valueLabel": "Survived"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            }
+        ]
+    }
+]
