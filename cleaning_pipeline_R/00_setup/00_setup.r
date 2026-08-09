@@ -237,6 +237,11 @@ if (is.null(NEOTREE_SCRIPTS_DIR)) {
 }
 NEOTREE_SCRIPTS_DIR <- normalizePath(NEOTREE_SCRIPTS_DIR, mustWork = FALSE)
 
+# -- Pipeline version ----------------------------------------------------------
+# Stamped into every per-run log so a cleaned output can always be traced back to
+# the code that produced it.  Bump this together with CHANGELOG.md on release.
+PIPELINE_VERSION <- "1.1.0"
+
 # -- Logging -------------------------------------------------------------------
 log_appender(appender_tee(file = file.path(RUN_OUTPUT_DIR, paste0(file_stem, ".log"))))
 log_threshold(INFO)
@@ -244,8 +249,15 @@ log_threshold(INFO)
 # not handle sprintf-style %s / %d placeholders -- it pastes extra arguments
 # rather than substituting them.  Explicitly restore sprintf behaviour here so
 # all log_info("text %s", value) calls throughout the pipeline work correctly.
+#
+# IMPORTANT -- the logger runs sprintf() on every message it is given.  Never
+# hand it a string you have already formatted yourself: log_warn(sprintf(...))
+# formats twice, so any literal % surviving the first pass (from %%, or from a
+# %s filled with a data value containing %) throws "too few arguments" and
+# aborts the module.  Always pass the format string and its arguments
+# separately: log_warn("... %d of %d (%.1f%%) ...", a, b, pct).
 log_formatter(formatter_sprintf)
-log_info("Pipeline started.")
+log_info("Pipeline started (cleaning pipeline v%s).", PIPELINE_VERSION)
 
 # -- Normalise inputs ----------------------------------------------------------
 COUNTRY <- toupper(trimws(COUNTRY))

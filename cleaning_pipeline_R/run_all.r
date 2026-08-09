@@ -244,7 +244,7 @@ PIPELINE_GLOBALS <- c(
   "df_deduped", "df_num", "df_bool", "df_cat", "df_dt",
   "df_clean", "df_harmonised", "df_na_coded",
   # Timing
-  "pipeline_start",
+  "pipeline_start", "PIPELINE_VERSION",
   # helpers defined in 00_setup.r
   "cols_of_type"
 )
@@ -278,12 +278,17 @@ for (i in seq_along(run_plan)) {
   NEOTREE_SCRIPTS_DIR <<- NULL
 
   # -- Run the pipeline --------------------------------------------------------
-  run_ok <- tryCatch({
+  # The error message is CAPTURED, not just printed: a failure part-way through
+  # the pipeline (e.g. a module aborting before it writes its outputs) is
+  # otherwise invisible once the batch scrolls past, and the run looks clean.
+  run_err <- NA_character_
+  run_ok  <- tryCatch({
     source("run_pipeline.r")
     TRUE
   }, error = function(e) {
+    run_err <<- conditionMessage(e)
     cat(sprintf("\n  [ERROR] Pipeline failed for %s:\n  %s\n\n",
-                p$csv_filepath, conditionMessage(e)))
+                p$csv_filepath, run_err))
     FALSE
   })
 
@@ -292,7 +297,8 @@ for (i in seq_along(run_plan)) {
     country = p$country,
     dataset = p$dataset,
     source  = p$data_source,
-    ok      = run_ok
+    ok      = run_ok,
+    error   = run_err
   )))
 
   # -- Clean up globals so the next run starts from a clean slate --------------
@@ -313,13 +319,18 @@ cat(sprintf(
   strrep("=", 72), n_ok, length(results), n_fail, elapsed, strrep("=", 72)
 ))
 
-if (n_fail > 0) {
-  cat("Failed files:\n")
-  for (r in results[!sapply(results, `[[`, "ok")]) {
-    cat(sprintf("  [FAIL] %s  (%s x %s x %s)\n",
-                r$file, r$country, r$source, r$dataset))
+failures <- results[!sapply(results, `[[`, "ok")]
+
+if (length(failures) > 0) {
+  cat("Failure summary:\n")
+  for (r in failures) {
+    cat(sprintf("  [FAIL] %s\n         Dataset: %s x %s x %s\n         Error  : %s\n",
+                r$file, r$country, r$source, r$dataset,
+                if (is.na(r$error)) "(no message captured)" else r$error))
   }
   cat("\n")
+} else {
+  cat("Failure summary: none - every file completed the full pipeline.\n\n")
 }
 
 if (n_ok > 0) {

@@ -95,10 +95,10 @@ validate_categorical <- function(df, cfg, report_filepath = NULL) {
       if (n_del > 0) {
         df_cat[[col]][mask] <- NA_character_
         deleted_count <- deleted_count + n_del
-        log_info(sprintf(
+        log_info(
           "  validate_categorical: %d disallowed value(s) removed from '%s'.",
           n_del, col
-        ))
+        )
       }
     }
   }
@@ -143,11 +143,11 @@ validate_categorical <- function(df, cfg, report_filepath = NULL) {
   df_cat   <- dplyr::distinct(df_cat)
   n_dedup  <- n_before - nrow(df_cat)
 
-  log_info(sprintf(
+  log_info(
     paste("validate_categorical: %d values standardised | %d disallowed removed |",
           "%d missing normalised | %d duplicates removed."),
     standardised_count, deleted_count, missing_norm_count, n_dedup
-  ))
+  )
 
   # Optional report
   if (!is.null(report_filepath) && nzchar(report_filepath)) {

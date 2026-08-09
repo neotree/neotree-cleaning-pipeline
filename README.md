@@ -1,5 +1,9 @@
 # Neotree Cleaning Pipeline
 
+**Version 1.1.0** — see [CHANGELOG.md](CHANGELOG.md). Each run also stamps the
+version into its own log, so a cleaned dataset can be traced back to the code
+that produced it.
+
 R pipeline for cleaning and validating neonatal clinical data collected through
 [Neotree](https://www.neotree.org) deployments in **Malawi** and **Zimbabwe**.
 
@@ -142,17 +146,24 @@ documentation set at once, or to read and print it as one document.
 | Understand one module | the `README` in that module's folder |
 | Search everything at once | `MANUAL.txt` |
 
-### Known issues in the source data — read before analysing
+### Scope of this documentation
 
-`MANUAL.txt` **Part IV** is a catalogue of known variable-level problems in the
-raw Neotree exports themselves, not in this code. Most stem from one cause:
-several versions of the Neotree app have been deployed at each site over the
-years, and the database export concatenates records from all of them, so a
-single column can carry more than one encoding of the same clinical concept.
+This repository and its manual document the **code only** — what each module
+does, why, and how to run it. They contain no Neotree study data and no
+catalogue of data-quality findings.
 
-The catalogue states, per variable, what the problem is, whether the pipeline
-already fixes it, and what an analyst must still handle. Read it before using
-any cleaned dataset for analysis — several issues survive cleaning by design.
+One design consequence is worth stating up front, because it shapes how the
+pipeline behaves: several versions of the Neotree app have been deployed at each
+site over the years and the database export concatenates records from all of
+them, so a single column can carry more than one encoding of the same clinical
+concept. The pipeline harmonises what it can resolve from the data dictionaries
+and **leaves anything ambiguous untouched and logged** rather than guessing — so
+cleaned output can still contain unresolved legacy values by design. Check the
+per-run module reports in `output/<file_stem>/reports/` to see exactly what was
+harmonised and what was left alone on your data.
+
+Known issues in the source data itself are maintained separately by the Neotree
+team and are not distributed with this repository.
 
 ---
 

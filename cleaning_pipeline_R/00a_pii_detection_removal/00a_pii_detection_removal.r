@@ -383,9 +383,11 @@ log_info(
   "Module 00a complete. De-identified dimensions: %d rows x %d cols.",
   nrow(df_raw_deidentified), ncol(df_raw_deidentified)
 )
-log_warn(paste(
-  "REMINDER: Quasi-identifier columns (village, district, tribe, ethnicity,",
-  "religion, address, matagedate) have been FLAGGED but NOT removed.",
-  sprintf("Review %s before sharing this dataset.",
-          if (!is.null(report_path)) report_path else "the PII audit report")
-))
+log_warn(
+  paste(
+    "REMINDER: Quasi-identifier columns (village, district, tribe, ethnicity,",
+    "religion, address, matagedate) have been FLAGGED but NOT removed.",
+    "Review %s before sharing this dataset."
+  ),
+  if (!is.null(report_path)) report_path else "the PII audit report"
+)

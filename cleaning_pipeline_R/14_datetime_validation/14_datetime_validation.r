@@ -102,11 +102,11 @@ validate_datetime <- function(df, cfg, report_filepath = NULL) {
 
     if (n_invalid > 0) {
       bad_examples <- unique(raw[is.na(parsed) & !is.na(raw) & raw != ""])
-      log_info(sprintf(
+      log_info(
         "  validate_datetime: '%s' - %d invalid value(s) -> NA. Examples: [%s]",
         col, n_invalid,
         paste(head(bad_examples, 3), collapse = " | ")
-      ))
+      )
     }
   }
 
@@ -115,10 +115,10 @@ validate_datetime <- function(df, cfg, report_filepath = NULL) {
   df_dt    <- dplyr::distinct(df_dt, uid, facility, .keep_all = TRUE)
   n_dedup  <- n_before - nrow(df_dt)
 
-  log_info(sprintf(
+  log_info(
     "validate_datetime: %d parsed successfully | %d invalid -> NA | %d duplicates removed.",
     converted_count, invalid_count, n_dedup
-  ))
+  )
 
   # Optional report
   if (!is.null(report_filepath) && nzchar(report_filepath)) {

@@ -90,6 +90,22 @@ source("run_all.r")
 recognised file automatically.  It prints a run plan before starting and a success/fail
 summary at the end.
 
+A file that fails does **not** stop the batch — the runner records the error and moves on
+to the next file.  The end-of-run **failure summary** lists every failed file with its
+dataset and the actual error message, so a per-file failure cannot be lost in the scroll:
+
+```
+Failure summary:
+  [FAIL] input/mwi_db_dhis2_maternal_outcomes_202608041252.csv
+         Dataset: MWI x database x dhis2_maternal_outcomes
+         Error  : too few arguments
+```
+
+When every file completes it prints
+`Failure summary: none - every file completed the full pipeline.`
+Always check this line before treating a batch as successful — a missing `*_cleaned.csv`
+is otherwise easy to overlook.
+
 **Optional filters** (edit the top of `run_all.r`):
 
 ```r

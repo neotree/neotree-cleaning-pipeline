@@ -5,7 +5,8 @@
   A single-file compilation of every documentation file shipped with the
   Neotree data cleaning pipeline.
 
-  Generated : 20 July 2026
+  Version   : 1.1.0  (see CHANGELOG.md)
+  Generated : 9 August 2026
   Source    : the README and documentation files in cleaning_pipeline_R/,
               reproduced here in full.
 
@@ -33,12 +34,10 @@ The two are loosely coupled: this pipeline writes cleaned datasets to
 output/, and the sample maker reads whatever it is given. Neither requires
 the other to be present to run.
 
-PART IV is different in kind from the rest. It is not module documentation
-but a catalogue of known problems in the *source data itself* -- the raw
-Neotree exports -- caused by successive versions of the Neotree app storing
-the same clinical concept in different ways. Read it before analysing any
-cleaned or master dataset: it tells you which issues the pipeline already
-fixes, and which ones your analysis script still has to handle.
+This manual documents the CODE ONLY -- what each module does and how to run
+it. It deliberately contains no Neotree study data, no site-level findings and
+no catalogue of data-quality issues; those are maintained separately by the
+Neotree team and are not part of this repository.
 
 HOW TO NAVIGATE
 ================================================================================
@@ -101,8 +100,6 @@ PART III -- CLEANING PIPELINE: MODULE REFERENCE (00 - 16)
   3.20  Module 16 -- NA reason coding (overview)
   3.21  Module 16 -- NA reason coding (detailed reference)
 
-PART IV -- APPENDIX: KNOWN ISSUES IN THE SOURCE DATA
-  4.1   Neotree variable issues catalogue
 
 
 
@@ -564,9 +561,10 @@ source("00_build_dictionary/validate_dictionaries.r")
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v8 | 2026-07-10 | **Harmonised maternal-age variable implemented (Modules 11 + 15).** Maternal age is captured on the deliveries form in two fields that no single column cleans: `matageyrs` (manual whole years, both sites, range 9–60) and `matagedate` (auto-calculated from DOB, KCH/MWI only, **stored in hours** — divide by 8766 = 365.25×24 for years). **Module 11** now derives `mat_age_date_years = round(matagedate / 8766)` and applies the same 9–60 plausibility filter (out-of-range → NA, counted in the Module 11 report), leaving raw `matagedate` untouched; the existing `matageyrs` hours-rescue divisor was standardised 8760 → **8766** to match. **Module 15** `derive_maternal_age_columns()` (after suffix stripping, before output, mirroring `derive_weight_columns()`) adds **`mat_age_years_combined = coalesce(matageyrs, mat_age_date_years)`** (manual field wins) and provenance **`mat_age_source ∈ {matageyrs, matagedate_derived, none}`**, emitted only where a source column is present so ZIM (matageyrs only) and MWI (both) share one schema. **Disagreement guard:** rows where both fields are present and differ by >1 year are counted and logged (never overwritten) → `15b_maternal_age_summary.txt`. Implausible ages flow through the standard machinery: filtered in Module 11, NA-reason-coded **-8 (invalid/removed)** by Module 16 on the source columns. **Verified (25 June extract):** SMCH/ZIM combined 25,816 (21.0%, all `matageyrs`); KCH/MWI combined 3,636 (25.7%) = 3,009 `matageyrs` + 627 `matagedate_derived` (15 implausible dropped), with 16/24 overlapping rows (66.7%) disagreeing >1yr and flagged. High baseline missingness (~74–85%) is a collection-timing artefact (field added to the form 12 Nov 2024 KCH / 3 Jul 2025 SMCH). **NB:** verified by logic checks + a Python dry-run on the cleaned extracts; run `Rscript` end-to-end before a production run. See `readme.md` → "Maternal age". |
+| v8 | 2026-08-09 | **Logging fix — Module 15 was silently aborting for two MWI maternity datasets.** `derive_maternal_age_columns()` built its disagreement warning with its own `sprintf()` and handed the finished string to `log_warn()`, but `00_setup.r` sets `log_formatter(formatter_sprintf)`, so the logger formatted it a second time: the first pass renders `%.1f%%` as a literal percent sign (e.g. `(12.5%);`), the second hits `%)` and R throws `Error: too few arguments`. **`mwi_*_combined_maternity_outcomes` and `mwi_*_dhis2_maternal_outcomes` therefore produced no `*_cleaned.csv`, no `*_cleaned.rds` and no `15b_maternal_age_summary.txt` on every previous run** — a data-availability failure, not a correctness one (no value was ever computed wrongly). Only these two datasets were affected: the failing branch needs both maternal-age sources non-NA on the same row and disagreeing by >1 year, and `matagedate` is MWI-only and only on the maternity forms. Fixed by passing the format string and its arguments to the logger instead of pre-formatting. **The same construction was normalised at all 21 `log_*(sprintf(...))` sites pipeline-wide**, two of which were live rather than latent hazards because they interpolate rejected raw data values into the message (`12_boolean_validation.r:70`, `14_datetime_validation.r:105` — any `%` in a source cell would have aborted those modules identically). Rule going forward: never hand a pre-formatted string to `log_info`/`log_warn`/`log_error`/`log_debug`; pass the format string plus arguments and let the logger format once. **`run_all.r`** now captures `conditionMessage(e)` per file and prints a failure summary (file, dataset, error) at the end — the missing piece that let this go unnoticed. **Verified:** a full batch run completed for every input file, each reaching `Module 15 complete`. See `how_to_run.md` → "Failure summary". |
+| v8 | 2026-07-10 | **Harmonised maternal-age variable implemented (Modules 11 + 15).** Maternal age is captured on the deliveries form in two fields that no single column cleans: `matageyrs` (manual whole years, both sites, range 9–60) and `matagedate` (auto-calculated from DOB, MWI only, **stored in hours** — divide by 8766 = 365.25×24 for years). **Module 11** now derives `mat_age_date_years = round(matagedate / 8766)` and applies the same 9–60 plausibility filter (out-of-range → NA, counted in the Module 11 report), leaving raw `matagedate` untouched; the existing `matageyrs` hours-rescue divisor was standardised 8760 → **8766** to match. **Module 15** `derive_maternal_age_columns()` (after suffix stripping, before output, mirroring `derive_weight_columns()`) adds **`mat_age_years_combined = coalesce(matageyrs, mat_age_date_years)`** (manual field wins) and provenance **`mat_age_source ∈ {matageyrs, matagedate_derived, none}`**, emitted only where a source column is present so ZIM (matageyrs only) and MWI (both) share one schema. **Disagreement guard:** rows where both fields are present and differ by >1 year are counted and logged (never overwritten) → `15b_maternal_age_summary.txt`. Implausible ages flow through the standard machinery: filtered in Module 11, NA-reason-coded **-8 (invalid/removed)** by Module 16 on the source columns. **Verified** on a full extract for both countries: the coalesce, the provenance labelling and the disagreement counter all behave as specified, and rows where the two sources disagree are flagged rather than overwritten. Note that maternal age was added to the deliveries form partway through deployment, so baseline missingness on that form is a collection-timing artefact rather than data loss — check the field’s start date for your site before interpreting completeness. **NB (superseded 2026-08-09):** this feature was originally verified by logic checks + a Python dry-run only, never end-to-end in R — which is how the logging defect in the disagreement-warning branch (see the 2026-08-09 entry) shipped undetected and suppressed all output for the two MWI maternity datasets. It has since been run end-to-end in R and verified. See `readme.md` → "Maternal age". |
 | v8 | 2026-06-24 | **Canonical weight columns implemented (Module 15).** Investigation of the apparent KCH 2025 birth-weight "collapse" found it was a form-version column handover, not data loss. Three distinct weight concepts and their column mappings were established: birth weight = `birthweight`/`bwt`/`bwtdis` (same concept; `bwtdis` is birth weight despite its name; identical where overlapping, max diff 0 g); admission weight = `admissionweight` (distinct); discharge/last-recorded weight = `dischweight` + `datedischweight` (distinct). MWI moved maternal birth weight from `bwtdis` to `birthweight` at 2025; MWI discharges lacked a birth-weight field before ~`script_version` 137 (2023); ZIM keeps maternal birth weight in `bwtdis`. **Implemented:** `derive_weight_columns()` in Module 15 (after suffix stripping, before output) adds `birthweight_g = coalesce(birthweight, bwt, bwtdis)` (always emitted, NA where no source), `admission_weight_g`, and `discharge_weight_g` (emitted where their source is present), keeping originals untouched. Includes a >1 g disagreement guard (warns; verified 0 disagreements on the 10 June extract) and an idempotent defensive kg→g guard (values ≤20 treated as kg). Verified: combined maternity `birthweight_g` coverage 12,215/14,090 vs ~3,514 from `birthweight` alone. **Dictionary registration done:** the three derived columns are registered via `DERIVED_VARIABLES` in `00_build_dictionary.r` (documentation-only rows; `raw_value_column` = NA keeps them out of the cleaning feature lists), so they appear in the per-table dictionaries and the 00d user dictionary on the next rebuild. **Sample-maker dependency unchanged:** `prob_matcher.R` keys on the literal `birthweight` column — preserved (originals untouched), so the probabilistic join is unaffected. See `readme.md` → "Weight variables". |
-| v8 | 2026-06-12 | **Categorical value harmonisation (decision-free layer).** Audit of the 10 June 2026 extract found 292 categorical variables emitting values that were not reduced to dictionary canonical codes (~1.12M cell values; case variants, legacy booleans, multi-select case, and historical codes from older form versions). Record-level split vs the full multi-version data-key option set: **51.7% mechanical / 42.7% unresolved legacy / 5.6% semantic.** Changes: (1) **Module 04** `clean_values_using_dict` rewritten to emit canonical codes via case-insensitive code/label matching, raw->canonical conversion, legacy boolean->`Y`/`N` on yes/no fields, and multi-select token case-folding -- **unresolved values are left untouched (never guessed) and logged**. (2) **`00_setup.r`** `value_map_list` gained `canonical_codes` and `code_to_canonical`. (3) **`00_build_dictionary.r`** ValueMaps now augmented with the **union of option codes/labels across all non-deleted data-key versions** (rescues legacy options such as `fontanelle Flat`, `resus` interventions, `ttv` dose codes). (4) **`og_dictionaries` dependency removed** from `00d_build_user_dictionary.r`; the dictionary chain now builds solely from the downloaded web-editor data keys. **Information-preservation guarantee (two protections):** the harmonisation is lossless -- it never merges distinct categories -- because (a) **exact existing codes are always preserved** before any case logic runs (so e.g. `curprob` `PN`=Pneumonia and `Pn`=Pain are never folded together), and (b) a **per-key ambiguity guard** disables case-folding for the 15 variables whose codes/labels differ only by case but mean different things (`tribe`, `curprob`, `hcwsig`, `plan`, ...), leaving stray-case values unresolved rather than guessed (the guard removed zero legitimate changes). The ~239,000 cell changes are all representational normalisations (encoding/case/label->code/multi-select case) of the same value. **Caveat:** these protections guarantee no *merging* of distinct categories, but the *correctness* of each mapping rests on the `ValueMaps` dictionary being right -- a wrong dictionary row is faithfully propagated, so the dictionaries (especially union- and `VALUEMAP_PATCHES`-added rows) should be reviewed as release QA. Genuinely ambiguous legacy values (e.g. `inorout` yes/no vs `In`/`Out`, `modedelivery` numeric `1`, `admittedfrom` `ER`) are parked for clinical-team confirmation -- the per-run Module 04 report lists them under "Unresolved values left untouched", and `MANUAL.txt` (Appendix: Variable Issues Catalogue) records the known cases. **NB:** these edits were verified by static/logic checks but not yet executed in R -- validate with `Rscript` before a production run. |
+| v8 | 2026-06-12 | **Categorical value harmonisation (decision-free layer).** Audit of the 10 June 2026 extract found 292 categorical variables emitting values that were not reduced to dictionary canonical codes (~1.12M cell values; case variants, legacy booleans, multi-select case, and historical codes from older form versions). Record-level split vs the full multi-version data-key option set: **51.7% mechanical / 42.7% unresolved legacy / 5.6% semantic.** Changes: (1) **Module 04** `clean_values_using_dict` rewritten to emit canonical codes via case-insensitive code/label matching, raw->canonical conversion, legacy boolean->`Y`/`N` on yes/no fields, and multi-select token case-folding -- **unresolved values are left untouched (never guessed) and logged**. (2) **`00_setup.r`** `value_map_list` gained `canonical_codes` and `code_to_canonical`. (3) **`00_build_dictionary.r`** ValueMaps now augmented with the **union of option codes/labels across all non-deleted data-key versions** (rescues legacy options such as `fontanelle Flat`, `resus` interventions, `ttv` dose codes). (4) **`og_dictionaries` dependency removed** from `00d_build_user_dictionary.r`; the dictionary chain now builds solely from the downloaded web-editor data keys. **Information-preservation guarantee (two protections):** the harmonisation is lossless -- it never merges distinct categories -- because (a) **exact existing codes are always preserved** before any case logic runs (so e.g. `curprob` `PN`=Pneumonia and `Pn`=Pain are never folded together), and (b) a **per-key ambiguity guard** disables case-folding for the 15 variables whose codes/labels differ only by case but mean different things (`tribe`, `curprob`, `hcwsig`, `plan`, ...), leaving stray-case values unresolved rather than guessed (the guard removed zero legitimate changes). The ~239,000 cell changes are all representational normalisations (encoding/case/label->code/multi-select case) of the same value. **Caveat:** these protections guarantee no *merging* of distinct categories, but the *correctness* of each mapping rests on the `ValueMaps` dictionary being right -- a wrong dictionary row is faithfully propagated, so the dictionaries (especially union- and `VALUEMAP_PATCHES`-added rows) should be reviewed as release QA. Genuinely ambiguous legacy values (e.g. `inorout` yes/no vs `In`/`Out`, `modedelivery` numeric `1`, `admittedfrom` `ER`) are parked for clinical-team confirmation -- the per-run Module 04 report lists them under "Unresolved values left untouched". **NB:** these edits were verified by static/logic checks but not yet executed in R -- validate with `Rscript` before a production run. |
 | v8 | May 2026 | **Dictionary: `hivtestresult` column retention fix (MWI).** `hivtestresult` was incorrectly classified as `confidential = TRUE / pii_tier = 1 / direct_identifier` in both MWI admissions and discharges dictionaries, causing Module 00a (PII removal) to drop the column before any cleaning ran. HIV test result is a clinical outcome, not a direct identifier. Fixed: `confidential` set to `FALSE` in `dictionary_mwi_admissions.xlsx` and `dictionary_mwi_discharges.xlsx` (including `hivtestresultdc`). ZIM was unaffected — `hivtestresult` was absent from the ZIM dictionary and passed through the non-validated passthrough. `hivtestresult` added to `dictionary_zim_admissions.xlsx` as `categorical` so Module 04 value cleaning now applies. |
 | v8 | May 2026 | **Dictionary: `hivtestresult` value standardisation (MWI + ZIM).** KCH (MWI) raw data uses a mix of short codes (`R`, `NR`, `U`) and full labels (`Reactive`, `Non Reactive`); ZIM raw data uses `R`/`NR`/`U` and long-form variants (`Positive`, `Negative`, `Unknown`). Target codes: `R` (reactive), `NR` (non-reactive), `U` (unknown/indeterminate). MWI ValueMaps already contained correct `option_label → canonical_code` mappings (Reactive→R, Non Reactive→NR, Unknown→U); these now apply because the column survives PII removal. ZIM admissions ValueMaps added: Positive→R, Negative→NR, Unknown→U with allowed codes R/NR/U. |
 | v8 | May 2026 | **Dictionary: PII misclassification audit — four additional MWI fields unblocked.** A systematic review of all `confidential = TRUE` fields across MWI and ZIM dictionaries identified four MWI clinical-outcome fields incorrectly classified as `direct_identifier`: `datehivtest` (date of HIV test, datetime), `haart` (mother on HAART, categorical Y/N), `lengthhaart` (HAART treatment timing, categorical), and `mathivstat` (mother's HIV status, categorical). None of these identify a person in isolation. ZIM has `mathivstat` as `confidential = FALSE`; the other three are absent from ZIM dictionaries and pass through the pipeline untouched. All four have `confidential` set to `FALSE` in `dictionary_mwi_admissions.xlsx` (all four) and `dictionary_mwi_discharges.xlsx` (datehivtest, haart, lengthhaart). Existing ValueMaps for haart, lengthhaart and mathivstat were already correct. |
@@ -695,6 +693,22 @@ source("run_all.r")
 `run_all.r` scans `input/`, parses every filename, and runs the full pipeline for each
 recognised file automatically.  It prints a run plan before starting and a success/fail
 summary at the end.
+
+A file that fails does **not** stop the batch -- the runner records the error and moves on
+to the next file.  The end-of-run **failure summary** lists every failed file with its
+dataset and the actual error message, so a per-file failure cannot be lost in the scroll:
+
+```
+Failure summary:
+  [FAIL] input/mwi_db_dhis2_maternal_outcomes_202608041252.csv
+         Dataset: MWI x database x dhis2_maternal_outcomes
+         Error  : too few arguments
+```
+
+When every file completes it prints
+`Failure summary: none - every file completed the full pipeline.`
+Always check this line before treating a batch as successful -- a missing `*_cleaned.csv`
+is otherwise easy to overlook.
 
 **Optional filters** (edit the top of `run_all.r`):
 
@@ -3456,7 +3470,7 @@ Handles mixed-version coding not covered by the dictionary:
   categories: exact existing codes are preserved, and case-folding is disabled for keys
   whose codes/labels are case-ambiguous. See *"Information-preservation guarantee (two
   protections)"* under **Logic > Step 1** for the full explanation.
-- **Parked clinical decisions.** Genuinely ambiguous legacy values (e.g. `inorout` yes/no vs `In`/`Out`, `modedelivery` numeric `1`, `admittedfrom` `ER`) are intentionally left unresolved pending clinical-team confirmation; the per-run report lists them under *"Unresolved values left untouched"*, and `MANUAL.txt` (Appendix: Variable Issues Catalogue) records the known cases. `harmonise_modedelivery()` still recodes the *text* delivery labels to numeric as before; the numeric-vs-text reconciliation is a parked decision.
+- **Parked clinical decisions.** Genuinely ambiguous legacy values (e.g. `inorout` yes/no vs `In`/`Out`, `modedelivery` numeric `1`, `admittedfrom` `ER`) are intentionally left unresolved pending clinical-team confirmation; the per-run report lists them under *"Unresolved values left untouched"*. `harmonise_modedelivery()` still recodes the *text* delivery labels to numeric as before; the numeric-vs-text reconciliation is a parked decision.
 - Multi-select normalisation (Step 0) must run before dictionary validation (Step 1) so that brace-format values pass the `allowed_codes` check correctly.
 - Known multi-select columns (`resus`, `delivinter`) are handled even if they are absent from the dictionary `value_map_list`, via the `MULTISELECT_COLS` constant in `normalise_multiselect_encoding()`.
 
@@ -4863,341 +4877,6 @@ database output should be used.
   classification falls back to `-9 Unknown` for that record.
 - The module requires `df_clean` (output of Module 15 or 00b) to be present
   in the R session before it runs.
-
-
-
-################################################################################
-#
-#  PART IV -- APPENDIX: KNOWN ISSUES IN THE SOURCE DATA
-#
-################################################################################
-
-
-================================================================================
-  4.1  Neotree variable issues catalogue
-================================================================================
-  Source file: Neotree_variable_issues_catalogue.md
-================================================================================
-
-# Neotree data files — catalogue of variable-level issues
-
-**Compiled:** 16 July 2026
-**Scope:** issues affecting individual variables in the raw, cleaned and master Neotree data files (ZIM/SMCH and MWI/KCH), as documented across the `Neotree-data-pipeline` folder, the pipeline documentation set, the categorical-harmonisation audit, the post-implementation fix records, and the archived investigation chats.
-**Purpose:** a single reference so that any analysis using cleaned or master Neotree data handles known variable problems consistently.
-
-**Maintenance protocol — read before editing.** This is the authoritative catalogue of known variable-level issues; it must be updated whenever (a) a new variable issue is found, or (b) a mechanism described here changes — a fix is applied, a status moves (e.g. OPEN -> FIXED), or a range/threshold/mapping changes. When updating, add a dated row to the Changelog below and update **Last updated**.
-
-**Last updated:** 17 July 2026
-
-### Changelog
-
-| Date | Change |
-|---|---|
-| 2026-07-17 | **Dictionary documentation enrichment from the 2024 public dictionary.** New pass `00_build_dictionary/00e_enrich_from_public_dictionary.r` annotates each dictionary's Variables sheet with eight documentation columns (`public_meaning`, `public_data_type`, `public_dependency`, `public_range`, `old_variable_name`, `timeline_of_change`, `public_reference`, `public_dict_matched`) sourced from `og_dictionaries/Public_data_dictionary_2024.xlsx`. **Documentation only** — ValueMaps, canonical codes, ranges and cleaning behaviour are untouched (verified). Runs after `00c` in the build order; writes to `dictionary_*_enriched.xlsx`. Coverage 1,048/2,526 variables (the 2024 dict predates some fields and NeoLab uses different names). Captures variable renames (e.g. `birthweight` ← old `BW`), addressing the version-drift documentation gap. |
-| 2026-07-17 | **Categorical clinical-decision layer encoded** (Sections A1, C1–C4). the clinical lead's replies + the 2024 public data dictionary were encoded into `VALUEMAP_PATCHES` in `00_build_dictionary.r` for `inorout`, `modedelivery('1')`, `admittedfrom (ER=External Referral)`, `vomiting`, `murmur`, `punewborn`, `matsymptoms`, `matcomorbidities`, `receivedantenatalcare`, `cadredis`, `admreason`, `admreasonadd`, `diagdis1`. Dictionaries rebuilt (18/18) and verified against the 25 Jun extract (ZIM adm/dis/baseline, MWI adm/dis): every mapping fires, brace multi-selects resolve (e.g. `{G,LBW,Prem,RDS}→{GSchis,LBW,Prem,DIB}`), and decision-free values remain untouched. Un-mappable / ambiguous values (admreason `Safe`/`Safekeeping`/`Hyperth`/`HIVLR`; admreasonadd `Mec`/`Cong`; diagdis1 `HBW`/`JAUN`) are listed as open clinical follow-ups. |
-| 2026-07-16 | Initial catalogue compiled (Sections A–H, incl. derived combined variables in E). |
-
----
-
-## How to read this document
-
-Each issue notes the **variable(s)** affected, the **datasets/sites**, the **root cause**, the **current status** (whether the pipeline already fixes it or the analyst must handle it), and the **action** for an analyst.
-
-Status legend:
-
-- **FIXED** — the cleaning pipeline now handles this; cleaned/master outputs regenerated after the fix are correct.
-- **PARTIAL** — a fix exists but has caveats, or has only been applied to some datasets/versions.
-- **OPEN — analyst must handle** — no automatic fix; the analysis script must clean the variable.
-- **OPEN — awaiting clinical decision** — cannot be resolved without a mapping decision from the clinical team.
-
-A recurring root cause runs through most of these issues: **multiple versions of the Neotree app script have been deployed over the years at each site, and the PostgreSQL export concatenates data from all versions.** Older versions stored answers differently (text labels vs numeric codes, `true/false` vs `Yes/No`, inline descriptive labels, now-retired option codes), so a single column can carry several encodings of the same clinical concept.
-
----
-
-## A. Systemic / cross-cutting issues
-
-### A1. Categorical values not reduced to canonical codes (292 variables)
-
-**Variables:** 292 categorical variables across all cleaned datasets, both sites.
-**Status:** PARTIAL — decision-free harmonisation layer implemented; clinical-decision layer outstanding.
-
-This is the single largest data-quality issue. The cleaning pipeline was passing raw option **labels** and legacy values straight through instead of reducing every value to the dictionary's canonical **code**. As a result the same clinical answer appears in several forms in the cleaned data. It surfaced during the LBW/SVN analysis, where scripts had to be patched to absorb the variation (antenatal steroids, maternal HIV test, place of birth), which prompted a systematic audit (`Categorical_harmonisation_audit_20260612.xlsx`).
-
-Illustrative examples from the 10 June 2026 extract:
-
-| Variable | Values seen in cleaned data | Should be |
-|---|---|---|
-| `inorout` (place of birth) | `Yes`, `true`, `No`, `false`, `In`, `Out` | inborn vs outborn (`In`/`Out`) |
-| `mathivtest` | `true`/`Y` and `false`/`N` mixed | single canonical coding |
-| `ansteroids` | `"Not Sure"` alongside `Y`/`N`/`U` | `"Not Sure"` → `U` |
-| `modedelivery` | numbers `1–7` in some rows, text codes (`SVD`, `ECS`…) in others | one scheme |
-
-Record-level breakdown of the flagged values: **~51.7% mechanical** (same answer written differently — case, `true/false` vs `Y/N`, label vs code, or a valid option from an older form version), **~42.7% unresolved legacy** (options absent from every form version), **~5.6% semantic** (need clinical judgement).
-
-**What is fixed:** the decision-free layer (Module 04 logic + the version-union augmentation in `00_build_dictionary.r`) resolves the ~51.7% mechanical share to canonical codes, information-preservingly, and leaves the rest untouched (never guessed). The canonical dictionaries build **only** from the downloaded web-editor data keys; `VALUEMAP_PATCHES` is reserved for pure data-side legacy variants. **As of 2026-07-17** the clinical-decision layer for the high-volume fields is also encoded (see Section C) — the clinically confirmed legacy→canonical mappings + the 2024 public dictionary now live in `VALUEMAP_PATCHES` and are applied on dictionary rebuild.
-**What remains:** a small set of un-mappable/ambiguous legacy values still left as-is (Section C, and the open clinical follow-ups), plus a full systematic public-dictionary sweep of the lower-volume categorical fields.
-**Analyst action:** until the master file has been regenerated post-fix, harmonise categorical variables in-script (as the LBW scripts did). Confirm from the pipeline log which run produced your file.
-
-### A2. Mixed script-version coding within a single column
-
-**Variables:** `modedelivery`, Thompson score components, `inorout`, and many categoricals (overlaps A1).
-**Status:** FIXED for `modedelivery` and Thompson; OPEN for others.
-
-Because the export mixes app versions, some columns carry two coding systems at once.
-
-**`modedelivery` (ZIM admissions, n≈40k):** numeric codes `1–7` from current scripts mixed with text labels from older scripts (`SVD`, `CSPrLab`, `CSPoLab`, `ID`, `Vent`, `For`, `ECS`, `ElCS`, `IVD`). A `harmonise_modedelivery()` recode was added to Module 04 mapping `SVD→1, Vent→2, For→3, ElCS→4, ECS→5, CSPrLab→5, CSPoLab→5, IVD→7, ID→7`. The 15 May 2026 run recoded 2,667 text labels. Canonical coding: **1=SVD, 2=Vacuum, 3=Forceps, 4=Elective CS, 5=Emergency CS, 6=Breech (vaginal), 7=Induced Vaginal Delivery.** The `col_character()` workaround in analysis scripts can now be removed.
-*Compounding bug:* the user dictionary listed this variable as `mode_delivery` (with underscore) while the pipeline column is `modedelivery` (no underscore), so Module 04's dictionary lookup silently missed it — hence the dedicated recode that bypasses the dictionary (see also A5).
-
-**Thompson score fields:** older scripts stored the full descriptive label inline (`"0 = Normal"`, `"1 = Mild"`, `"2 = Moderate"`) while newer scripts store a bare integer. A `strip_thompson_labels()` function (Module 04) strips the ` = <label>` suffix. The 15 May run stripped **148,976** values across 13 Thompson columns.
-*Silent-failure sub-bug (worth remembering):* the first implementation matched `^thompson` but the actual columns use the abbreviated prefix `thomp` (`thomptone`, `thompalert`, `thompseiz`, `thomprefl`, `thompmoro`, `thompgrasp`, `thompfeed`, `thompresp`, `thompfont`, `thompscore`). The guard clause returned silently, so the log looked like a clean no-op. Pattern corrected to `^thomp`. Lesson: a guard that returns on zero matches is indistinguishable from a genuine no-op — log a distinct "no columns found" message.
-
-### A3. Legacy variables missing from the dictionary → skipped by validation
-
-**Variables:** `aw` (Admission Weight, if different from birth weight), `bsmmol` (Blood Sugar mmol/L; older equivalent of `bloodsugarmmol`). Potentially others.
-**Status:** FIXED (local + DSH).
-
-`cfg$num` is built from dictionary rows with `r_type == "numeric"`. Neither `aw` nor `bsmmol` had a dictionary entry, so both were absent from `cfg$num`. Consequently Module 09 never applied `as.numeric()` and Module 11 never range-checked them — the `"None"` export artefact (see A4) passed through untouched, and no range validation occurred. This was first seen as a `read_csv` type-coercion warning in the Golden Hour analysis.
-
-Fix: both variables added to `dictionary_zim_admissions.xlsx`, **and** — because the Excel dictionaries are regenerated by `00_build_dictionary.r` and manual edits are overwritten — a `LEGACY_VARIABLES` constant was added to the build script so the entries survive rebuilds. Verified: post-fix cleaned ZIM admissions had 0 `"None"` for both; `aw` outside 300–7000 set to NA, `bsmmol` above 40 set to NA.
-**Outstanding:** check whether `aw`/`bsmmol` exist in **MWI** admissions raw data; if so add them to `dictionary_mwi_admissions.xlsx` with the same type/ranges.
-
-### A4. PostgreSQL export writes SQL NULL as the string `"None"`
-
-**Variables:** `aw`, `bsmmol` confirmed; potentially any string-typed column.
-**Status:** FIXED.
-
-When the database is exported via Python, SQL NULLs can be serialised as Python's `None` → the literal string `"None"` rather than an empty cell. A broad pre-pass was added at the top of `assign_data_types()` (Module 09) that replaces `"None"` with `NA` across all columns before type coercion (intentionally broad to catch future occurrences); the count is logged. Module 16 also lists `"None"` in its `MISSING_STRINGS_16`, so these NAs are correctly coded **-9 (Unknown / SQL NULL)**, not -8 (Invalid/removed).
-*(Note: the earlier `modedelivery/Thompson` write-up concluded no fix was needed for `aw`/`bsmmol` on the assumption they were in `cfg$num`; they were not — see A3. The `LEGACY_VARIABLES` + Module 09 pre-pass combination is the definitive fix.)*
-
-### A5. Column-name mismatches between dictionary/data and code
-
-**Status:** PARTIAL.
-
-- **`mode_delivery` vs `modedelivery`** — user dictionary key has an underscore the data column does not; silent Module 04 miss (see A2). Follow-up: correct the user-dictionary key.
-- **`BirthWeight.value` vs `Birthweight.value`** — the Malawi raw admissions file uses capital `B`/`W` and singular `value` (`BirthWeight.value`, `BirthWeight.label`), not the lowercase/plural forms sometimes assumed. Case/spelling mismatches like this can cause a pipeline column reference to miss silently — verify exact raw column names before referencing them.
-
----
-
-## B. Units and numeric-range issues
-
-### B1. Weight unit inconsistency (kg vs g) and the standardisation threshold
-
-**Variables:** all weight columns — `admissionweight`, `birthweight`, `bwtdis`, `aw`, `bwbid`, `dischweight`.
-**Status:** FIXED (output now in grams) — but no post-conversion safety net.
-
-Different records store weight in **grams** and others in **kilograms**. Module 11 standardises using a threshold of **20**: a value > 20 is treated as grams (left as-is); a value ≤ 20 is treated as kg (× 1000). This works because neonatal weights sit in a natural "dead zone" — no plausible weight falls between ~6 and ~300 in either unit. The pipeline output is now unified to **grams** (previously kg); logs, reports and the sample-maker birthweight tolerance (now 20 g) were updated accordingly.
-
-Caveats to be aware of:
-- **Weights are not range-filtered.** `MANUAL_RANGES` deliberately excludes weight variables (philosophy: retain extreme physiological values for the analyst rather than silently NA them). So there is no floor/ceiling on weight columns — a spurious ambiguous-zone value (e.g. 15 → 15,000 g) is *not* removed. A **non-destructive** "implausible weight after conversion" summary was added to the Module 11 report, but it only warns; it does not change data.
-- No dedicated post-conversion birthweight validation (e.g. flagging residual > 8000 g or < 100 g as conversion failures) exists beyond that warning.
-**Analyst action:** apply your own weight range filter if your analysis is sensitive to outliers.
-
-### B2. `matageyrs` — maternal age stored in hours for some records
-
-**Variable:** `matageyrs`.
-**Status:** FIXED (Module 11 rescue).
-
-The Neotree app sometimes auto-calculates maternal age from date of birth and stores the result in **hours** in `matageyrs` (which should hold **years**) — so values in the hundreds of thousands appear (e.g. 149,325 h ≈ 17 y). It is a **mixed-unit-at-source** problem: manual entry → years, auto-calculation → hours, both land in the same column. The two populations don't overlap (no real maternal age in years exceeds ~60; no hours value is below ~87,600), so Module 11 rescues any value **> 200** by dividing by 8,760 and rounding to 1 d.p., before range validation. Rescued records are flagged in the log.
-**Analyst action:** none when using the cleaned master file; only matters if working with raw uncleaned data.
-
-### B3. `age` — age at admission stored in hours, with data-entry outliers
-
-**Variable:** `age` (admission and discharge sides).
-**Status:** OPEN — analyst must handle.
-
-`age` is a Neotree `period` ("Days & Hours") field that the pipeline converts to **total hours** (confirmed against `agecategory`: `age=1`→"< 2 hours", `age=24`→"1 day", `age=48`→"2 days"). It must **never** be read as days. A small number of records (44/~27,600 at SMCH, <0.2%) have implausible values up to 291,696 h (~33 y) — data-entry errors. `age` is FLAGGED (see B5) and range validation was deliberately skipped, so these outliers remain in the master file.
-**Analyst action:** cap at the neonatal boundary — `age_hours <- if_else(age_hours > 672, NA_real_, age_hours)` (28 days). Do **not** divide large values by 24 — they are errors, not day-encoded values. Use `agecategory` (96% complete at SMCH) as a cross-check.
-
-### B4. `timespent` / `timespent_dis` — form-completion time, not length of stay
-
-**Variables:** `timespent`, `timespent_dis`.
-**Status:** OPEN — semantic/interpretation.
-
-These record the clock time (in **hours**) taken to fill in the admission/discharge Neotree form — **not** length of stay. Validated against 0–72 h (retrospective entry can take up to 3 days). SMCH distributions: `timespent` median ≈14 h, max 1,736 h; `timespent_dis` median ≈6 h, max 1,227 h; values > 72 h are out-of-range outliers.
-**Analyst action:** use as a LOS proxy only as a fallback (prefer `datetimeadmission`/`datetimedischarge`). If used: `los_days <- timespent/24`, then cap (LBW scripts used 0–180 days).
-
-### B5. Variables FLAGGED "too many out-of-range values" and left unranged
-
-**Status:** OPEN — analyst must handle. **This is a deliberate design choice, not an error code.**
-
-Several variables in `user_ranges.xlsx` carry a manual developer note ("skipped in original validation because too many values fall out of range. Needs Review"). It means the proposed clinical range was tested, too many values fell outside it, and the developer chose to leave the field **unranged** rather than silently drop data. **No values were set to NA for these variables.**
-
-| Variable | Sheet | Range proposed | Flag scope |
-|---|---|---|---|
-| `age` | Adm + Dis | none set | ZIM + MWI |
-| `dischrr` | Dis | none set | ZIM + MWI |
-| `bloodsugarmmol` | Adm | max 40 | ZIM + MWI |
-| `bloodsugarmg` | Adm | max 600 | MWI only |
-| `hr` | Adm | 30–300 | ZIM + MWI |
-| `rr` | Adm | max 150 | ZIM + MWI |
-| `length` | Adm + Dis | 30–70 | ZIM |
-| `wcc1r` | Dis | 5–30 | ZIM |
-
-**Analyst action:** apply your own range filter; the `user_ranges.xlsx` bounds are a reasonable clinical starting point. Whether a defined range was actually applied depends on the run — check the pipeline log (`ZIM_db_pipeline_log_to_*.txt`).
-
----
-
-## C. Categorical variables needing a clinical mapping decision
-
-**Status (2026-07-17): mostly RESOLVED.** the clinical lead's decision sheet + the 2024 public data dictionary were encoded into `VALUEMAP_PATCHES` (`00_build_dictionary.r`, dated block) and verified on the 25 Jun extract. Each legacy value was mapped **only** to a code that already exists in that field's current canonical set (an alias, never an invented option). Values with no current target, or still clinically ambiguous, remain left-as-is (decision-free) and are tracked as open clinical follow-ups.
-
-**C1 — Coding-scheme / direction decisions — RESOLVED**
-- `modedelivery` = `'1'`: **confirmed** numeric `1–7` = SVD/Vacuum/Forceps/ElCS/EmCS/Breech/IVD (old data-dictionary scheme). Text labels already recoded to numeric by `harmonise_modedelivery()`; `'1'` now registered as canonical.
-- `inorout` legacy `Yes`/`true` → `In` (inborn); `No`/`false` → `Out` (outborn). **Confirmed** (clinical lead). Encoded for ZIM adm+dis and MWI adm+dis+phc.
-- `ortolani` (MWI) legacy `true`/`false` → `Y`/`N`: **already auto-resolved** by the decision-free boolean rule (canonical set is `{Y,N}`); `true`/Yes = abnormality found, `false`/No = none. No patch needed.
-
-**C2 — Unknown admission source — RESOLVED**
-- `admittedfrom` = `'ER'`: the 2024 public dictionary defines `ER` = **"External Referral"** as its own option (confirmed — **not** A&E/Casualty). `ER` registered as its own canonical code for ZIM adm+dis and MWI adm+dis. *(Minor: `FCDH` in ZIM admissions, 5 records, is a typo of `FCH` — left untouched, out of scope.)*
-
-**C3 — Legacy Yes/No on fields that are now coded scales — RESOLVED**
-All clinically confirmed and encoded: `vomiting` `No`→`Norm`; `murmur` `No`→`NormHSounds`; `punewborn` `Yes`→`YesUr`/`No`→`NoUr`; `matsymptoms` `N`→`Norm`/`O`→`Oth` *(assumption — Tim to confirm)*; `matcomorbidities` `N`→`Norm`/`O`→`Oth` *(assumption — Tim to confirm)*; `receivedantenatalcare` `Y`/`Yes`→`Bkd`/`N`/`No`→`Ubkd`; `cadredis` (MWI) `NO`/`NO - Nursing Officer`→`N` (Nurse).
-
-**C4 — Legacy diagnosis / admission-reason codes — MOSTLY RESOLVED**
-Clinician-confirmed mappings encoded, bound to codes already in each field's canonical set; brace multi-selects auto-resolve token-by-token (verified: `{G,LBW,Prem,RDS}`→`{GSchis,LBW,Prem,DIB}`):
-- `admreason` (ZIM adm+dis): `O`→`Oth`, `BA`→`HIE`, `LowBirthWeight`/`VLBW`/`ExLBW`→`LBW`, `HBW`→`Mac`, `FD`→`DF`, `TTN`/`TermRD`/`Difficulty in breathing`→`DIB`, `MA`→`PMA`, `sHIE`→`HIE`, `G`/`GSch`→`GSchis`, `OM`→`Omph`, `SEPS`→`NSep`, `VPrem`/`ExPrem`/`Prematurity`→`Prem`, `Mec`→`MecEx`, and `PremRDS`/`PremRD`→`{Prem,DIB}`. (`Low Apgars`→`Apg` auto-resolves via label.)
-- `admreasonadd` (ZIM adm): `RDS`→`DIB`, `FD`→`DF`, `G`→`GSchis`.
-- `diagdis1` (ZIM dis+baseline): `PR`→`Prem`, `BA`→`HIE`, `PRRDS`→`PremRD`, `FD`→`DF`, `HIVXL`→`HIVLR`, `Ri`→`Risk`, `OCA`→`Cong`, `BI`→`BT`.
-
-**Still pending (no current target / clinically ambiguous — open follow-ups):** `admreason` `Safe`/`Safekeeping` (candidate `Mothnotavail`?), `Hyperth`, `HIVLR`; `admreasonadd` `Mec`, `Cong`; `diagdis1` `HBW` (no macrosomia option), `JAUN` (physiological vs pathological). Related fields not in the clinical decision sheet (`othprobs`, `contcausedeath`, `causedeath`, ZIM `cadredis`/`ortolani`, MWI `admreason`/`diagdis1`) are queued for the next round.
-
-**C5 — Free-text / "Other" policy — STILL OPEN**
-~11,299 distinct one-off values (free-text, typos, "Other, specify" text). the clinical lead left the decision box blank; proposal to route all to NA/`Oth` is **not yet confirmed or implemented**. Values remain untouched (decision-free).
-
----
-
-## D. Weight / birthweight variable semantics (easy to misread)
-
-**Status:** clarified — documented here to prevent misuse.
-
-- **`birthweight`, `bwt`, `bwtdis` all denote the same concept — birth weight** — and can be coalesced safely. Note `bwtdis` is **birth weight**, *not* discharge weight, despite the `dis` in its name.
-- **`admissionweight` (`aw`) and `dischweight` are distinct concepts** from birth weight and from each other — do not coalesce them with birth weight.
-- **`birthweight.value` vs `.valuedischarge`:** `.valuedischarge` does **not** exist in any current data — no dictionary, data key, or script produces it. The pipeline strips `.valuedischarge` throughout (modules 04/05/06/09/11/13/15 and `00b`) purely as defensive future-proofing for a combined admission+discharge form that never materialised. For birthweight, only `.value` is ever stripped, always matching the single birthweight dictionary row. The real discharge-only fields use a `dc` suffix (`hivtestresultdc`, `apgar1dc`, `gestationdc`…), a separate mechanism.
-- **No value is lost across admission/discharge.** Admissions and discharges are cleaned as separate runs; they are joined only at analysis time (`joiner.R`) on `uid + facility`, with clashing discharge columns suffixed `_dis` (so `birthweight` = admission, `birthweight_dis` = discharge). Both are preserved; unmatched records are kept as separate tables.
-- **Raw double-entry observation:** in the MWI raw admissions file, 4,380 rows had a numeric weight in `BirthWeight.label` (e.g. "3000") as well as in `BirthWeight.value` — the label field should hold descriptive text, not a number. Worth checking those two agree.
-
----
-
-## E. Derived "combined" variables created by the pipeline
-
-**Status:** implemented — these are the pipeline's own mitigation for the multi-name problem. Use them in analysis.
-
-To resolve the problem that the same clinical concept was recorded under **different variable names across Neotree form/script versions**, the cleaning pipeline creates new canonical variables that coalesce all the historical names into one, **leaving every original source column in place**. They are computed in **Module 15** (final merge), *after* all validation modules, so they carry no raw `.value`/`.label` column and are skipped by Modules 04/09/11. All weight variants are in **grams** (post kg→g standardisation, see B1) with a documented plausibility range of 300–7000 g.
-
-Two families exist:
-
-**Weight** — function `derive_weight_columns()` in `15_final_merge_output.r`:
-
-| Derived variable | Coalesce logic (priority order) | Emitted in |
-|---|---|---|
-| `birthweight_g` | `coalesce(birthweight, bwt, bwtdis)` — three historical names for the same concept | **every** dataset, both sites (NA-filled where no source is present, so all cleaned files share a common schema) |
-| `admission_weight_g` | `admissionweight` only | admission-type forms (admissions, phc_admissions, baseline [ZIM], joined) |
-| `discharge_weight_g` | `dischweight` only (date in `datedischweight`) | discharge-type forms |
-
-Only `birthweight_g` is a genuine multi-name coalesce. `admission_weight_g` and `discharge_weight_g` are single-source canonical renames — deliberately **never folded into birth weight**, because they are distinct clinical concepts (recall from D that `bwtdis` *is* birth weight despite its name, whereas `admissionweight`/`dischweight` are not).
-
-**Maternal age** — function `derive_maternal_age_columns()` in `15_final_merge_output.r`:
-
-| Derived variable | Coalesce logic | Emitted in |
-|---|---|---|
-| `mat_age_years_combined` | `coalesce(matageyrs, mat_age_date_years)` — manually-entered years, falling back to the `matagedate` value (auto-calculated from DOB in hours, converted to years and range-cleaned in Module 11; see B2) | deliveries / maternal-outcomes files only (where a source column exists) |
-| `mat_age_source` | provenance label for the above: `"matageyrs"` / `"matagedate_derived"` / `"none"` | alongside `mat_age_years_combined` |
-
-**Properties to know:**
-
-- **Originals are retained** — the derived column is additive; source columns are untouched, so provenance and raw values remain auditable.
-- **Lossless coalesce with a disagreement guard.** Where two sources overlap and disagree (weight beyond a gram tolerance; maternal age by > 1 year), the rows are **counted and logged**, never silently overwritten. The priority/first source wins (`matageyrs` beats the DOB-derived value, per the form instruction to leave `matageyrs` blank only when the auto value is used).
-- **`birthweight_g` is the column to use for low-birth-weight analysis** — it is the canonical, always-present, gram-scale birth weight.
-- **Dictionary registration:** `birthweight_g`, `admission_weight_g`, `discharge_weight_g` are registered in the `DERIVED_VARIABLES` block of `00_build_dictionary.r` (documentation-only; they flow into the researcher-facing user dictionary via `00d`). **Gap noted:** `mat_age_years_combined` and `mat_age_source` are created in Module 15 but do **not** appear in that `DERIVED_VARIABLES` list — so they exist in the cleaned output yet may be undocumented in the dictionary. Worth adding for completeness.
-
----
-
-## F. Missingness — why a cell is NA
-
-**Status:** documented; NA reason codes implemented (Module 16).
-
-Not all NAs mean the same thing. Missing cells arise from several distinct mechanisms; the confirmed legitimate causes are:
-
-1. Originally empty in the raw file (never filled in).
-2. Not applicable by design (question wasn't shown — e.g. a test result where the test wasn't performed).
-3. Literal missing-value strings normalised to NA by Module 13 (`nan`, `none`, `null`, `n/a`, `""`, and — for the export artefact — `None`).
-4. Invalid / unrecognised dictionary value replaced with NA (Module 04).
-5. Label contamination — the question text itself ended up in a coded cell, set to NA (Module 04).
-6. PII redaction (Module 00a) — values matching phone/email/NHS/hospital-number patterns are wiped (e.g. the KCH `hivtestresult` PII-stripping fix).
-7. Out-of-range numeric value replaced with NA (Module 11) — for variables that *have* a range (contrast with B5).
-8. Type-coercion failures (Modules 09/11/12/14) — unparseable values silently become NA via `as.numeric()`/`parse_date_time()`/boolean mapping.
-9. Pattern-based contamination (Module 13) — title-case header-like strings and ISO/word timestamps NA'd out.
-10. Disallowed-values blacklist (`cfg$values_to_delete`, Module 13) — optional.
-
-Two mechanisms initially listed were **discounted** on review: (a) three-key join mismatches in Module 15 — only a risk if Module 10 deduplication misses duplicates and per-subframe dedup picks different `uniquekey`s; under normal flow the three-key join (`facility, uid, uniquekey`) is equivalent to a two-key join and produces no NAs (see G2); (b) the POSIXct→character `"NA"` artefact in Module 15 — a safeguard that preserves existing NAs, not a new source.
-
-**NA reason codes** (negative sentinels placed in each missing cell; priority order highest→lowest):
-
-| Code | Label | Meaning |
-|---|---|---|
-| **-6** | Redacted | raw value matched a PII pattern (overrides everything) |
-| **-7** | Not Applicable | skip logic shows the field wasn't shown; exclude from completeness analyses |
-| **-8** | Invalid/Removed | non-empty, non-PII value failed validation; rare — flags a data-quality issue |
-| **-9** | Unknown | field was applicable but no value recorded (includes SQL NULL / `None`) |
-
-**Analyst action:** before excluding a high-missingness variable, check whether the missingness is mostly **-7** (structural/expected) rather than genuine gaps. Raw removed values are recoverable from `{stem}_na_reasons_long.csv.gz`.
-
----
-
-## G. Duplicates and joins
-
-### G1. Duplicate-UID rows in raw data (correctly removed, but worth understanding)
-
-**Status:** working as intended; source-side data question.
-
-In the MWI raw admissions file, cleaning dropped 746 duplicate-UID rows; 431 of them carried a birthweight, fully accounting for a 430-value gap between raw and cleaned `birthweight` counts. So the cleaning logic loses no birthweight values — every dropped value belonged to a duplicate row correctly removed (Module 10 keeps the most-complete copy per `uid + facility`). The open question is upstream: **why** these duplicate submissions exist (re-submissions, entry errors, sync issues).
-
-### G2. Three-key vs two-key join in the final merge (Module 15)
-
-**Status:** latent risk only.
-
-`KEY_COLS <- c("facility","uid","uniquekey")` is used system-wide. Module 10 already deduplicates to one row per `uid + facility`, so by Module 15 each pair has exactly one `uniquekey` and the three-key join is equivalent to a two-key join. It would only produce spurious NAs if Module 10 missed duplicates *and* different type-subframes independently kept rows with different `uniquekey`s. Narrow edge case, not a routine NA source — but the stricter three-key join fails "visibly" (NAs) rather than silently duplicating rows.
-
----
-
-## H. Mandatory fields that nonetheless allow "Unknown / Not Sure"
-
-**Status:** documented (extracted 16 July 2026).
-
-**100 mandatory Neotree fields** have a valid "Unknown / Not Sure" answer option — identified in a 2026-07-16 audit of the data keys. This matters because a field being mandatory does **not** guarantee a substantive value: an "Unknown"/"Not Sure" response is a legitimate, non-missing answer that should not be conflated with a real clinical value nor with a true NA. Handle these explicitly in completeness and analysis logic.
-
-**Planned fix — new NA-reason code `-5` "documented unknown"** (agreed 2026-07-16): keep an explicitly-selected "Unknown" answer on a mandatory field distinct from `-8` (invalid) and `-9` (genuinely blank). **BLOCKED** on the confirmed field list before implementation in `16_na_reason_coding.r` — see `fixes/pending/NA-codes/NA_reason_code_minus5_fix.md`. Prep done (2026-07-17): the 100 fields were enriched with question text, skip-logic dependency (public dict + JSON), and dictionary-vs-JSON disagreement flags → `fixes/pending/NA-codes/Mandatory_fields_ENRICHED_20260717.xlsx` (55/100 fields are absent from the 2024 public dictionary; none carry a documented rename).
-
----
-
-## Appendix — dataset-specific notes
-
-- **ZIM infections dataset:** a server-side *derived* file with **no Neotree app script** behind it. `Transformed = TRUE` on all rows (expected). Low `00c` script-enrichment (2/21 fields enriched) is **expected**, not an error, because there is no source script to enrich from.
-- **MWI maternal datasets:** the DHIS2-based maternal script is live (2024–present); the original maternal script was retired January 2022. `maternity_completeness` is derived from **paper records**. `neotreeoutcome` UUID-override warnings for `maternal_outcomes` / `maternity_completeness` are **benign** — the field is simply absent from those forms.
-
----
-
-## Quick index of affected variables
-
-| Variable(s) | Issue | Section |
-|---|---|---|
-| 292 categoricals | not reduced to canonical codes | A1 |
-| `modedelivery` | numeric/text mixed coding; `mode_delivery` dict key mismatch | A2, A5, C1 |
-| `thomp*` (Thompson scores) | inline label contamination; `^thompson` grep bug | A2 |
-| `aw`, `bsmmol` | missing from dictionary; `"None"` artefact | A3, A4 |
-| `inorout` | inconsistent Yes/true/In vs No/false/Out | A1, C1 |
-| `ortolani` | legacy true/false, no current options | C1 |
-| `admittedfrom` | `ER` not a defined option | C2 |
-| `vomiting`,`murmur`,`punewborn`,`matsymptoms`,`matcomorbidities`,`receivedantenatalcare`,`cadredis` | legacy Yes/No on coded scales | C3 |
-| `admreason`,`admreasonadd`,`diagdis1` | legacy diagnosis codes | C4 |
-| weight columns (`birthweight`,`bwtdis`,`admissionweight`,`aw`,`dischweight`,`bwbid`) | kg/g units; no range filter; naming semantics | B1, D |
-| `birthweight_g`,`admission_weight_g`,`discharge_weight_g` | derived combined weight variables (coalesce, originals kept) | E |
-| `mat_age_years_combined`,`mat_age_source` | derived combined maternal-age variable; not yet in dictionary | E |
-| `matageyrs` | hours-vs-years mixed units | B2 |
-| `age` | stored in hours; outliers; unranged | B3, B5 |
-| `timespent`,`timespent_dis` | form-fill time, not LOS | B4 |
-| `age`,`dischrr`,`bloodsugarmmol`,`bloodsugarmg`,`hr`,`rr`,`length`,`wcc1r` | FLAGGED, left unranged | B5 |
-| `mathivtest`,`ansteroids` | label/boolean variants | A1 |
-
 
 ================================================================================
   END OF MANUAL

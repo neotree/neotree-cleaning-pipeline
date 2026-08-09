@@ -87,10 +87,10 @@ drop_unwanted_columns <- function(df, report_filepath = NULL) {
   df         <- df[, final_cols, drop = FALSE]
 
   n_dropped <- length(col_names) - length(final_cols)
-  log_info(sprintf(
+  log_info(
     "drop_unwanted_columns: dropped %d redundant column(s). %d remain.",
     n_dropped, ncol(df)
-  ))
+  )
 
   # Optional report
   if (!is.null(report_filepath) && nzchar(report_filepath)) {

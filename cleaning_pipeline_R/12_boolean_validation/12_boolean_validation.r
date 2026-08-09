@@ -67,10 +67,10 @@ validate_boolean <- function(df, cfg, report_filepath = NULL) {
 
     if (n_invalid > 0) {
       invalid_vals <- unique(raw[is.na(result) & !is.na(raw) & raw != "NA"])
-      log_info(sprintf(
+      log_info(
         "  validate_boolean: '%s' - %d invalid value(s) set to NA: [%s]",
         col, n_invalid, paste(head(invalid_vals, 5), collapse = ", ")
-      ))
+      )
     }
 
     df_bool[[col]] <- result
@@ -81,10 +81,10 @@ validate_boolean <- function(df, cfg, report_filepath = NULL) {
   df_bool   <- dplyr::distinct(df_bool, uid, facility, .keep_all = TRUE)
   n_dedup   <- n_before - nrow(df_bool)
 
-  log_info(sprintf(
+  log_info(
     "validate_boolean: %d values standardised | %d invalid -> NA | %d duplicates removed.",
     converted_count, invalid_count, n_dedup
-  ))
+  )
 
   # Optional report
   if (!is.null(report_filepath) && nzchar(report_filepath)) {

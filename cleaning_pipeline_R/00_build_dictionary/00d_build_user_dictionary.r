@@ -93,12 +93,23 @@ OUTPUT_DIR           <- "user_dictionaries"        # output folder (created if a
 # skip_condition from 00c).  Falls back to base *.xlsx if not found.
 USE_ENRICHED_DICT    <- TRUE
 
-# Derived variables computed by the cleaning pipeline (Module 15).  They are
-# absent from the Neotree script JSONs, so the JSON-driven consensus order does
-# not include them; they are surfaced into the user dictionary explicitly from
-# the pipeline cleaning dictionaries' Variables sheet (where 00_build_dictionary
-# registers them via DERIVED_VARIABLES).  See cleaning_pipeline readme.md.
-DERIVED_KEYS <- c("birthweight_g", "admission_weight_g", "discharge_weight_g")
+# Derived variables computed by the cleaning pipeline (Modules 11 and 15).  They
+# are absent from the Neotree script JSONs, so the JSON-driven consensus order
+# does not include them; they are surfaced into the user dictionary explicitly
+# from the pipeline cleaning dictionaries' Variables sheet (where
+# 00_build_dictionary registers them via DERIVED_VARIABLES).
+# See cleaning_pipeline readme.md.
+#
+# KEEP THIS LIST IN SYNC WITH DERIVED_VARIABLES in 00_build_dictionary.r.  A key
+# registered there but missing here is documented in the per-table dictionaries
+# yet silently absent from the researcher-facing user dictionary -- which is
+# exactly how the maternal-age columns went undocumented until 2026-08-09.
+# Note also that is_excluded() drops any key whose use_in_analysis is FALSE, so a
+# derived column that IS present in the pipeline output must be registered with
+# use_in_analysis = TRUE or it will never reach the user dictionary.
+DERIVED_KEYS <- c("birthweight_g", "admission_weight_g", "discharge_weight_g",
+                  "mat_age_years_combined", "mat_age_source",
+                  "mat_age_date_years")
 
 # =============================================================================
 # SECTION 1 -- PACKAGES & NULL-COALESCING OPERATOR

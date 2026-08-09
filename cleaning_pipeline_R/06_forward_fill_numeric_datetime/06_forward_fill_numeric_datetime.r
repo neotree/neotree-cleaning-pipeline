@@ -98,10 +98,10 @@ forward_fill_numeric_datetime <- function(df, report_filepath = NULL) {
     cols_to_drop   <- c(cols_to_drop, lc)
 
     if (n_filled > 0) {
-      log_info(sprintf(
+      log_info(
         "  forward_fill_numeric_datetime: filled %d values in '%s' from '%s'.",
         n_filled, vc, lc
-      ))
+      )
     }
   }
 
@@ -109,15 +109,15 @@ forward_fill_numeric_datetime <- function(df, report_filepath = NULL) {
   cols_to_drop <- intersect(unique(cols_to_drop), names(df))
   if (length(cols_to_drop) > 0) {
     df <- df[, !names(df) %in% cols_to_drop, drop = FALSE]
-    log_info(sprintf(
+    log_info(
       "  Dropped %d .label/.labeldischarge column(s).", length(cols_to_drop)
-    ))
+    )
   }
 
   total_fills <- sum(unlist(fill_log))
-  log_info(sprintf(
+  log_info(
     "forward_fill_numeric_datetime: %d total values recovered.", total_fills
-  ))
+  )
 
   # Optional report
   if (!is.null(report_filepath) && nzchar(report_filepath)) {

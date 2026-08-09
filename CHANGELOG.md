@@ -7,6 +7,66 @@ Repository releases are published as git tags / GitHub releases, starting at
 v1.0.0. (The data dictionaries packaged in this release are versioned
 separately by Neotree as "v8".)
 
+## [v1.1.0] — 2026-08
+
+A maintenance release. One defect suppressed all output for two dataset types;
+the same defect class was removed pipeline-wide, batch failure reporting was
+added so a repeat cannot pass unnoticed, and the pipeline's derived maternal-age
+columns are now documented in the dictionaries.
+
+### Fixed
+
+- **Module 15 aborted silently for two Malawi maternity datasets, producing no
+  output at all.** `derive_maternal_age_columns()` formatted its maternal-age
+  disagreement warning with its own `sprintf()` and passed the finished string to
+  `log_warn()`. Because `00_setup.r` sets `log_formatter(formatter_sprintf)`, the
+  logger formatted it a second time: the first pass renders `%.1f%%` as a literal percent sign
+  (e.g. `(12.5%);`), the second hits `%)` and R throws `Error: too few arguments`. Any
+  dataset reaching that branch — in practice `combined_maternity_outcomes` and
+  `dhis2_maternal_outcomes`, the only ones where both maternal-age sources are
+  populated and can disagree — produced no `*_cleaned.csv`, no `*_cleaned.rds` and
+  no `15b_maternal_age_summary.txt`. This was a data-availability failure only: no
+  value was ever computed incorrectly. Anyone who ran an earlier version should
+  re-run the pipeline before using either dataset.
+- **The same double-formatting construction was removed pipeline-wide** (21 call
+  sites). Two were live rather than latent hazards, because they interpolate
+  rejected raw data values into the log message, so a single `%` in a source cell
+  would have aborted those modules identically: `12_boolean_validation.r` and
+  `14_datetime_validation.r`. The rule now applied throughout: never pass a
+  pre-formatted string to `log_info`/`log_warn`/`log_error`/`log_debug` — pass the
+  format string and its arguments and let the logger format once.
+
+### Changed
+
+- **`run_all.r` now reports per-file failures.** It previously caught an error,
+  printed it mid-run and moved on without recording it, which is why the above went
+  unnoticed. It now captures each error message and prints a failure summary at the
+  end listing the file, its dataset and the error — or
+  `Failure summary: none - every file completed the full pipeline.` when the batch
+  is clean. Check this line before treating a run as successful.
+
+### Added
+
+- **The derived maternal-age columns are now documented in the dictionaries.**
+  `mat_age_years_combined` and `mat_age_source` (module 15) and
+  `mat_age_date_years` (module 11) were written to every cleaned file but
+  registered nowhere, so they appeared in the data with no definition anywhere in
+  the dictionary set. All three are now registered in `DERIVED_VARIABLES`
+  (`00_build_dictionary.r`) and surfaced in the researcher-facing user dictionary
+  via `00d`. Documentation only — verified by re-running the pipeline and
+  confirming the cleaned output is byte-for-byte identical.
+- `00d_build_user_dictionary.r` keeps its own `DERIVED_KEYS` list, which had
+  drifted from `DERIVED_VARIABLES`; a key registered in one but not the other is
+  silently absent from the user dictionary. The two lists are now aligned and the
+  requirement to keep them in step is documented at both sites.
+
+### Documentation
+
+- The manual and README now state explicitly that this repository documents the
+  **code only**. The appendix cataloguing known issues in the source data has been
+  removed: it described Neotree study data rather than this software, and is
+  maintained separately by the Neotree team.
+
 ## [v1.0.0] — 2026-07
 
 First public, version-controlled release of the R data pipeline (packaging the
@@ -54,9 +114,6 @@ v8 Neotree data dictionaries).
 ### Documentation
 - `MANUAL.txt`: every README in this repository compiled into one searchable
   document with a table of contents.
-- Appendix (`MANUAL.txt` Part IV): catalogue of known variable-level issues in
-  the raw Neotree exports, stating for each whether the pipeline fixes it or the
-  analyst must handle it.
 
 ### Packaging
 - CRAN installer (`install_packages.r`) and UCL Data Safe Haven / Artifactory
@@ -64,4 +121,5 @@ v8 Neotree data dictionaries).
 - MIT licence, contribution guide, and `.gitignore` that excludes all
   patient-level data, run artifacts and credentials.
 
+[v1.1.0]: https://github.com/neotree/neotree-cleaning-pipeline/releases/tag/v1.1.0
 [v1.0.0]: https://github.com/neotree/neotree-cleaning-pipeline/releases/tag/v1.0.0

@@ -539,6 +539,117 @@ DERIVED_VARIABLES <- list(
       "Derived canonical discharge / last-recorded weight (grams) = dischweight ",
       "(date in datedischweight). Distinct concept from birth weight; never ",
       "folded into it. Cleaning pipeline Module 15. Not a raw field; no .value column.")
+  ),
+
+  # ---------------------------------------------------------------------------
+  # Maternal age -- derived in Modules 11 and 15.
+  #
+  # NOTE ON SECTION LABEL: the injector hardcodes section =
+  # "Derived (computed by cleaning pipeline Module 15)".  mat_age_date_years is
+  # actually produced by Module 11; the originating module is stated in each
+  # note below rather than changing the shared section string.
+  #
+  # Dataset lists below are the datasets in which these columns were OBSERVED in
+  # the 4 Aug 2026 extract, plus joined_admissions_discharges (an analysis-time
+  # join of two forms that both carry matageyrs).  Emission is conditional -- the
+  # columns appear only where a source column is present -- and injection is
+  # skipped when the question_key already exists, so listing a dataset that
+  # happens to lack the source column in a given extract is harmless.
+  # ---------------------------------------------------------------------------
+
+  # mat_age_years_combined -- canonical maternal age in years
+  list(
+    country = "MWI",
+    datasets = c("admissions", "discharges", "phc_admissions", "phc_discharges",
+                 "combined_maternity_outcomes", "dhis2_maternal_outcomes",
+                 "joined_admissions_discharges"),
+    question_key = "mat_age_years_combined",
+    label = "Maternal age (years) -- canonical (derived)",
+    r_type = "numeric", weight_unit = NA_character_, use_in_analysis = TRUE,
+    plausible_min = 9, plausible_max = 60,
+    note = paste0(
+      "Derived canonical maternal age in years. Cleaning pipeline Module 15 ",
+      "computes coalesce(matageyrs, mat_age_date_years): the manually entered ",
+      "whole-year field wins, falling back to the value derived from matagedate ",
+      "(auto-calculated from DOB, stored in HOURS, converted to years and ",
+      "range-filtered in Module 11). Both inputs are already range-clean (9-60), ",
+      "so this is a lossless coalesce plus a provenance label. Emitted only where ",
+      "at least one source column is present. Rows where both sources are present ",
+      "and disagree by more than 1 year are counted and logged, never overwritten ",
+      "-- see the per-run report 15b_maternal_age_summary.txt. Provenance is in ",
+      "mat_age_source. Originals retained. Not a raw field; no .value column.")
+  ),
+  list(
+    country = "ZIM",
+    datasets = c("admissions", "baseline", "maternal_outcomes",
+                 "joined_admissions_discharges"),
+    question_key = "mat_age_years_combined",
+    label = "Maternal age (years) -- canonical (derived)",
+    r_type = "numeric", weight_unit = NA_character_, use_in_analysis = TRUE,
+    plausible_min = 9, plausible_max = 60,
+    note = paste0(
+      "Derived canonical maternal age in years. Cleaning pipeline Module 15 ",
+      "computes coalesce(matageyrs, mat_age_date_years). ZIM captures matageyrs ",
+      "only (matagedate is a Malawi maternity-form field), so in ZIM data this ",
+      "column always equals matageyrs and mat_age_source is always 'matageyrs'; ",
+      "the shared derivation keeps the two countries on one schema. Emitted only ",
+      "where a source column is present. Originals retained. Not a raw field; ",
+      "no .value column.")
+  ),
+
+  # mat_age_source -- provenance label for mat_age_years_combined
+  list(
+    country = "MWI",
+    datasets = c("admissions", "discharges", "phc_admissions", "phc_discharges",
+                 "combined_maternity_outcomes", "dhis2_maternal_outcomes",
+                 "joined_admissions_discharges"),
+    question_key = "mat_age_source",
+    label = "Maternal age -- source of the derived value (provenance)",
+    r_type = "categorical", weight_unit = NA_character_, use_in_analysis = TRUE,
+    plausible_min = NA, plausible_max = NA,
+    note = paste0(
+      "Provenance label for mat_age_years_combined, emitted alongside it by ",
+      "Module 15. One of: 'matageyrs' (manually entered whole years, the ",
+      "priority source), 'matagedate_derived' (converted from the ",
+      "auto-calculated DOB field in Module 11), or 'none' (neither source ",
+      "populated on that row). Use it to restrict an analysis to manually ",
+      "entered ages, or to quantify reliance on the derived fallback. Not a raw ",
+      "field; no .value column.")
+  ),
+  list(
+    country = "ZIM",
+    datasets = c("admissions", "baseline", "maternal_outcomes",
+                 "joined_admissions_discharges"),
+    question_key = "mat_age_source",
+    label = "Maternal age -- source of the derived value (provenance)",
+    r_type = "categorical", weight_unit = NA_character_, use_in_analysis = TRUE,
+    plausible_min = NA, plausible_max = NA,
+    note = paste0(
+      "Provenance label for mat_age_years_combined, emitted alongside it by ",
+      "Module 15. In ZIM data this is 'matageyrs' wherever an age is present and ",
+      "'none' otherwise, because matagedate is a Malawi maternity-form field; the ",
+      "'matagedate_derived' level exists for schema parity with MWI. Not a raw ",
+      "field; no .value column.")
+  ),
+
+  # mat_age_date_years -- years converted from the auto-calculated matagedate
+  list(
+    country = "MWI",
+    datasets = c("combined_maternity_outcomes", "dhis2_maternal_outcomes"),
+    question_key = "mat_age_date_years",
+    label = "Maternal age (years) from auto-calculated DOB field (derived)",
+    r_type = "numeric", weight_unit = NA_character_, use_in_analysis = TRUE,
+    plausible_min = 9, plausible_max = 60,
+    note = paste0(
+      "Produced by **Module 11** (not Module 15) as round(matagedate / 8766), ",
+      "where 8766 = 365.25 x 24: matagedate is auto-calculated from the mother's ",
+      "date of birth and stored in HOURS, not years. The same 9-60 plausibility ",
+      "filter applied to matageyrs is applied here, with out-of-range values set ",
+      "to NA and counted in the Module 11 report; raw matagedate is left ",
+      "untouched. MWI maternity forms only -- ZIM does not capture matagedate. ",
+      "This is an intermediate: prefer mat_age_years_combined for analysis, and ",
+      "use this column only to inspect the auto-calculated source directly. Not ",
+      "a raw field; no .value column.")
   )
 
 )

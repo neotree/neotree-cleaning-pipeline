@@ -110,9 +110,9 @@ dedup_keep_most_complete <- function(df, key_cols) {
 
   n_removed <- nrow(df) - nrow(df_dedup)
   if (n_removed > 0)
-    log_info(sprintf(
+    log_info(
       "  dedup_keep_most_complete: %d near-duplicate record(s) removed.", n_removed
-    ))
+    )
 
   return(df_dedup)
 }
@@ -278,35 +278,35 @@ derive_weight_columns <- function(df, cfg) {
       })
       n_disagree <- sum(rng > DISAGREE_TOL_G, na.rm = TRUE)
       if (n_disagree > 0) {
-        log_warn(sprintf(
+        log_warn(
           paste0("derive_weight_columns: %d row(s) have disagreeing birth-weight ",
                  "sources (> %g g) among {%s}; birthweight_g used the first ",
                  "non-NA source in priority order. Review these rows."),
-          n_disagree, DISAGREE_TOL_G, paste(bw_present, collapse = ", ")))
+          n_disagree, DISAGREE_TOL_G, paste(bw_present, collapse = ", "))
       } else {
-        log_info(sprintf(
+        log_info(
           "derive_weight_columns: birth-weight sources {%s} agree on all overlapping rows.",
-          paste(bw_present, collapse = ", ")))
+          paste(bw_present, collapse = ", "))
       }
     }
   }
-  log_info(sprintf(
+  log_info(
     "derive_weight_columns: birthweight_g non-missing = %d / %d (sources: %s).",
     sum(!is.na(df$birthweight_g)), n,
-    if (length(bw_present)) paste(bw_present, collapse = ", ") else "none"))
+    if (length(bw_present)) paste(bw_present, collapse = ", ") else "none")
 
   # ---- Admission weight (distinct concept; emitted only if captured) -------
   if ("admissionweight" %in% names(df)) {
     df$admission_weight_g <- weight_num("admissionweight")
-    log_info(sprintf("derive_weight_columns: admission_weight_g non-missing = %d / %d.",
-                     sum(!is.na(df$admission_weight_g)), n))
+    log_info("derive_weight_columns: admission_weight_g non-missing = %d / %d.",
+             sum(!is.na(df$admission_weight_g)), n)
   }
 
   # ---- Discharge / last-recorded weight (distinct concept) -----------------
   if ("dischweight" %in% names(df)) {
     df$discharge_weight_g <- weight_num("dischweight")
-    log_info(sprintf("derive_weight_columns: discharge_weight_g non-missing = %d / %d.",
-                     sum(!is.na(df$discharge_weight_g)), n))
+    log_info("derive_weight_columns: discharge_weight_g non-missing = %d / %d.",
+             sum(!is.na(df$discharge_weight_g)), n)
   }
 
   return(df)
@@ -378,22 +378,22 @@ derive_maternal_age_columns <- function(df, cfg) {
   n_disagree <- sum(both & abs(yrs - mad) > DISAGREE_TOL_YRS)
   disagree_pct <- if (n_both > 0) 100 * n_disagree / n_both else 0
 
-  log_info(sprintf(
+  log_info(
     paste0("derive_maternal_age_columns: combined non-missing = %d / %d ",
            "(matageyrs=%d, matagedate_derived=%d, none=%d)."),
-    sum(!is.na(combined)), n, n_yrs, n_mad, n_none))
+    sum(!is.na(combined)), n, n_yrs, n_mad, n_none)
 
   if (n_both > 0) {
     if (n_disagree > 0) {
-      log_warn(sprintf(
+      log_warn(
         paste0("derive_maternal_age_columns: %d of %d row(s) with BOTH maternal-age ",
                "sources disagree by > %g year(s) (%.1f%%); matageyrs was kept. ",
                "Review these rows."),
-        n_disagree, n_both, DISAGREE_TOL_YRS, disagree_pct))
+        n_disagree, n_both, DISAGREE_TOL_YRS, disagree_pct)
     } else {
-      log_info(sprintf(
+      log_info(
         "derive_maternal_age_columns: all %d overlapping row(s) agree within %g year(s).",
-        n_both, DISAGREE_TOL_YRS))
+        n_both, DISAGREE_TOL_YRS)
     }
   }
 
@@ -560,9 +560,9 @@ merge_and_output <- function(df_numeric, df_boolean, df_categorical,
   # datasets (no source column present).
   df_clean <- derive_maternal_age_columns(df_clean, cfg)
 
-  log_info(sprintf(
+  log_info(
     "Final merged dataset: %d rows x %d columns.", nrow(df_clean), ncol(df_clean)
-  ))
+  )
 
   # -- Save outputs ----------------------------------------------------------
   # Format POSIXct as "YYYY-MM-DD HH:MM:SS" (matches Python/pandas output)
