@@ -7,6 +7,95 @@ Repository releases are published as git tags / GitHub releases, starting at
 v1.0.0. (The data dictionaries packaged in this release are versioned
 separately by Neotree as "v8".)
 
+## [v1.2.0] — 2026-08
+
+A defect in PII redaction was deleting three real patient records from Zimbabwe
+discharge output on every run. Module 02's uid repair was extended and made
+configurable, and its report now says how much evidence stands behind each
+repair. The packaged data dictionaries are brought up to date with the internal
+build for the first time since v1.0.0.
+
+### Fixed
+
+- **Module 00a redacted all-numeric UIDs, and Module 02 then deleted those
+  patients.** The value-level PII scan applied every pattern to every remaining
+  column, including the `uid` key column. `phone_international`
+  (`^\+?[0-9]{7,15}$`) matches any 7–15 digit string, so three legitimate ZIM
+  discharge UIDs consisting only of digits (`26530019`, `26530047`, `26530054`,
+  all SMCH) were redacted to `NA`; Module 02 then removed those rows as
+  empty-uid frame shifts. Three real patients disappeared from the cleaned
+  output on every run, recorded only as `uid : 3 value(s)` in the audit report —
+  indistinguishable from a genuine redaction. This was a data-availability
+  failure, not a correctness one: no value was ever cleaned wrongly.
+
+  Key and system columns (`uid`, `facility`, `uniquekey`, the system timestamps,
+  `scriptversion`, `scriptid`) are now listed in `PII_VALUE_SCAN_EXEMPT` and are
+  **exempt from redaction, not from detection** — they are still scanned, and any
+  match is reported in a new audit-report section rather than acted on, so a real
+  identifier leaking into a key column is surfaced rather than passed through
+  silently. Counts only are reported, never the values.
+
+  All 15 raw files in the 4 August 2026 extract were checked: `uid` in ZIM
+  discharges is the only key/system column matched by any pattern in any dataset.
+  **Anyone who has run an earlier version should re-run the pipeline before using
+  ZIM discharge data — their output is three patient records short.**
+
+### Added
+
+- **Module 02 uid repair now handles a configurable set of separators.** A uid of
+  the form `XXXX<sep>YYYY` is repaired to `XXXX-YYYY`. Previously only a comma was
+  recognised; slash is now included, and the set is configuration rather than code
+  (`UID_REPAIR_SEPARATORS` in `00_setup.r`, surfaced as
+  `cfg$uid_repair_separators`), so recognising a further character is a one-line
+  change. Space and backslash were checked across the ZIM and MWI admission and
+  discharge files and occur zero times in any uid, so they are deliberately
+  excluded.
+- **Repairs are now reported as confirmed or unconfirmed.** A repair is
+  `confirmed` when the corrected uid also exists in the paired
+  admissions/discharges file for the same country, and `unconfirmed` when it does
+  not — in which case the repair rests on the facility's uid naming pattern alone.
+  `unchecked` means the paired file was unavailable and must never be read as a
+  negative result. Unconfirmed repairs are still applied; the distinction is
+  reported, not acted on.
+- **Paired-file resolution in `00_setup.r`** (`cfg$paired_dataset`,
+  `cfg$paired_csv_filepath`), mapping admissions ↔ discharges and
+  phc_admissions ↔ phc_discharges. It resolves a path only; the file is read by
+  Module 02 (two columns) and only when a repair needs confirming. Extracts are
+  dumped per table and their date stamps often differ, so resolution prefers the
+  same stamp and falls back to the most recent extract of the paired dataset for
+  the same country and source.
+- **Repairs that reveal a duplicate submission are flagged.** Where a repaired uid
+  matches another row in the same file, the report marks it as a likely duplicate
+  submission rather than a plain typo. Module 02 does not collapse it —
+  deduplication remains Module 10's responsibility.
+
+### Changed
+
+- **Module 02's "non-standard UIDs retained" report section is split in two**:
+  standard-length hyphen-less UIDs (8-character alphanumeric, a formatting variant
+  of a well-formed uid) are now counted and listed separately from other
+  non-standard UIDs (truncated or incomplete submissions with no recoverable
+  structure). They are different problems and a single number hid the distinction.
+- **Packaged data dictionaries updated to match the internal build.** The
+  dictionaries shipped since v1.0.0 had fallen months behind, missing the
+  `hivtestresult` and `lengthhaart` fixes and still carrying the pre-rename
+  `signsdehydrations` key. All 37 files are now current. Dictionary content is
+  schema only — variable names, labels, types, plausible ranges, value maps and
+  PII column-name patterns — and carries no study data.
+
+### Documentation
+
+- Module 02 and Module 00a READMEs rewritten for the above, including why a
+  broad value-level pattern is hazardous (it is applied to every non-exempt
+  column, so a loose pattern silently deletes legitimate clinical values) and why
+  the exemption list is not a way to retain a column that genuinely holds PII.
+- `00_setup` README documents the new configuration and `cfg` fields; its
+  "Output file flags" section is renamed and corrected, having claimed five
+  boolean flags while listing seven, two of which are behaviour settings.
+- Module 10 README records that a repaired uid can create a duplicate pair, that
+  Stage 1 catches it, and that the completeness tie-break reaches no verdict when
+  two records are equally complete.
+
 ## [v1.1.0] — 2026-08
 
 A maintenance release. One defect suppressed all output for two dataset types;

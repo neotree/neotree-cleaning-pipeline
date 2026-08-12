@@ -112,7 +112,7 @@ Maternal age is captured on the deliveries / maternal-outcomes form in two diffe
 | 0    | `00_setup` | Load libraries, set file paths and source format, derive feature lists from v8 dictionary |
 | **00a** | `00a_pii_detection_removal` | **Remove PII from raw data -- runs BEFORE any cleaning** |
 | 1    | `01_standardise_column_headers` | Lowercase, strip whitespace, normalise dots |
-| 2    | `02_frame_shift_correction` | Remove rows with misaligned UIDs |
+| 2    | `02_frame_shift_correction` | Remove rows with empty/null UIDs; repair mistyped-hyphen UIDs (comma or slash) and report each repair as confirmed against the paired file or not; log retained non-standard UIDs in two groups |
 | 3    | `03_duplicate_column_merging` | Merge duplicate columns, keep most complete |
 | 4    | `04_dictionary_value_cleaning` | Harmonise categorical values to dictionary **canonical codes** (case-insensitive code/label match, legacy boolean on yes/no fields, multi-select case-folding); unresolved values left untouched and logged (see module README + Changelog) |
 | 5    | `05_forward_fill_placeholders` | Recover None/Normal/Norm from `.label` into `.value` |

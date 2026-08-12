@@ -5,8 +5,8 @@
   A single-file compilation of every documentation file shipped with the
   Neotree data cleaning pipeline.
 
-  Version   : 1.1.0  (see CHANGELOG.md)
-  Generated : 09 August 2026
+  Version   : 1.2.0  (see CHANGELOG.md)
+  Generated : 12 August 2026
   Source    : the README and documentation files in cleaning_pipeline_R/,
               reproduced here in full.
 
@@ -229,7 +229,7 @@ Maternal age is captured on the deliveries / maternal-outcomes form in two diffe
 | 0    | `00_setup` | Load libraries, set file paths and source format, derive feature lists from v8 dictionary |
 | **00a** | `00a_pii_detection_removal` | **Remove PII from raw data -- runs BEFORE any cleaning** |
 | 1    | `01_standardise_column_headers` | Lowercase, strip whitespace, normalise dots |
-| 2    | `02_frame_shift_correction` | Remove rows with misaligned UIDs |
+| 2    | `02_frame_shift_correction` | Remove rows with empty/null UIDs; repair mistyped-hyphen UIDs (comma or slash) and report each repair as confirmed against the paired file or not; log retained non-standard UIDs in two groups |
 | 3    | `03_duplicate_column_merging` | Merge duplicate columns, keep most complete |
 | 4    | `04_dictionary_value_cleaning` | Harmonise categorical values to dictionary **canonical codes** (case-insensitive code/label match, legacy boolean on yes/no fields, multi-select case-folding); unresolved values left untouched and logged (see module README + Changelog) |
 | 5    | `05_forward_fill_placeholders` | Recover None/Normal/Norm from `.label` into `.value` |
@@ -2754,7 +2754,8 @@ First -- must be sourced before any other module. Running `source("run_pipeline.
    - `DICT_FILEPATH` -- path to the data dictionary (NULL = auto-resolved)
    - `OUTPUT_CSV` / `OUTPUT_RDS` -- output file paths (NULL = auto-named)
    - `REPORT_DIR` -- directory for per-module text reports (NULL = auto-named; FALSE = suppress)
-   - Five optional **output flags** (see table in *Output file flags* below)
+   - `UID_REPAIR_SEPARATORS` -- characters treated as a mistyped hyphen in a `uid` by Module 02 (default `c(",", "/")`)
+   - The optional **output file and behaviour settings** (see table in *Output file and behaviour flags* below)
 
    **Injectable setup (batch mode):** when running via `run_all.r`, all of the above variables are set programmatically before `00_setup.r` is sourced. Every assignment in the User Configuration block is guarded with `if (!exists(...))` so that values injected by `run_all.r` take precedence over the defaults written in the file. The output flags follow the same pattern -- set them at the top of `run_all.r` (or leave unset to use the defaults in `00_setup.r`).
 
@@ -2780,6 +2781,10 @@ First -- must be sourced before any other module. Running `source("run_pipeline.
 
 6. A **dictionary fallback map** handles datasets without their own dictionary (e.g. `joined_admissions_discharges` falls back to the `admissions` dictionary).
 
+7. The **paired raw CSV** is resolved for cross-file checks. The pipeline cleans one file at a time and never loads admissions and discharges together, but some checks need to look the other half up -- Module 02 can only call a repaired `uid` "confirmed" if the corrected uid exists in the paired file. `PAIRED_DATASET` maps `admissions` <-> `discharges` and `phc_admissions` <-> `phc_discharges`; `.resolve_paired_csv()` then locates the file in the same `input/` folder, preferring the same extract stamp and otherwise falling back to the most recent extract of the paired dataset for that country and source. **The fallback is load-bearing, not defensive:** extracts are dumped per table, so the stamps routinely differ (e.g. `zim_db_admissions_202608041248.csv` against `zim_db_discharges_202608041250.csv`) and swapping only the dataset token finds nothing.
+
+   Only a path is resolved -- nothing is read here. Modules read the columns they need, when they need them (the approach Module 14a already takes for its neolab -> admissions lookup). `cfg$paired_csv_filepath` is `NULL` when the dataset has no pair or the file is absent, which modules must treat as "cannot check", never as a negative result.
+
 ---
 
 ## Inputs
@@ -2789,6 +2794,7 @@ First -- must be sourced before any other module. Running `source("run_pipeline.
 | User configuration block | Country, dataset, data source format, file paths |
 | `dictionaries/dictionary_{country}_{dataset}.xlsx` | v8 data dictionary (auto-resolved from COUNTRY x DATASET) |
 | Raw CSV file | Path stored in `cfg$csv_filepath`; loaded by Module 01 |
+| Paired raw CSV file | Opposite half of the admissions/discharges pair, auto-resolved into `cfg$paired_csv_filepath`. Not loaded here; read on demand by Module 02 (two columns only) |
 
 ---
 
@@ -2810,6 +2816,8 @@ The `cfg` list is the single source of truth for all modules:
 | `cfg$dataset` | Dataset type string |
 | `cfg$data_source` | `"database"` or `"metabase"` |
 | `cfg$csv_filepath` | Input CSV path |
+| `cfg$paired_dataset` | Name of the paired dataset (`"discharges"` for an admissions run, and vice versa). `NULL` when the dataset has no admissions/discharges pair |
+| `cfg$paired_csv_filepath` | Path to the paired raw CSV, used by Module 02 to confirm uid repairs. `NULL` when there is no pair or the file is not in `input/` |
 | `cfg$dict_filepath` | Resolved dictionary path |
 | `cfg$output_csv` | Output CSV path |
 | `cfg$output_rds` | Output RDS path |
@@ -2836,14 +2844,15 @@ The `cfg` list is the single source of truth for all modules:
 | `cfg$save_na_reasons_long` | Whether to write `*_na_reasons_long.csv.gz` (default `FALSE`) |
 | `cfg$skip_dedup_stage2` | Whether Module 10 skips Stage 2 patient-level deduplication. `TRUE` for `infections` and `neolab`; `FALSE` for all others. |
 | `cfg$resolve_neolab_datebct` | Whether Module 14a attempts to resolve NA `datebct` values by joining to the raw admissions file. Only has any effect when `cfg$dataset == "neolab"`. Default `TRUE`. |
+| `cfg$uid_repair_separators` | Characters Module 02 treats as a mistyped hyphen in a `uid`. Default `c(",", "/")`. |
 
 ---
 
-## Output file flags
+## Output file and behaviour flags
 
-Five boolean flags in the User Configuration block control optional output files. All default to the values below and can be overridden at the top of `run_all.r` for batch runs.
+The User Configuration block holds two kinds of setting: boolean flags controlling optional output files, and settings that change how a module behaves. All default to the values below and can be overridden at the top of `run_all.r` for batch runs.
 
-| Flag | Default | Controls |
+| Setting | Default | Controls |
 |------|---------|----------|
 | `SAVE_DEIDENTIFIED` | `FALSE` | `*_deidentified.csv` -- raw data with PII removed (Module 00a) |
 | `SAVE_STAGE1_CHECKPOINT` | `FALSE` | `*_cleaned_stage1.rds` -- mid-pipeline checkpoint after Module 10 |
@@ -2852,6 +2861,7 @@ Five boolean flags in the User Configuration block control optional output files
 | `SAVE_NA_REASONS_LONG` | `FALSE` | `*_na_reasons_long.csv.gz` -- long-format NA reasons, one row per NA cell |
 | `SKIP_DEDUP_STAGE2` | auto | Skip Stage 2 (patient-level) deduplication in Module 10. Auto-set to `TRUE` for `infections` and `neolab` (longitudinal datasets where multiple rows per patient are by design); `FALSE` for all other datasets. Override explicitly in `run_all.r` if needed. |
 | `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Resolve NA `datebct` values in the `neolab` dataset by joining to the raw admissions file on `uid + facility` and using `datetimeadmission` as a proxy date (Module 14a). Adds `datebct_resolved` and `datebct_source` columns. No effect for non-neolab datasets. |
+| `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Character vector (not a flag) of substitute characters Module 02 treats as a mistyped hyphen in a `uid`, repairing `"CDDA,0484"` to `"CDDA-0484"`. Module 02 builds its match pattern from this vector, so recognising a further character is a one-line change here. Add one only when the raw data shows it: space and backslash were checked across the ZIM and MWI admission and discharge files and occur zero times in any uid, so they are deliberately excluded. |
 
 PII removal always runs in-memory regardless of `SAVE_DEIDENTIFIED`; the flag only controls whether the de-identified copy is written to disk.
 
@@ -2917,6 +2927,35 @@ After column removal, each remaining column is scanned at value level for
 phone numbers, email addresses, and NHS/hospital number patterns; matches
 are redacted to `NA`.
 
+### Key and system columns are exempt from redaction
+
+`uid`, `facility`, `uniquekey`, the system timestamps (`startedat`,
+`completedat`, `ingestedat` and their discharge variants) and the script
+metadata (`scriptversion`, `scriptid`) are listed in `PII_VALUE_SCAN_EXEMPT`.
+They are still **scanned**, but a match is never redacted -- it is reported
+instead.
+
+These columns are structural identifiers the pipeline keys on, not free text in
+which a phone number or email could hide. Redacting one does not protect anyone;
+it destroys the record. A `uid` set to `NA` is removed by Module 02 as an empty
+uid, so the patient disappears from the cleaned output altogether.
+
+This was a live defect, not a hypothetical one. The generic
+`phone_international` pattern (`^\+?[0-9]{7,15}$`) matches **any** 7-15 digit
+string, and three legitimate ZIM discharge UIDs are 8 all-numeric characters
+(`26530019`, `26530047`, `26530054`, all SMCH). Every run redacted them and then
+dropped those three patients, recording it only as `uid : 3 value(s)` in the
+audit report -- indistinguishable from a genuine redaction. All 15 raw files in
+the 4 August 2026 extract were checked: this is the only key/system column hit,
+in that one dataset.
+
+Matches on exempt columns are reported under *Key/system columns exempt from
+redaction* in the audit report, as **counts only, never the values**. If a match
+were ever genuine PII -- a frame shift putting a phone number into `uid`, say --
+printing it into the report would leak exactly what this module exists to remove.
+The report tells you which column and which pattern; inspect the source file to
+judge it.
+
 ---
 
 ## Data source compatibility
@@ -2960,6 +2999,7 @@ The report (`reports/00a_pii_audit_report.txt`) documents:
 - How many columns were removed (dictionary vs pattern)
 - Which quasi-identifier columns were flagged
 - Which columns had individual values redacted, and how many
+- Which key/system columns were exempt from redaction, and any pattern matches found in them (counts only)
 
 **Review this report before sharing any dataset.**
 Quasi-identifier columns (district, village, tribe, ethnicity, religion,
@@ -2982,7 +3022,18 @@ To add more patterns, edit the constants at the top of
 PII_FALLBACK_PATTERNS    <- c(...)   # column-name patterns -> remove
 PII_QUASI_COL_PATTERNS   <- c(...)   # column-name patterns -> flag only
 PII_VALUE_PATTERNS       <- list(...)# value-level regex    -> redact to NA
+PII_VALUE_SCAN_EXEMPT    <- c(...)   # key/system columns   -> scan, report, never redact
 ```
+
+Before adding a value-level pattern, consider how broad it is. `PII_VALUE_PATTERNS`
+entries are applied to every non-exempt column, so a loose pattern silently
+deletes legitimate clinical values wherever they happen to match its shape. Prefer
+a specific pattern (`^0[67][0-9]{8}$`) over a generic one (`^[0-9]{7,15}$`).
+
+Add a column to `PII_VALUE_SCAN_EXEMPT` only if it is structural -- something the
+pipeline joins, groups or dedupes on. It is not a way to keep a column that
+genuinely holds PII: for those, use `PII_FALLBACK_PATTERNS` or the dictionary's
+`confidential` flag, which remove the whole column.
 
 
 ================================================================================
@@ -3140,7 +3191,7 @@ Previously, `scriptid`, `script_version`, `scriptversion`, `transformed`, and re
 
 ## Purpose
 
-Detects and removes rows where the `uid` field is empty or null -- the minimal necessary guard against irrecoverable data corruption -- and repairs UIDs where a comma was typed in place of a hyphen. Non-standard but non-empty UIDs are retained and logged for downstream handling.
+Detects and removes rows where the `uid` field is empty or null -- the minimal necessary guard against irrecoverable data corruption -- and repairs UIDs where a substitute character (comma or slash) was typed in place of a hyphen. Non-standard but non-empty UIDs are retained and logged for downstream handling, split into two separately tracked groups.
 
 ---
 
@@ -3168,11 +3219,50 @@ A genuine frame shift occurs when a CSV export misaligns columns, causing the `u
 
 Non-standard UIDs (no hyphen, very short, unusual characters such as `"EC"` or `"X"`) are **kept in the dataset** and logged in the report. The downstream probabilistic admissions-discharges matching step has access to multiple clinical variables (facility, birth weight, gestation, dates, outcomes) and is better placed to determine whether such a record can be linked. Silent deletion at Module 02 is worse than a logged anomaly passed on for further assessment.
 
+They are reported in **two separate groups**, because they are not the same kind of anomaly and merging them into a single count hides the distinction:
+
+| Group | Definition | Interpretation |
+|-------|------------|----------------|
+| **Standard-length, hyphen absent** | 8-character alphanumeric, no hyphen (`^[A-Za-z0-9]{8}$`), e.g. `"EC330587"`, `"75DA0016"` | A formatting variant of a well-formed uid -- the same data with the separator never stored. Expected to link normally downstream. |
+| **Other non-standard** | Everything else without a hyphen, e.g. `"EC"`, `"X"`, `"BS1262"` | Truncated or incomplete submissions with no recoverable uid structure. Unlikely to link; retained for audit rather than analysis. |
+
+On the 4 August 2026 ZIM discharges extract the split is **238 rows (112 unique UIDs)** standard-length against **11 rows (3 unique UIDs)** other. Two things move these numbers away from a raw count of the file:
+
+- A uid repaired by the step below carries a hyphen by the time this check runs, so it appears in **neither** group. The three `"CDDA,0484"` rows are hyphen-less in the raw file but repaired before the split is computed.
+- Three further rows (`26530019`, `26530047`, `26530054`, all SMCH) are hyphen-less 8-character UIDs in the raw file but never reach this check: Module 00a redacts them as PII first, and Module 02 then removes them as empty-uid rows. See the note in *Notes* below.
+
 ---
 
 ## UID Repair
 
-UIDs of the form `XXXX,YYYY` -- where a comma appears where a hyphen should be (e.g. `"CDDA,0484"` -> `"CDDA-0484"`) -- are repaired before any other processing. This is a data-entry substitution error. The pattern matched is `[A-Za-z0-9]{3-6},[A-Za-z0-9]+`; the comma is replaced with a hyphen. Repaired UIDs are logged in the report.
+UIDs of the form `XXXX<sep>YYYY` -- where a substitute character appears where a hyphen should be (e.g. `"CDDA,0484"` -> `"CDDA-0484"`, `"F55F/0700"` -> `"F55F-0700"`) -- are repaired before any other processing. This is a data-entry substitution error. The pattern matched is `[A-Za-z0-9]{3,6}<sep>[A-Za-z0-9]+`; the separator is replaced with a hyphen. Repaired UIDs are logged in the report.
+
+### Configurable separator set
+
+The substitute characters are configuration, not code: `UID_REPAIR_SEPARATORS` in `00_setup.r`, surfaced as `cfg$uid_repair_separators`. It currently holds **comma and slash**. Recognising a further character later is a one-line change there -- the module builds its match pattern from the vector and needs no edit.
+
+Space and backslash are **deliberately excluded**. Both were checked across the ZIM and MWI admission and discharge files (4 August 2026 extract) and occur zero times in any uid. Repairing a character no one has ever typed invents corrections rather than fixing them; add a separator only when the raw data shows it.
+
+### Confirmed vs unconfirmed repairs
+
+Every repair is reported with a status saying how much evidence stands behind it:
+
+| Status | Meaning |
+|--------|---------|
+| `confirmed` | The corrected (hyphenated) uid also exists in the paired admissions/discharges file for the same country, at the same facility -- the repair is backed by a real matching record. |
+| `confirmed (other facility)` | The corrected uid exists in the paired file but at a different facility. Weaker evidence; shown distinctly rather than merged into either bucket. |
+| `unconfirmed` | No such record exists in the paired file. The repair is inferred from the facility's uid naming pattern alone. |
+| `unchecked` | The paired file was not available, so no cross-check was possible. Never read this as a negative result. |
+
+The paired file is resolved once in `00_setup.r` (`cfg$paired_csv_filepath`) using the same approach Module 14a takes for its neolab-to-admissions lookup: the raw CSV for the opposite dataset in the same `input/` folder, preferring the same extract stamp and falling back to the most recent extract of that dataset for the same country and source. Only its `uid` and `facility` columns are read, and only when a repair actually needs confirming -- runs with no repairs pay nothing.
+
+**An unconfirmed repair is still applied.** The distinction is reported, not acted on: the repair rests on the facility's uid pattern either way, and the report is what tells a reader how much weight it carries. On the 4 August 2026 extract, ZIM's three `"CDDA,0484"` rows are unconfirmed (no `CDDA-0484` exists anywhere in ZIM admissions or discharges) while MWI's single `"F55F/0700"` row is confirmed against `F55F-0700` in MWI admissions.
+
+### Repairs that reveal a duplicate submission
+
+If a repaired uid matches another row **in the same file**, the report flags it as `[also present in this file -- likely duplicate submission]`. That is the signature of a retry rather than a plain typo: the MWI `F55F/0700` row shares its facility and `unique_key` event timestamp with the existing `F55F-0700` row and was ingested 250 ms later.
+
+Module 02 does not collapse the pair -- deduplication is Module 10's job, and it does catch this pattern (Stage 1 keys on `uid` + `facility` + the visit-date columns, all of which agree once the uid is repaired). Note the consequence: before the repair the two rows looked like two different patients and both survived; after it they are one patient and Module 10 keeps a single record.
 
 ---
 
@@ -3181,6 +3271,8 @@ UIDs of the form `XXXX,YYYY` -- where a comma appears where a hyphen should be (
 | Object | Description |
 |--------|-------------|
 | `df` | Data frame from Module 01 with a `uid` column |
+| `cfg$uid_repair_separators` | Characters treated as a mistyped hyphen (from `00_setup.r`) |
+| `cfg$paired_csv_filepath` | Paired admissions/discharges raw CSV used to confirm repairs; `NULL` if unavailable |
 
 ---
 
@@ -3188,7 +3280,7 @@ UIDs of the form `XXXX,YYYY` -- where a comma appears where a hyphen should be (
 
 | Object / File | Description |
 |---------------|-------------|
-| `df` | Data frame with empty/null-uid rows removed; comma UIDs repaired |
+| `df` | Data frame with empty/null-uid rows removed; separator UIDs repaired |
 | `reports/02_frame_shift_report.txt` | Counts of repaired, removed, and non-standard UIDs; full lists for audit |
 | `reports/02_frame_shift_dirty_rows.csv` | Rows with empty/null uid saved for audit (only rows actually removed) |
 
@@ -3198,24 +3290,26 @@ UIDs of the form `XXXX,YYYY` -- where a comma appears where a hyphen should be (
 
 The plain-text report includes:
 
+- The separator set in force for this run, and the paired file used for confirmation
 - Rows on entry and after correction
-- Count of comma UIDs repaired (with the repaired UID values)
-- Count of empty/null uid rows removed (with the uid values, typically blank)
-- Count of non-standard UIDs **retained** (with UID values, for audit)
+- Count of separator UIDs repaired, broken down into confirmed / unconfirmed / unchecked, followed by a table giving each repair's original and corrected uid, facility, separator, row count and status
+- Count of empty/null uid rows removed (with the uid values, typically blank). **This line is written on every run, including when the count is zero** -- a silent report and a clean file must never look the same
+- Count of non-standard UIDs **retained**, split into standard-length and other, each with its own UID list
 
 ---
 
 ## Key Function
 
-**`remove_frame_shift(df, report_filepath = NULL, csv_filepath = NULL)`**
+**`remove_frame_shift(df, separators = NULL, paired_csv_filepath = NULL, report_filepath = NULL, csv_filepath = NULL)`**
 
-Performs three steps in sequence:
+Performs four steps in sequence:
 
-1. **Repair** -- replaces commas with hyphens in UIDs matching the `XXXX,YYYY` pattern.
+1. **Repair** -- replaces the separator with a hyphen in UIDs matching the `XXXX<sep>YYYY` pattern, for each character in `separators` (defaults to `cfg$uid_repair_separators`).
 2. **Remove** -- drops rows where `uid` is empty, NA, or a null-equivalent string.
-3. **Log** -- identifies rows with non-standard (no-hyphen) UIDs and includes them in the report without removing them.
+3. **Confirm** -- looks each repaired uid up in `paired_csv_filepath` and tags it confirmed, unconfirmed or unchecked. The paired file is read only if there is a repair to confirm.
+4. **Log** -- identifies rows with non-standard (no-hyphen) UIDs, splits them into standard-length and other, and includes both in the report without removing anything.
 
-Returns the cleaned data frame with empty-uid rows removed and comma UIDs repaired.
+Returns the cleaned data frame with empty-uid rows removed and separator UIDs repaired.
 
 ---
 
@@ -3225,6 +3319,9 @@ Returns the cleaned data frame with empty-uid rows removed and comma UIDs repair
 - The `dirty_rows.csv` contains only the rows that were **actually removed** (empty/null uid), not the non-standard UIDs that were retained.
 - This step must run before any join, deduplication, or value-cleaning logic.
 - The probabilistic admissions-discharges matching module is the appropriate place to assess whether records with non-standard UIDs can be linked to other records.
+- Confirmation reads the **raw** paired CSV, not a cleaned one, so it does not depend on the paired file having been through the pipeline. It reads two columns only.
+- **An all-numeric uid is blanked before this module sees it.** Module 00a's value-level PII scan applies `phone_international` (`^\+?[0-9]{7,15}$`) to every column including `uid`, so a legitimate all-digit uid is redacted to NA and Module 02 then removes the row as empty-uid. On the 4 August 2026 extract this costs ZIM discharges three patient records (`26530019`, `26530047`, `26530054`, SMCH); the other three admission/discharge files have no all-numeric UIDs and are unaffected. The empty/null count in this module's report is therefore not always a count of genuine frame shifts. Fixing this belongs in Module 00a (exclude `uid` from value-level phone matching), not here.
+- `cfg$paired_csv_filepath` is `NULL` for datasets with no admissions/discharges counterpart (maternal outcomes, neolab, baseline, and so on). Those runs report `unchecked` if they ever contain a repair; today none do.
 
 
 ================================================================================
@@ -3896,6 +3993,8 @@ After the function returns, the module saves the stage-1 checkpoint RDS if `cfg$
 - The stage-1 checkpoint (`*_cleaned_stage1.rds`) is saved into the run's output subfolder (`output/<file_stem>/`) when `SAVE_STAGE1_CHECKPOINT = TRUE`. Set this flag in `00_setup.r` or inject it from `run_all.r` to enable it for specific runs.
 - If the checkpoint cannot be saved (e.g. write permission error), a warning is logged and the pipeline continues.
 - The Stage 2 strategy was changed from "keep earliest visit date" to "keep most complete record" following the discovery that systematic `neotreeoutcome` discrepancies between the R and Python pipelines were caused by R retaining the original truncated transmission while Python retained the fully-transmitted retransmission. See `REPORTS/neotreeoutcome_discrepancy_root_cause_analysis.md` for full analysis.
+- **UIDs repaired by Module 02 can create a duplicate pair here.** When Module 02 repairs a mistyped-hyphen uid (e.g. `"F55F/0700"` -> `"F55F-0700"`) and the hyphenated form already exists in the same file, the two rows stop looking like two patients and become a duplicate pair for this module to collapse. Stage 1 does catch it -- verified on the 4 August 2026 MWI discharges extract, where the pair shares `facility`, `unique_key`, and has all four applicable visit-date columns NA on both rows, so the Stage 1 group keys agree once the uid matches. Because it is caught at Stage 1, this also holds for datasets running with `skip_dedup_stage2 = TRUE`. Module 02's report flags such a repair as `[also present in this file -- likely duplicate submission]`.
+- **The tie-break has no verdict when completeness ties.** In the MWI case above both rows carry exactly 50 non-NA fields but differ in 9 of them (`DischHR`, `DischSats`, `DischWeight`, `DateTimeDischarge`, ...). The Stage 1 rationale below -- prefer the retransmission because it is more complete -- does not discriminate here, so `slice_min(with_ties = FALSE)` keeps whichever row comes first in frame order, which is the **earlier-ingested** copy. That is the opposite of the "retransmission is authoritative" principle, arrived at by default rather than by decision. Unresolved; raised 2026-08-12.
 - **Open clinical question:** The "most complete record" tie-breaking rule has not been validated against clinical notes or medical records. This strategy affects 79 outcome classifications in ZIM discharges and 87 in MWI discharges, including DC<->NND reclassifications. Clinicians should review the affected pairs before using discharge outcome data for analysis or publication. See `REPORTS/Neotree_Master_Dataset_Protocol_v2.docx`, Section 9.5 for full context and scale.
 
 

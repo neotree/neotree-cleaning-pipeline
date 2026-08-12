@@ -35,6 +35,25 @@
 #     - Email addresses
 #     - NHS/hospital number patterns
 #
+#     KEY AND SYSTEM COLUMNS ARE EXEMPT FROM REDACTION (see
+#     PII_VALUE_SCAN_EXEMPT).  uid, facility, uniquekey, the system timestamps
+#     and the script metadata are structural identifiers the pipeline depends
+#     on, not free text in which a phone number or email could hide.  Redacting
+#     one destroys the record: a uid set to NA is removed by Module 02 as an
+#     empty uid, and the patient disappears from the cleaned output entirely.
+#
+#     This is not hypothetical.  The generic phone_international pattern
+#     ("^\\+?[0-9]{7,15}$") matches ANY 7-15 digit string, and three legitimate
+#     ZIM discharge UIDs are 8 all-numeric characters (26530019, 26530047,
+#     26530054, all SMCH).  Every run redacted them and then dropped those three
+#     patients, recording it only as "uid : 3 value(s)" in the audit report.
+#
+#     Exempt columns are still SCANNED, and any match is reported under
+#     "Key/system columns exempt from redaction" -- so a genuine identifier
+#     leaking into a key column (e.g. a frame shift putting a phone number in
+#     uid) is surfaced for review rather than silently passed through.  Counts
+#     only are reported, never the values, so the report cannot itself leak PII.
+#
 # DATA SOURCE COMPATIBILITY:
 #   This module handles both data source formats transparently:
 #
@@ -59,6 +78,7 @@
 #   3. Remove additional columns matching PII name patterns (fallback).
 #   4. Flag quasi-identifier columns (no automatic removal).
 #   5. Scan remaining columns for PII-like values, redact to NA.
+#      Key/system columns are scanned but never redacted; matches are reported.
 #   6. Write a PII audit report.
 #   7. Save a de-identified CSV for all downstream modules.
 #
@@ -157,6 +177,21 @@ PII_VALUE_PATTERNS <- list(
   nhs_number          = "^[0-9]{3}[- ][0-9]{3}[- ][0-9]{4}$"
 )
 
+# -- Columns exempt from value-level REDACTION (still scanned and reported) ----
+# Normalised names (post clean_name_simple), so this list covers both the
+# "database" and "metabase" source formats.
+#
+# These are the structural columns the pipeline keys on.  None of them is free
+# text, so none can plausibly hide a phone number or email address -- but all of
+# them are matchable by the broad numeric patterns, and redacting one silently
+# destroys the record rather than protecting anyone.  See the header note.
+PII_VALUE_SCAN_EXEMPT <- c(
+  "uid", "facility", "uniquekey",
+  "startedat", "completedat", "ingestedat",
+  "startedatdischarge", "completedatdischarge", "ingestedatdischarge",
+  "scriptversion", "scriptid"
+)
+
 # =============================================================================
 # COLUMN NAME NORMALISATION
 # =============================================================================
@@ -234,20 +269,46 @@ remove_pii <- function(df,
   n_cols_remaining <- ncol(df)   # capture post-removal count for the audit report
 
   # -- Step 5: Value-level scan across remaining columns ---------------------
+  # Key/system columns are scanned but never redacted -- redacting a structural
+  # identifier destroys the record instead of protecting anyone (a uid set to NA
+  # is dropped by Module 02 as an empty uid).  Matches on those columns are
+  # collected for the audit report so nothing passes silently either way.
+  exempt_present <- intersect(names(df), PII_VALUE_SCAN_EXEMPT)
+  exempt_hits    <- list()
+
+  if (length(exempt_present) > 0)
+    log_info("00a_pii: %d key/system column(s) exempt from value-level redaction: %s",
+             length(exempt_present), paste(exempt_present, collapse = ", "))
+
   for (col in names(df)) {
     vals       <- as.character(df[[col]])
     n_redacted <- 0L
+    is_exempt  <- col %in% PII_VALUE_SCAN_EXEMPT
 
     for (pat_name in names(PII_VALUE_PATTERNS)) {
       pattern  <- PII_VALUE_PATTERNS[[pat_name]]
       pii_mask <- grepl(pattern, vals, perl = TRUE) & !is.na(vals)
       n_match  <- sum(pii_mask)
-      if (n_match > 0) {
-        df[[col]][pii_mask] <- NA_character_
-        n_redacted          <- n_redacted + n_match
-        log_info("  00a_pii: %d value(s) matching '%s' redacted in '%s'.",
-                 n_match, pat_name, col)
+      if (n_match == 0) next
+
+      if (is_exempt) {
+        # Report only. Never the values themselves: if a match ever IS real PII,
+        # writing it to the audit report would leak exactly what we are removing.
+        exempt_hits[[length(exempt_hits) + 1L]] <- list(
+          col = col, pattern = pat_name, n = n_match
+        )
+        log_warn(
+          paste("00a_pii: %d value(s) in key/system column '%s' match '%s'.",
+                "NOT redacted (redaction would destroy the record) -- review the source file."),
+          n_match, col, pat_name
+        )
+        next
       }
+
+      df[[col]][pii_mask] <- NA_character_
+      n_redacted          <- n_redacted + n_match
+      log_info("  00a_pii: %d value(s) matching '%s' redacted in '%s'.",
+               n_match, pat_name, col)
     }
 
     if (n_redacted > 0) redacted_vals[[col]] <- n_redacted
@@ -311,6 +372,29 @@ remove_pii <- function(df,
                      sprintf("  - %-40s : %d value(s)", col, redacted_vals[[col]])))
       } else {
         lines <- c(lines, "  (none detected)")
+      }
+
+      lines <- c(lines, "",
+        "=== Key/System Columns Exempt From Redaction ===",
+        sprintf("  Exempt columns present in this dataset (%d): %s",
+                length(exempt_present), paste(exempt_present, collapse = ", ")),
+        "  These are scanned but never redacted. They are structural identifiers the",
+        "  pipeline keys on, not free text: redacting one destroys the record rather",
+        "  than protecting anyone (a uid set to NA is dropped by Module 02 as an",
+        "  empty uid, removing the patient from the cleaned output).")
+      if (length(exempt_hits) > 0) {
+        lines <- c(lines, "",
+          "  PATTERN MATCHES FOUND IN EXEMPT COLUMNS -- review the source file:",
+          vapply(exempt_hits, function(h)
+            sprintf("  - %-40s : %d value(s) matching '%s'", h$col, h$n, h$pattern),
+            character(1)),
+          "",
+          "  Values are deliberately not printed here: if a match were genuine PII,",
+          "  printing it would leak exactly what this module exists to remove.",
+          "  Almost always these are legitimate identifiers that happen to look",
+          "  numeric (e.g. an all-digit uid). Confirm before treating one as PII.")
+      } else {
+        lines <- c(lines, "  No pattern matches found in exempt columns.")
       }
 
       writeLines(unlist(lines), report_filepath)

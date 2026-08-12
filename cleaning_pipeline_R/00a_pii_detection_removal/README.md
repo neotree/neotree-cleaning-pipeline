@@ -25,6 +25,35 @@ After column removal, each remaining column is scanned at value level for
 phone numbers, email addresses, and NHS/hospital number patterns; matches
 are redacted to `NA`.
 
+### Key and system columns are exempt from redaction
+
+`uid`, `facility`, `uniquekey`, the system timestamps (`startedat`,
+`completedat`, `ingestedat` and their discharge variants) and the script
+metadata (`scriptversion`, `scriptid`) are listed in `PII_VALUE_SCAN_EXEMPT`.
+They are still **scanned**, but a match is never redacted -- it is reported
+instead.
+
+These columns are structural identifiers the pipeline keys on, not free text in
+which a phone number or email could hide. Redacting one does not protect anyone;
+it destroys the record. A `uid` set to `NA` is removed by Module 02 as an empty
+uid, so the patient disappears from the cleaned output altogether.
+
+This was a live defect, not a hypothetical one. The generic
+`phone_international` pattern (`^\+?[0-9]{7,15}$`) matches **any** 7-15 digit
+string, and three legitimate ZIM discharge UIDs are 8 all-numeric characters
+(`26530019`, `26530047`, `26530054`, all SMCH). Every run redacted them and then
+dropped those three patients, recording it only as `uid : 3 value(s)` in the
+audit report -- indistinguishable from a genuine redaction. All 15 raw files in
+the 4 August 2026 extract were checked: this is the only key/system column hit,
+in that one dataset.
+
+Matches on exempt columns are reported under *Key/system columns exempt from
+redaction* in the audit report, as **counts only, never the values**. If a match
+were ever genuine PII -- a frame shift putting a phone number into `uid`, say --
+printing it into the report would leak exactly what this module exists to remove.
+The report tells you which column and which pattern; inspect the source file to
+judge it.
+
 ---
 
 ## Data source compatibility
@@ -68,6 +97,7 @@ The report (`reports/00a_pii_audit_report.txt`) documents:
 - How many columns were removed (dictionary vs pattern)
 - Which quasi-identifier columns were flagged
 - Which columns had individual values redacted, and how many
+- Which key/system columns were exempt from redaction, and any pattern matches found in them (counts only)
 
 **Review this report before sharing any dataset.**
 Quasi-identifier columns (district, village, tribe, ethnicity, religion,
@@ -90,4 +120,15 @@ To add more patterns, edit the constants at the top of
 PII_FALLBACK_PATTERNS    <- c(...)   # column-name patterns -> remove
 PII_QUASI_COL_PATTERNS   <- c(...)   # column-name patterns -> flag only
 PII_VALUE_PATTERNS       <- list(...)# value-level regex    -> redact to NA
+PII_VALUE_SCAN_EXEMPT    <- c(...)   # key/system columns   -> scan, report, never redact
 ```
+
+Before adding a value-level pattern, consider how broad it is. `PII_VALUE_PATTERNS`
+entries are applied to every non-exempt column, so a loose pattern silently
+deletes legitimate clinical values wherever they happen to match its shape. Prefer
+a specific pattern (`^0[67][0-9]{8}$`) over a generic one (`^[0-9]{7,15}$`).
+
+Add a column to `PII_VALUE_SCAN_EXEMPT` only if it is structural -- something the
+pipeline joins, groups or dedupes on. It is not a way to keep a column that
+genuinely holds PII: for those, use `PII_FALLBACK_PATTERNS` or the dictionary's
+`confidential` flag, which remove the whole column.

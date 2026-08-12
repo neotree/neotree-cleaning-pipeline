@@ -200,6 +200,19 @@ if (!exists("SKIP_DEDUP_STAGE2")) {
 #   other datasets (the module checks and skips in < 1ms).
 if (!exists("RESOLVE_NEOLAB_DATEBCT")) RESOLVE_NEOLAB_DATEBCT <- TRUE
 
+# Separator characters treated as a mistyped hyphen in a uid (Module 02).
+#   The standard Neotree uid is "XXXX-YYYY".  A uid of the form "XXXX,YYYY" or
+#   "XXXX/YYYY" is a data-entry substitution for that hyphen and is repaired.
+#   To recognise a further substitute character later, add it to this vector --
+#   no code change is needed anywhere else.
+#
+#   Only characters with evidence in the raw data belong here.  Space and
+#   backslash were checked across the ZIM and MWI admission and discharge files
+#   (4 Aug 2026 extract) and occur zero times in any uid, so they are
+#   deliberately NOT included: repairing a character no one has ever typed
+#   invents corrections rather than fixing them.
+if (!exists("UID_REPAIR_SEPARATORS")) UID_REPAIR_SEPARATORS <- c(",", "/")
+
 # Harmonised (snake_case) CSV + RDS written by Module 00b.
 # Set TRUE if your downstream analysis uses harmonised column names.
 if (!exists("SAVE_HARMONISED"))        SAVE_HARMONISED        <- FALSE
@@ -240,7 +253,7 @@ NEOTREE_SCRIPTS_DIR <- normalizePath(NEOTREE_SCRIPTS_DIR, mustWork = FALSE)
 # -- Pipeline version ----------------------------------------------------------
 # Stamped into every per-run log so a cleaned output can always be traced back to
 # the code that produced it.  Bump this together with CHANGELOG.md on release.
-PIPELINE_VERSION <- "1.1.0"
+PIPELINE_VERSION <- "1.2.0"
 
 # -- Logging -------------------------------------------------------------------
 log_appender(appender_tee(file = file.path(RUN_OUTPUT_DIR, paste0(file_stem, ".log"))))
@@ -359,6 +372,88 @@ if (isFALSE(REPORT_DIR) || identical(REPORT_DIR, "")) REPORT_DIR <- NULL
 
 log_info("Running for: COUNTRY=%s  DATASET=%s", COUNTRY, DATASET)
 log_info("Dictionary : %s", DICT_FILEPATH)
+
+# =============================================================================
+# PAIRED DATASET RESOLUTION
+# =============================================================================
+# Admissions and discharges are two halves of the same patient record, but the
+# pipeline cleans one file at a time and never loads both together.  Some checks
+# need to look the other half up -- Module 02, for example, can only call a
+# repaired uid "confirmed" if the corrected uid actually exists in the paired
+# file for the same country.
+#
+# This block resolves the paired raw CSV once, here, so that any module can use
+# cfg$paired_csv_filepath without repeating the path arithmetic.  It resolves a
+# path only; nothing is read.  Modules that need the file read the columns they
+# want, when they want them (the same approach Module 14a takes for its
+# neolab -> admissions lookup).
+#
+# NULL means "no paired file available" -- either the dataset has no pair, or
+# the file is not in input/.  Modules must treat that as "cannot check", never
+# as a negative result.
+
+PAIRED_DATASET <- c(
+  admissions     = "discharges",
+  discharges     = "admissions",
+  phc_admissions = "phc_discharges",
+  phc_discharges = "phc_admissions"
+)
+
+#' Locate the paired admissions/discharges raw CSV for the current run
+#'
+#' Prefers the file from the same extract (identical date stamp).  If that is
+#' absent -- extracts are dumped per table and the stamps often differ by a
+#' minute or two -- it falls back to any extract of the paired dataset for the
+#' same country and source, taking the most recent.
+#'
+#' @return list(dataset = <paired dataset name or NULL>, path = <path or NULL>)
+.resolve_paired_csv <- function(csv_filepath, dataset) {
+  paired <- unname(PAIRED_DATASET[dataset])
+  if (is.na(paired)) return(list(dataset = NULL, path = NULL))
+
+  in_dir <- dirname(csv_filepath)
+  bname  <- basename(csv_filepath)
+
+  # 1. Same extract: swap only the dataset token in the filename.
+  direct <- file.path(
+    in_dir,
+    sub(sprintf("_%s_", dataset), sprintf("_%s_", paired), bname, fixed = TRUE)
+  )
+  if (file.exists(direct)) return(list(dataset = paired, path = direct))
+
+  # 2. Any extract of the paired dataset for the same country + source.
+  m <- regmatches(bname, regexec("^(mwi|zim)_(db|mb)_", bname, ignore.case = TRUE))[[1]]
+  if (length(m) == 0) return(list(dataset = paired, path = NULL))
+
+  pattern <- sprintf(
+    "^%s%s_(\\d{12}|\\d{8}|\\d{4}-\\d{2}-\\d{2})\\.csv$",
+    tolower(m[1]), paired
+  )
+  candidates <- sort(list.files(in_dir, pattern = pattern, ignore.case = TRUE))
+  if (length(candidates) == 0) return(list(dataset = paired, path = NULL))
+
+  if (length(candidates) > 1) {
+    log_info(
+      "Paired-file lookup: %d %s extracts found; using the most recent (%s).",
+      length(candidates), paired, candidates[length(candidates)]
+    )
+  }
+  list(dataset = paired, path = file.path(in_dir, candidates[length(candidates)]))
+}
+
+paired_info <- .resolve_paired_csv(CSV_FILEPATH, DATASET)
+
+if (is.null(paired_info$dataset)) {
+  log_info("Paired file : none (dataset '%s' has no admissions/discharges pair).", DATASET)
+} else if (is.null(paired_info$path)) {
+  log_warn(
+    paste("Paired file : %s dataset not found in '%s'.",
+          "Cross-file checks (e.g. Module 02 uid repair confirmation) will report 'unchecked'."),
+    paired_info$dataset, dirname(CSV_FILEPATH)
+  )
+} else {
+  log_info("Paired file : %s", paired_info$path)
+}
 
 # =============================================================================
 # LOAD DICTIONARY
@@ -631,6 +726,12 @@ cfg <- list(
   # File paths
   csv_filepath   = CSV_FILEPATH,
   dict_filepath  = DICT_FILEPATH,
+
+  # Paired admissions/discharges raw CSV for cross-file checks (Module 02).
+  # Both are NULL when the dataset has no pair or the file is absent.
+  paired_dataset      = paired_info$dataset,
+  paired_csv_filepath = paired_info$path,
+
   output_dir     = OUTPUT_DIR,        # base output/ directory
   run_output_dir = RUN_OUTPUT_DIR,    # per-run subfolder (output/<file_stem>/)
   file_stem      = file_stem,         # input CSV stem (no extension)
@@ -670,6 +771,9 @@ cfg <- list(
   # PII & harmonisation
   pii_columns = pii_columns, # vector of column names to drop
   harmonised_map = harmonised_name_map, # named vector for Module 00b
+
+  # Module 02: characters treated as a mistyped hyphen in a uid.
+  uid_repair_separators = UID_REPAIR_SEPARATORS,
 
   # Module 16: NA Reason Coding
   neotree_scripts_dir = NEOTREE_SCRIPTS_DIR, # path to neotree_scripts/
