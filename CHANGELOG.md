@@ -7,6 +7,14 @@ Repository releases are published as git tags / GitHub releases, starting at
 v1.0.0. (The data dictionaries packaged in this release are versioned
 separately by Neotree as "v8".)
 
+## [v1.2.2] — 2026-08
+
+Documentation-only follow-up to v1.2.1: regenerated the `phc_discharges`
+`_enriched.xlsx` reference dictionary (`display_label`, `skip_condition`,
+`public_*` columns) to include the `facilityname` field. This file is not
+read by the cleaning pipeline at runtime — `PIPELINE_VERSION` stays at
+1.2.1, matching the code that actually produced any cleaned output.
+
 ## [v1.2.1] — 2026-08
 
 Two silent data-completeness defects in the MWI PHC datasets, found via a
