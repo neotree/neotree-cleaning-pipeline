@@ -229,8 +229,8 @@
                         ]
                     },
                     {
-                        "label": "Outcome",
-                        "key": "NeoTreeOutcome",
+                        "label": "Outcome at discharge",
+                        "key": "NeotreeOutcome",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,

@@ -7,6 +7,28 @@ Repository releases are published as git tags / GitHub releases, starting at
 v1.0.0. (The data dictionaries packaged in this release are versioned
 separately by Neotree as "v8".)
 
+## [v1.2.3] — 2026-08
+
+A three-way sync audit (local / DSH / this repo) found that this repo's own
+copies of the web-editor data-key export (`neotree_data_keys/`) and script
+metadata (`neotree_scripts/`) had gone stale relative to the internal build,
+independently of the packaged dictionaries themselves. Rebuilding the
+dictionaries from scratch using this repo's own inputs would have produced
+14 of the 18 packaged dictionaries differently from what's actually shipped
+(e.g. `zim_admissions` would come out with 501 variables instead of 511) --
+a latent risk for anyone rebuilding from this repo, not a defect in the
+dictionaries that were already published.
+
+### Fixed
+
+- **`neotree_data_keys/` and `neotree_scripts/` refreshed to match the
+  internal build.** Rebuilt all 18 dictionaries (base + `_enriched`, 36
+  files) from the refreshed inputs and content-verified every one against
+  the internal build: full parity confirmed. No dictionary content that was
+  already shipped has changed as a result -- this closes the gap between
+  what a rebuild from this repo would produce and what's already published,
+  it does not alter the current release.
+
 ## [v1.2.2] — 2026-08
 
 Documentation-only follow-up to v1.2.1: regenerated the `phc_discharges`

@@ -109,8 +109,8 @@
                         ]
                     },
                     {
-                        "label": "Outcome",
-                        "key": "NeoTreeOutcome",
+                        "label": "Outcome at discharge",
+                        "key": "NeotreeOutcome",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
@@ -135,7 +135,7 @@
                             },
                             {
                                 "value": "TRH",
-                                "valueLabel": "Transferred to other Hospital"
+                                "valueLabel": "Transferred to other hospital"
                             },
                             {
                                 "value": "TRO",
@@ -253,7 +253,7 @@
                 "managementMetadata": null,
                 "fields": [
                     {
-                        "label": "Presenting Complaint",
+                        "label": "Presenting complaint",
                         "key": "AdmReason",
                         "type": "dropdown",
                         "dataType": "dropdown",
@@ -275,7 +275,7 @@
                             },
                             {
                                 "value": "DIB",
-                                "valueLabel": "Difficulty breathing"
+                                "valueLabel": "Respiratory distress / Difficulty breathing/ Fast Breathing"
                             },
                             {
                                 "value": "DU",
@@ -294,8 +294,8 @@
                                 "valueLabel": "Gastroschisis"
                             },
                             {
-                                "value": "BA",
-                                "valueLabel": "Hypoxic ischaemic encephalopathy"
+                                "value": "HIE",
+                                "valueLabel": "Birth Asphyxia / Hypoxic Ischaemic Encephalopathy (HIE)"
                             },
                             {
                                 "value": "HIVExp",
@@ -323,7 +323,7 @@
                             },
                             {
                                 "value": "Prem",
-                                "valueLabel": "Prematurity"
+                                "valueLabel": "Premature"
                             },
                             {
                                 "value": "PremRDS",
@@ -355,7 +355,7 @@
                             },
                             {
                                 "value": "NSep",
-                                "valueLabel": "Suspected neonatal sepsis"
+                                "valueLabel": "Sepsis suspected"
                             },
                             {
                                 "value": "O",
@@ -494,7 +494,7 @@
                         "key": "BirthPlace",
                         "type": "dropdown",
                         "dataType": "dropdown",
-                        "optional": true,
+                        "optional": false,
                         "confidential": false,
                         "condition": "",
                         "options": [
@@ -769,7 +769,7 @@
                             },
                             {
                                 "value": "NSepNC",
-                                "valueLabel": "Risk factors for sepsis (but sepsis ruled out)"
+                                "valueLabel": "Sepsis (risk factors, but ruled out)"
                             },
                             {
                                 "value": "NB",
@@ -4649,10 +4649,6 @@
                             {
                                 "value": "MxFx",
                                 "valueLabel": "Maxillofacial Surgery"
-                            },
-                            {
-                                "value": "Neuro",
-                                "valueLabel": "Neurology"
                             },
                             {
                                 "value": "Endoc",

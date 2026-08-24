@@ -5,11 +5,11 @@
         "hospitalName": "Bua Primary Health Centre",
         "diagnoses": [
             {
-                "diagnosisId": "2a0a09d2-6259-4877-a377-589bec06b0dd",
+                "diagnosisId": "dc2bb78c-7fd0-4161-a6b4-38868720de46",
                 "name": "Possible Meconium Aspiration",
                 "key": "MA",
                 "keyId": "9576c34e-6e41-4a78-aeed-a0485485b4b4",
-                "position": 2932,
+                "position": 3244,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "",
@@ -136,11 +136,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "0ca3948f-f3b2-4970-89e6-f300eba2f9b0",
+                "diagnosisId": "f765b5d5-8be3-4623-bd12-21f0b385acea",
                 "name": "Suspected Neonatal Sepsis",
                 "key": "NSep",
                 "keyId": "d239e143-1ddd-4155-aec5-5a468abf494e",
-                "position": 2933,
+                "position": 3245,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "$EDLIZSummaryTableScore > 0.9",
@@ -156,11 +156,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "33456986-2b8a-4076-b6b1-d3050124e9c8",
+                "diagnosisId": "64cdc565-1233-4dfc-a8ea-cccff8313170",
                 "name": "Difficulty Feeding",
                 "key": "DF",
                 "keyId": "b09f78b7-7013-4e04-bdef-62c48e610708",
-                "position": 2934,
+                "position": 3246,
                 "source": "editor",
                 "severityOrder": 6,
                 "expression": "",
@@ -227,11 +227,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "3c36016c-5a36-4993-9ffa-ff3a6153cc4d",
+                "diagnosisId": "3f249015-7c7b-4b4b-a7c5-342cc4a6504f",
                 "name": "Dehydration",
                 "key": "Dhyd",
                 "keyId": "f17cf4e4-391f-48fc-9792-2b993411c07c",
-                "position": 2935,
+                "position": 3247,
                 "source": "editor",
                 "severityOrder": 6,
                 "expression": "",
@@ -281,23 +281,23 @@
                     },
                     {
                         "expression": "$Fontanelle = 'Sunk'",
-                        "name": "Fontanelle Sunken",
+                        "name": "Sunken Fontanelle",
                         "type": "sign",
                         "weight": "1.0",
                         "position": 4,
                         "symptomId": "d655b4de-34f4-4799-8306-b84d5c625cff",
                         "printable": true,
-                        "keyId": "f8725ec4-2fdb-49d5-bf56-935d73a6115d"
+                        "key": "SunkFont"
                     }
                 ],
                 "fields": []
             },
             {
-                "diagnosisId": "4ae06dd6-5f17-467a-b61d-9ea7aa0b2a2f",
+                "diagnosisId": "57876f7f-4170-4454-84a0-ae57aea0bf4a",
                 "name": "Congenital Heart Disease",
                 "key": "CHD",
                 "keyId": "1ca2e172-e432-4e88-81a4-e92a7b27ec76",
-                "position": 2936,
+                "position": 3248,
                 "source": "",
                 "severityOrder": 3,
                 "expression": "",
@@ -313,11 +313,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "a18d7c5e-116f-4425-a5ef-10cf44c490d8",
+                "diagnosisId": "6b656af9-b781-4b72-9ca1-4da555e9010e",
                 "name": "Anaemia",
                 "key": "An",
                 "keyId": "f5e22679-454e-4edf-8df4-9cf555003d22",
-                "position": 2937,
+                "position": 3249,
                 "source": "editor",
                 "severityOrder": 5,
                 "expression": "",
@@ -354,11 +354,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "a6232ec4-beb3-47f0-9d88-fa9a9adf42df",
+                "diagnosisId": "56a52d95-ca14-465b-bc07-8bf88fb16bb4",
                 "name": "Congenital Abnormality",
                 "key": "Cong",
                 "keyId": "d3806164-37f9-48df-a166-84f382f4a6cd",
-                "position": 2938,
+                "position": 3250,
                 "source": "editor",
                 "severityOrder": 6,
                 "expression": "",
@@ -455,11 +455,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "a1fd847e-8dcd-4d04-bf01-9677d57847c2",
+                "diagnosisId": "5d1d10bb-6c12-498f-9869-316f021ddfa4",
                 "name": "Pneumonia / Bronchiolitis",
                 "key": "PnBch",
                 "keyId": "276e08af-8980-4035-b283-baff6eb85734",
-                "position": 2939,
+                "position": 3251,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "",
@@ -566,11 +566,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "2a3461e0-986f-4aef-aa71-98801f4476b4",
+                "diagnosisId": "80fd6888-1dd7-4e53-a744-c76a05b18f93",
                 "name": "Transient Tachypnoea of Newborn (TTN)",
                 "key": "TTN",
                 "keyId": "cc4e16f7-a4ee-49c5-b04f-67f25a8c7b99",
-                "position": 2940,
+                "position": 3252,
                 "source": "editor",
                 "severityOrder": 2,
                 "expression": "",
@@ -857,11 +857,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "85a8892f-d862-4bd7-a0d8-edec5fc6a4f0",
+                "diagnosisId": "b8c0b5c8-cf7a-4221-a148-400d6693690f",
                 "name": "Umbilical Hernia",
                 "key": "UH",
                 "keyId": "a25ffc83-225f-4005-81df-e3827baac1ff",
-                "position": 2941,
+                "position": 3253,
                 "source": "editor",
                 "severityOrder": 8,
                 "expression": "",
@@ -877,11 +877,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "dbd34ae2-ed74-4418-93f5-068fbb1d0ef2",
+                "diagnosisId": "e7ae28be-0c8c-4b8c-bae0-c5d7a82282e8",
                 "name": "Meningitis",
                 "key": "Mgts",
                 "keyId": "d2d1df02-1595-4a5e-9688-b676d7a0f8c3",
-                "position": 2942,
+                "position": 3254,
                 "source": "editor",
                 "severityOrder": 2,
                 "expression": "",
@@ -938,11 +938,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "142d12ed-113c-4eb2-9101-fe21a8ed8547",
+                "diagnosisId": "588415e1-7026-4457-9d99-7a13e87e109e",
                 "name": "Ambiguous Genetalia",
                 "key": "AG",
                 "keyId": "8491241c-f556-429c-857a-ea613f5aee34",
-                "position": 2943,
+                "position": 3255,
                 "source": "editor",
                 "severityOrder": 9,
                 "expression": "",
@@ -958,11 +958,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "d5963dc1-6f57-4145-8321-0dbdd879a74a",
+                "diagnosisId": "1a15ad8d-4326-4880-bae9-4fbd828505a9",
                 "name": "Untreated Maternal Syphilis",
                 "key": "UMS",
                 "keyId": "623cfbd8-c35d-4ac6-b9f6-714121e5a938",
-                "position": 2944,
+                "position": 3256,
                 "source": "editor",
                 "severityOrder": 6,
                 "expression": "",
@@ -978,11 +978,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "1a86505d-b1aa-4cf3-9d0b-074ac4c771da",
+                "diagnosisId": "78fa55cd-959b-46cc-ad89-dc7991e37098",
                 "name": "Abdominal obstruction",
                 "key": "AbObs",
                 "keyId": "969bf943-1f67-45de-9d65-1759dad568f6",
-                "position": 2945,
+                "position": 3257,
                 "source": "editor",
                 "severityOrder": 3,
                 "expression": "",
@@ -1049,11 +1049,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "a9b4f33e-0391-49fb-b3ab-a92e694bfe9e",
+                "diagnosisId": "7c058eba-fde8-48c0-95c1-6239b24080e5",
                 "name": "Birth Trauma",
                 "key": "BT",
                 "keyId": "a65e2357-03a7-4c6c-a417-dc142c74b695",
-                "position": 2946,
+                "position": 3258,
                 "source": "editor",
                 "severityOrder": 3,
                 "expression": "",
@@ -1069,11 +1069,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "0ed5b0bd-9903-4557-a724-54f8d853f81c",
+                "diagnosisId": "256dad02-92e5-459a-8e71-7c251aa9c961",
                 "name": "Apnoea of prematurity",
                 "key": "Apn",
                 "keyId": "9533b0c0-e452-46c2-ade8-7f6cded070ce",
-                "position": 2947,
+                "position": 3259,
                 "source": "editor",
                 "severityOrder": 2,
                 "expression": "",
@@ -1110,11 +1110,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "0b721a3b-1cba-4714-a5f8-e49448d6f056",
+                "diagnosisId": "f0fb093e-b7d4-4504-bc3d-77e23719d3a8",
                 "name": "Birth Asphyxia",
                 "key": "BA",
                 "keyId": "8e8be7da-df9e-4848-9556-1887f0d3471c",
-                "position": 2948,
+                "position": 3260,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "",
@@ -1231,11 +1231,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "c8dd4940-f279-4f1d-9c59-61efd5821cd5",
+                "diagnosisId": "2ac7764b-954d-482f-88f5-7a02dee3d4f0",
                 "name": "Convulsions",
                 "key": "Conv",
                 "keyId": "ba6eb500-1171-44fd-a38e-ee0b6ada8bd3",
-                "position": 2949,
+                "position": 3261,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "$DangerSigns = 'Convulsions' or $SymptomReviewNeurology = 'Convulsions' or $Activity = 'Convulsions' or $AdmReason = 'Convulsions'",
@@ -1292,11 +1292,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "461b239a-0f82-4ca0-9fce-7d50e5025aaa",
+                "diagnosisId": "9cfbc191-26d3-4a91-b5a8-383ed02ef4f1",
                 "name": "Low Birth Weight (1500-2499g)",
                 "key": "LBW",
                 "keyId": "aee86b4b-63ab-4f3a-b2e4-7bd4f269293c",
-                "position": 2950,
+                "position": 3262,
                 "source": "editor",
                 "severityOrder": 3,
                 "expression": "$BirthWeight > 1499 and $BirthWeight < 2500",
@@ -1317,11 +1317,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "34962d32-5872-4cf0-b917-5c0782ac87e8",
+                "diagnosisId": "4f49ea1d-df9e-4686-96b3-6b47750384e4",
                 "name": "Very Low Birth Weight (1000-1499g)",
                 "key": "VLBW",
                 "keyId": "96ee3447-0799-46e7-ba42-d50c3fbdf4c0",
-                "position": 2951,
+                "position": 3263,
                 "source": "editor",
                 "severityOrder": 2,
                 "expression": "$BirthWeight > 999 and $BirthWeight < 1500",
@@ -1342,11 +1342,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "dad9e0ea-3258-4ba6-bb9b-935c4ebc8d6e",
+                "diagnosisId": "1f401bf6-5ad6-4bc2-bb3b-0bac35812c22",
                 "name": "Extremely Low Birth Weight (<1000g)",
                 "key": "ExLBW",
                 "keyId": "3ce277ac-8608-4d70-ad06-ce7ae4a80351",
-                "position": 2952,
+                "position": 3264,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "$BirthWeight < 1000",
@@ -1367,11 +1367,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "d4f8cdfc-63fb-4deb-99d3-2c39a9463f11",
+                "diagnosisId": "4adc1373-0d28-47ba-9f90-39417790a195",
                 "name": "High Birth Weight (>4000g at birth)",
                 "key": "HBW",
                 "keyId": "7379ddfe-832e-4574-8125-6e2a839cb4bf",
-                "position": 2953,
+                "position": 3265,
                 "source": "editor",
                 "severityOrder": 3,
                 "expression": "$BirthWeight > 4000",
@@ -1392,11 +1392,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "d356ceda-b12b-4541-91c4-3be2e38a6e24",
+                "diagnosisId": "4bc9de7f-1172-479e-b328-9e06e9883365",
                 "name": "Mild Hypothermia",
                 "key": "MiHypo",
                 "keyId": "89c76091-1e4d-4bb5-8fd6-920e23404344",
-                "position": 2954,
+                "position": 3266,
                 "source": "editor",
                 "severityOrder": 3,
                 "expression": "$Temperature > 35.9 and $Temperature < 36.5 ",
@@ -1417,11 +1417,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "e79b6cee-fd78-4882-9970-299ee98ad8ba",
+                "diagnosisId": "ddac7944-e3b5-447d-9e26-2d9c45d19e93",
                 "name": "Moderate Hypothermia",
                 "key": "ModHypo",
                 "keyId": "3b80e94d-9733-4a6f-bd73-a0eacd25eaf7",
-                "position": 2955,
+                "position": 3267,
                 "source": "editor",
                 "severityOrder": 2,
                 "expression": "$Temperature > 31.9 and $Temperature < 36",
@@ -1442,11 +1442,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "eb18c58c-c485-46c4-a6d8-29544bf54a48",
+                "diagnosisId": "063220b9-c6f7-4992-93ee-1145930f4835",
                 "name": "Severe Hypothermia",
                 "key": "SHypo",
                 "keyId": "f1caec32-77f0-48b6-bccd-5c00b969d086",
-                "position": 2956,
+                "position": 3268,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "$Temperature < 32",
@@ -1467,11 +1467,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "269072d6-6c93-4510-8115-7c7df1492006",
+                "diagnosisId": "4c3b8968-0201-4437-a892-a42a653c495a",
                 "name": "Hyperthermia",
                 "key": "Hyperth",
                 "keyId": "815e5fc6-f118-472b-b885-e294f747cd2b",
-                "position": 2957,
+                "position": 3269,
                 "source": "editor",
                 "severityOrder": 2,
                 "expression": "$Temperature > 37.5",
@@ -1487,11 +1487,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "e8bb1934-9708-40a6-839a-e5ea1d009b06",
+                "diagnosisId": "9cde6ee9-72e0-4e39-8729-7261bb3d05ba",
                 "name": "Premature (32-36 weeks)",
                 "key": "Prem",
                 "keyId": "b895da5b-bc5c-4282-8e1e-846d79d5aaf3",
-                "position": 2958,
+                "position": 3270,
                 "source": "editor",
                 "severityOrder": 2,
                 "expression": "$Gestation > 31.9 and $Gestation < 36.1",
@@ -1523,11 +1523,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "720e91f8-5f35-4367-a12d-0378d5cbf6fe",
+                "diagnosisId": "903a5a90-5658-4140-bf5b-a9b1acc8d380",
                 "name": "Very Premature (28-31 weeks)",
                 "key": "VPrem",
                 "keyId": "73df53eb-e450-41a2-b010-fa408509dff9",
-                "position": 2959,
+                "position": 3271,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "$Gestation > 27.9 and $Gestation < 31.1",
@@ -1559,11 +1559,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "8148973a-4bfe-4266-a904-0f382b9e3ed8",
+                "diagnosisId": "a263cfac-dae0-43ad-a25c-703d8b216760",
                 "name": "Extremely Premature (<28 weeks)",
                 "key": "ExPrem",
                 "keyId": "8038dbc5-2920-44de-bbca-6103b5194aef",
-                "position": 2960,
+                "position": 3272,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "$Gestation < 28",
@@ -1595,11 +1595,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "4395d7a6-f883-4d3b-b659-44e17b4b0b64",
+                "diagnosisId": "29be1ea1-141f-4aa6-8a00-ffd4cfce8f4d",
                 "name": "Hypoglycaemia (symptomatic)",
                 "key": "HypogSy",
                 "keyId": "b2233f15-e1de-440e-a2d2-848341fbb850",
-                "position": 2961,
+                "position": 3273,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "($BloodSugarmmol < 2.5 or $BloodSugarmg < 45) and $HypoSymptoms = true",
@@ -1615,11 +1615,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "d48bfab5-9e8d-47f3-b32e-61ff6286ce2a",
+                "diagnosisId": "0275de8a-e52e-4552-bd48-b60af88a3e6f",
                 "name": "Hypoglycaemia (NOT symptomatic)",
                 "key": "HypogAs",
                 "keyId": "852c6c99-6504-471b-8417-0cc6b1c1cf5c",
-                "position": 2962,
+                "position": 3274,
                 "source": "editor",
                 "severityOrder": 2,
                 "expression": "($BloodSugarmmol < 2.5 or $BloodSugarmg < 45) and $HypoSymptoms = false",
@@ -1635,11 +1635,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "e88bba50-4c37-4422-9e56-c4df2922c64c",
+                "diagnosisId": "36694d00-bca6-4021-8c15-1f5033365298",
                 "name": "At Risk of Hypoglycaemia",
                 "key": "RiHypog",
                 "keyId": "f0c86fc0-13f6-48bf-85d0-042f7f5d0f86",
-                "position": 2963,
+                "position": 3275,
                 "source": "",
                 "severityOrder": 3,
                 "expression": "$BirthWeight < 2500 or $Gestation < 37 or $PregConditions = ‘DM’ or $ANSteroids = ‘Y’ or $AdmReason = ‘NE’",
@@ -1655,11 +1655,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "1f9421b7-864d-4a8e-8c59-65c8273980d2",
+                "diagnosisId": "d9d5f41a-45fb-4e72-bf5a-defc64840244",
                 "name": "HIV Unknown",
                 "key": "HIVU",
                 "keyId": "d391fa89-24b6-4798-abaf-0a204cff0272",
-                "position": 2964,
+                "position": 3276,
                 "source": "",
                 "severityOrder": 3,
                 "expression": "$MatHIVtest = false",
@@ -1680,11 +1680,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "dc4bd9c2-97d9-4f9e-8b16-7224cdf086d0",
+                "diagnosisId": "46981561-a1fa-4052-87f8-de535493a318",
                 "name": "HIV Low Risk",
                 "key": "HIVLR",
                 "keyId": "5970763f-37bd-444d-8005-fc5f701a17b2",
-                "position": 2965,
+                "position": 3277,
                 "source": "",
                 "severityOrder": 3,
                 "expression": "($MatHIVtest = true) and ($HIVtestResult = 'R' or $HIVtestResult = 'U') and ($LengthHAART = '1stTrim' or $LengthHAART = '2ndTrim' or $LengthHAART = '3rdTrim')",
@@ -1705,11 +1705,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "7e139043-85f8-41e5-98f2-a2438252de1b",
+                "diagnosisId": "37ca42c6-c419-4e41-a7c2-015c9c3f5c2f",
                 "name": "HIV High Risk",
                 "key": "HIVHR",
                 "keyId": "ae440db0-40ac-4eb9-a9c0-9f982d3800b9",
-                "position": 2966,
+                "position": 3278,
                 "source": "",
                 "severityOrder": 3,
                 "expression": "($MatHIVtest = true) and ($HIVtestResult = 'R' or $HIVtestResult = 'U') and ($HAART = 'N' or $LengthHAART = 'Late')",
@@ -1730,11 +1730,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "a6103f7a-2e31-4973-9f80-1d50f4053cb4",
+                "diagnosisId": "d819ff05-bee4-42c2-bf12-af2749d044e5",
                 "name": "Physiological Jaundice",
                 "key": "MJ",
                 "keyId": "9bd1d723-9f18-409e-9ba7-f6966dea8344",
-                "position": 2967,
+                "position": 3279,
                 "source": "editor",
                 "severityOrder": 5,
                 "expression": "$Jaundice = 'MJ' and $Age > 24 and (($Gestation > 36.6 and $Age < 336) or ($Gestation < 37 and $Age < 504))",
@@ -1744,7 +1744,7 @@
                 "text2": "2. Encourage and support breastfeeding",
                 "text3": "3. Educate parents on how to monitor for jaundice ",
                 "image1": {
-                    "data": "https://webeditor.neotree.org/files/361b5b75-8599-415a-b25d-f4586c3dbe8c?height=446&width=642",
+                    "data": "https://webeditor.neotree.org/files/361b5b75-8599-415a-b25d-f4586c3dbe8c?height=446&type=png&width=642",
                     "fileId": "361b5b75-8599-415a-b25d-f4586c3dbe8c",
                     "filename": "Jaundice.png",
                     "size": "127149"
@@ -1760,11 +1760,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "410645a4-c305-41c8-8780-d1b65981fcc2",
+                "diagnosisId": "1f6c001b-ace0-4f17-9bfc-657653dda7a2",
                 "name": "Pathological Jaundice",
                 "key": "DJ",
                 "keyId": "a231a373-c94a-403e-ba69-97c641bfb468",
-                "position": 2968,
+                "position": 3280,
                 "source": "",
                 "severityOrder": 4,
                 "expression": "($YColour = 'Y' and $Age < 24) or ($YColour = 'Y' and $Age > 23.9 and (($Age < 336 and $Gestation > 36.6) or ($Age < 504 and $Gestation < 37)) and ($Jaundice = 'DJ' or $Temperature > 37 or $BirthWeight < 2500 or $Colour = 'White'))",
@@ -1795,11 +1795,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "a2704f02-9a36-44c4-b66d-9d8c775c8920",
+                "diagnosisId": "b718193d-3286-4ff9-9823-c4bc8afa682c",
                 "name": "Prolonged Jaundice",
                 "key": "PJaundice",
                 "keyId": "c4f4691f-4fd4-44de-b694-04d063fba1dd",
-                "position": 2969,
+                "position": 3281,
                 "source": "",
                 "severityOrder": 5,
                 "expression": "$YColour = 'Y' and (($Age > 336 and $Gestation > 36.9) or ($Age > 504 and $Gestation < 36.6))",
@@ -1815,11 +1815,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "933b3d4b-e6bc-4b66-884d-0ed3e4bc28e2",
+                "diagnosisId": "d24f58b8-4e53-46e6-8992-3e587cc64bff",
                 "name": "Hypoxic Ischaemic Encephalopathy",
                 "key": "HIE",
                 "keyId": "29c8bcde-a434-48e3-aa35-aa5383abb1bd",
-                "position": 2970,
+                "position": 3282,
                 "source": "",
                 "severityOrder": 1,
                 "expression": "$ThompScore >= 11",
@@ -1840,11 +1840,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "b8594a79-689e-4eb3-bc8d-2dcd55000ed0",
+                "diagnosisId": "c4cff9a4-065a-4693-b505-0253a369b990",
                 "name": "Suspected Hypoxic Ischaemic Encephalopathy",
                 "key": "sHIE",
                 "keyId": "d5b6e490-6609-45eb-9012-9bccda125495",
-                "position": 2971,
+                "position": 3283,
                 "source": "",
                 "severityOrder": 2,
                 "expression": "$ThompScore =< 10 and $ThompScore > 0",
@@ -1865,11 +1865,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "c2411a4b-7c5f-4e6c-b1ad-69e248e0a2a0",
+                "diagnosisId": "4191d4d3-ec94-4298-9dc2-06affc47ec35",
                 "name": "Prematurity with Respiratory Distress",
                 "key": "PremRD",
                 "keyId": "cac46eb0-ef1a-4f2b-b092-3dbdd73af187",
-                "position": 2972,
+                "position": 3284,
                 "source": "editor",
                 "severityOrder": 1,
                 "expression": "$Gestation < 37 and ($RR > 60 or $DangerSigns = 'Grun' or $DangerSigns = 'Cyan' or $SatsAIr < 90 or $SatsO2 < 90 or $RespSR = 'DIB' or $RespSR = 'BE' or $RespSR = 'Apn' or $RespSR = 'Cough' or $RespSR = 'NBr' or $SignsRD = 'TT' or $SignsRD = 'NFL' or $SignsRD = 'CHI' or $SignsRD = 'HN' or $SignsRD = 'ST' or $SignsRD = 'GR' or $SignsRD = 'Gasp' or $SignsRD = 'GR')",
@@ -1956,11 +1956,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "9c68e6cd-0424-4d59-b7be-915493299e32",
+                "diagnosisId": "c55579e8-0327-4f87-a4a2-c43b1596c36e",
                 "name": "Term baby with Respiratory Distress",
                 "key": "TermRD",
                 "keyId": "d7acc28d-3f8b-4441-87e9-d01cafde66af",
-                "position": 2973,
+                "position": 3285,
                 "source": "",
                 "severityOrder": 1,
                 "expression": "$Gestation >= 37 and ($RR > 60 or $DangerSigns = 'Grun' or $DangerSigns = 'Cyan' or $SatsAIr < 90 or $SatsO2 < 90 or $RespSR = 'DIB' or $RespSR = 'BE' or $RespSR = 'Apn' or $RespSR = 'Cough' or $RespSR = 'NBr' or $SignsRD = 'TT' or $SignsRD = 'HN' or $SignsRD = 'ST' or $SignsRD = 'NFL' or $SignsRD = 'CHI' or $SignsRD = 'GR' or $SignsRD = 'Gasp' or $SignsRD = 'GR')",
@@ -1976,11 +1976,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "abd20b04-bb9b-4774-b434-ba4778cd862b",
+                "diagnosisId": "ac37e3f3-3fa1-4c37-b5b5-8a2c1a719a8a",
                 "name": "Gastroschisis",
                 "key": "GSchis",
                 "keyId": "17d848ff-fd9a-4bc3-b1ca-3a2424700a93",
-                "position": 2974,
+                "position": 3286,
                 "source": "",
                 "severityOrder": 2,
                 "expression": "$GSCvsOM = 'GSCH' or $GSCvsOM = 'OMPH'",
@@ -2002,11 +2002,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "995ce081-445d-475e-9b70-7eb2d45d2149",
+                "diagnosisId": "f26e026f-bbcb-4eb3-81cc-b1c7af3f8319",
                 "name": "Omphalocele",
                 "key": "Omph",
                 "keyId": "ef2ae2ea-8602-4303-915c-8922b8b82f7e",
-                "position": 2975,
+                "position": 3287,
                 "source": "",
                 "severityOrder": 2,
                 "expression": "$GSCvsOM = 'OMPH'",
@@ -2022,11 +2022,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "754146cc-2d0b-4c14-8ab8-b160ba075366",
+                "diagnosisId": "ffce77ba-f786-4005-9192-062d19ca5a9e",
                 "name": "Cleft lip and/or palate with RD",
                 "key": "CleftRD",
                 "keyId": "98a268bc-8b7c-411c-bd16-723c1c6490c9",
-                "position": 2976,
+                "position": 3288,
                 "source": "",
                 "severityOrder": 2,
                 "expression": "($Palate = 'Lip' or $Palate = 'Cleft' or $Palate = 'LipPalate') and ($RR > 60 or $DangerSigns = 'Grun' or $DangerSigns = 'Cyan' or $SatsAIr < 90 or $SatsO2 < 90 or $RespSR = 'DIB' or $RespSR = 'BE' or $RespSR = 'Apn' or $RespSR = 'Cough' or $RespSR = 'NBr' or $SignsRD = 'TT' or $SignsRD = 'HN' or $SignsRD = 'ST' or $SignsRD = 'NFL' or $SignsRD = 'CHI' or $SignsRD = 'GR' or $SignsRD = 'Gasp' or $SignsRD = 'GR')",
@@ -2042,11 +2042,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "b81619ee-6720-45e2-979e-51f9d1bd1ea8",
+                "diagnosisId": "401e3668-bd11-4c57-92ff-0d514745bc2f",
                 "name": "Cleft lip",
                 "key": "CleftLip",
                 "keyId": "f7e400eb-d70b-438f-92ad-7f6ab9497699",
-                "position": 2977,
+                "position": 3289,
                 "source": "",
                 "severityOrder": 3,
                 "expression": "$Palate = 'Lip'",
@@ -2062,11 +2062,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "3259e1dc-81fb-428d-ae8e-93592f769a6c",
+                "diagnosisId": "ac8dbd3c-fa5b-4d77-9a76-381ef483bd0c",
                 "name": "Cleft lip and/or palate",
                 "key": "CleftLipPalate",
                 "keyId": "9ea42765-f96e-4e2e-811d-89b6c0b6e036",
-                "position": 2978,
+                "position": 3290,
                 "source": "",
                 "severityOrder": 3,
                 "expression": "$Palate = 'Cleft'",
@@ -2082,11 +2082,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "27b214f7-4277-400e-8aae-a63a8342dff6",
+                "diagnosisId": "834f0c2f-9a8b-4a55-9917-069b73e13420",
                 "name": "Myelomeningocele",
                 "key": "Myelo",
                 "keyId": "0ec76762-8def-4b22-b190-b9be1d830366",
-                "position": 2979,
+                "position": 3291,
                 "source": "",
                 "severityOrder": 3,
                 "expression": "$Spine = 'NTD'",
@@ -2102,11 +2102,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "bb6e95e5-908f-4fb6-8971-d09f90f7c7d0",
+                "diagnosisId": "b85aa230-80b5-42f1-93e6-247586e669e3",
                 "name": "Congenital dislocation of the hip (CDH)",
                 "key": "CDH",
                 "keyId": "bfeec5ef-dd3f-427a-8c8b-3dbb3c153a9a",
-                "position": 2980,
+                "position": 3292,
                 "source": "",
                 "severityOrder": 6,
                 "expression": "$Presentation = 'Breech' or $MatComorbidities = 'CDH' or $MSKproblems = 'Legs' or $Skin = 'Folds' or $Ortolani = 'Yes'",
@@ -2122,11 +2122,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "d915e487-ba5e-4c95-a01e-60a7019d2a89",
+                "diagnosisId": "5c92d036-5edf-4916-bf57-9ea12ed1ae27",
                 "name": "Moderate Talipes (club foot)",
                 "key": "MoTalipes",
                 "keyId": "c878ebcf-f57d-4121-a6e8-e2d056f17276",
-                "position": 2981,
+                "position": 3293,
                 "source": "",
                 "severityOrder": 7,
                 "expression": "$TalipesSev = 'No'",
@@ -2147,11 +2147,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "7b5b5aab-4a3a-488d-9cb7-4a3f8651e54f",
+                "diagnosisId": "0dabd57f-7613-4cbc-8c22-b84859e580e7",
                 "name": "Mild Talipes (club foot)",
                 "key": "MiTalipes",
                 "keyId": "53f59c32-9f3e-4661-b0cb-b3e545de9650",
-                "position": 2982,
+                "position": 3294,
                 "source": "",
                 "severityOrder": 8,
                 "expression": "$TalipesSev = 'Yes'",
@@ -2167,11 +2167,11 @@
                 "fields": []
             },
             {
-                "diagnosisId": "3a356434-5671-4206-b7ff-489b52ff71a0",
+                "diagnosisId": "ea7b8616-384e-4dab-934b-d1cf27d48695",
                 "name": "Risk factors for sepsis (Not symptomatic)",
                 "key": "Risk",
                 "keyId": "edbac7d8-633d-4715-9d19-8d176b3a764f",
-                "position": 2983,
+                "position": 3295,
                 "source": "editor",
                 "severityOrder": 3,
                 "expression": "",
@@ -2190,14 +2190,14 @@
         "problems": [],
         "screens": [
             {
-                "screenId": "bfbab956-f936-4857-8ce7-8f8f62f3219f",
+                "screenId": "02565184-5e92-4012-b572-b78dfbcc3c3a",
                 "type": "multi_select",
                 "title": "Identifying SICK or SMALL baby",
                 "ref": "Sick/Small",
                 "condition": "",
                 "skipToCondition": "$WellvsSick !== 'Norm'",
                 "skipToScreen": {
-                    "screenId": "e55b2ca9-a2e7-4ef9-8442-d249588f6bfb",
+                    "screenId": "c2de1ddb-1a5e-4b65-bd7d-37f650af5a5d",
                     "position": 9
                 },
                 "managementMetadata": null,
@@ -2288,14 +2288,14 @@
                 ]
             },
             {
-                "screenId": "e7111b07-ef62-4d20-85af-24a53c33d80f",
+                "screenId": "e7dc0efe-ee1c-435f-9746-c65fc55d3ef5",
                 "type": "form",
                 "title": "Well newborn clinical information",
                 "ref": "Well info",
                 "condition": "$WellvsSick = 'Norm'",
                 "skipToCondition": "$MatHIVStat = 'NR'",
                 "skipToScreen": {
-                    "screenId": "c9e1fe1d-7300-4155-95e8-77f8be15c701",
+                    "screenId": "d31d633b-312e-40ca-8106-ff5a2e2367f3",
                     "position": 5
                 },
                 "managementMetadata": null,
@@ -2511,7 +2511,7 @@
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
-                        "confidential": true,
+                        "confidential": false,
                         "condition": "",
                         "options": [
                             {
@@ -2532,7 +2532,7 @@
                 "items": []
             },
             {
-                "screenId": "6a165980-0e34-432d-a99d-5b6396ed6b4b",
+                "screenId": "166f3794-27e5-4b88-a1ef-1fce7f7ada9b",
                 "type": "management",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "HIV Test Needed",
@@ -2573,7 +2573,7 @@
                 "items": []
             },
             {
-                "screenId": "cbf15b21-8e12-4100-b4e2-3ff3cd6819d4",
+                "screenId": "ef3779ce-9a9e-4d33-8cef-7c7eeb332dcb",
                 "type": "yesno",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "NVP",
@@ -2605,14 +2605,14 @@
                 "items": []
             },
             {
-                "screenId": "c9e1fe1d-7300-4155-95e8-77f8be15c701",
+                "screenId": "d31d633b-312e-40ca-8106-ff5a2e2367f3",
                 "type": "form",
                 "title": "VITAL SIGNS",
                 "ref": "WellTemp",
                 "condition": "",
                 "skipToCondition": "$Temperature < 36.5",
                 "skipToScreen": {
-                    "screenId": "469f4490-b572-4226-afa3-2f4f249f8429",
+                    "screenId": "22bc0756-7f49-4fd4-8917-5ecfb8a07883",
                     "position": 8
                 },
                 "managementMetadata": null,
@@ -2634,7 +2634,7 @@
                 "items": []
             },
             {
-                "screenId": "a4d20f77-4629-4bd6-88da-01def8d0e8fe",
+                "screenId": "3f78447e-5d02-4c2b-8d1e-3ee1183508ef",
                 "type": "form",
                 "title": "Well Baby NUID",
                 "ref": "UID",
@@ -2660,15 +2660,15 @@
                 "items": []
             },
             {
-                "screenId": "0eab7013-40f6-4fc6-be02-3bcdf2531949",
+                "screenId": "a9dfba52-cab8-4a61-945d-c244ac25664a",
                 "type": "single_select",
                 "title": "Well Baby Outcome",
                 "ref": "Outcome",
                 "condition": "",
                 "skipToCondition": "$NeotreeOutcome = 'AdmPNW'",
                 "skipToScreen": {
-                    "screenId": "98082b21-f3ee-4c16-b6ea-a9425d52ee85",
-                    "position": 162
+                    "screenId": "12d91e78-ad08-4bd7-9c5d-dfa677654c6e",
+                    "position": 163
                 },
                 "managementMetadata": null,
                 "fields": [
@@ -2704,7 +2704,7 @@
                 ]
             },
             {
-                "screenId": "469f4490-b572-4226-afa3-2f4f249f8429",
+                "screenId": "22bc0756-7f49-4fd4-8917-5ecfb8a07883",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT ",
                 "ref": "Hypothermia 2",
@@ -2745,7 +2745,7 @@
                 "items": []
             },
             {
-                "screenId": "e55b2ca9-a2e7-4ef9-8442-d249588f6bfb",
+                "screenId": "c2de1ddb-1a5e-4b65-bd7d-37f650af5a5d",
                 "type": "yesno",
                 "title": "EMERGENCY TRIAGE ",
                 "ref": "Baby crying ",
@@ -2777,7 +2777,7 @@
                 "items": []
             },
             {
-                "screenId": "119c94f7-af35-43f8-b40f-7148e68f2258",
+                "screenId": "fa0a82b5-0bbe-4400-8c3d-a51f188041e3",
                 "type": "single_select",
                 "title": "EMERGENCY TRIAGE ",
                 "ref": "ABCD",
@@ -2882,7 +2882,7 @@
                 ]
             },
             {
-                "screenId": "615b6d17-023e-46e4-8154-bd00c3ba1f0c",
+                "screenId": "4bc0a390-f1f5-4b7d-8d57-23dc8fbfbd6e",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT ",
                 "ref": "Resus(HBB)",
@@ -2916,7 +2916,7 @@
                             "size": "84101"
                         },
                         "image2": {
-                            "data": "https://webeditor.neotree.org/files/e0bc71a2-edf0-4759-a58c-b8753e15b6c8?height=312&width=320",
+                            "data": "https://webeditor.neotree.org/files/e0bc71a2-edf0-4759-a58c-b8753e15b6c8?height=312&type=png&width=320",
                             "fileId": "e0bc71a2-edf0-4759-a58c-b8753e15b6c8",
                             "filename": "BVMblue.png",
                             "size": "89015"
@@ -2933,7 +2933,7 @@
                 "items": []
             },
             {
-                "screenId": "644d2267-43a7-4245-974e-4d46c068bdb0",
+                "screenId": "afef0eef-c88e-4b5a-8a3b-48b5fac4b331",
                 "type": "management",
                 "title": "VITAL SIGNS ",
                 "ref": "Attach monitoring",
@@ -2979,7 +2979,7 @@
                 "items": []
             },
             {
-                "screenId": "d4a9fc04-a26f-4408-8727-b5218c97f7f7",
+                "screenId": "6c6bef7a-8535-45ce-a553-ba06bdf5d277",
                 "type": "multi_select",
                 "title": "EMERGENCY TRIAGE ",
                 "ref": "Danger Signs 1",
@@ -3026,7 +3026,7 @@
                 ]
             },
             {
-                "screenId": "9450d9d6-44c6-4b77-9c69-7fb128e72e63",
+                "screenId": "10cdb7d8-6997-4509-a1fe-fbcaa3f276fa",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT ",
                 "ref": "Severe Resp distress1",
@@ -3077,7 +3077,7 @@
                 "items": []
             },
             {
-                "screenId": "d0ab0acb-3ee5-44a6-9f08-01c2f6efd5c6",
+                "screenId": "c03d43c0-cb68-470c-817c-87bdef2ccbaa",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT ",
                 "ref": "Central cyanosis ",
@@ -3113,7 +3113,7 @@
                 "items": []
             },
             {
-                "screenId": "96dc497c-1e98-4590-b464-4f15ed1512f6",
+                "screenId": "676c65c5-11de-45b4-989f-318fe1af524a",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT ",
                 "ref": "Convulsions ",
@@ -3149,7 +3149,7 @@
                 "items": []
             },
             {
-                "screenId": "4c3eb0f5-8ed7-4d2d-a323-56686bd62b86",
+                "screenId": "14c33405-e404-4633-9c38-ea7a8ca6bc9e",
                 "type": "management",
                 "title": "EMERGENCY TRIAGE",
                 "ref": "Danger2pics",
@@ -3200,7 +3200,7 @@
                 "items": []
             },
             {
-                "screenId": "ef46ef78-adfe-45f0-adc2-b3123c29cf55",
+                "screenId": "1bc7d2b8-b3ef-441e-90a6-37adea8148c2",
                 "type": "multi_select",
                 "title": "EMERGENCY TRIAGE ",
                 "ref": "Danger Signs 2",
@@ -3232,7 +3232,7 @@
                             },
                             {
                                 "value": "Wkpulse",
-                                "valueLabel": "Weak or fast femoral pulses",
+                                "valueLabel": "Weak or fast, thready femoral pulses",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
                             },
@@ -3247,7 +3247,7 @@
                 ]
             },
             {
-                "screenId": "8a4c5f4a-fcf0-40f0-9f03-eedcf6a3ce90",
+                "screenId": "c4f75d15-e070-4573-a71c-0fd29eaeaba5",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Shock",
@@ -3283,7 +3283,7 @@
                 "items": []
             },
             {
-                "screenId": "4297c7e8-a43b-427f-a2b2-479dc53db4d5",
+                "screenId": "6bb8d3e3-931e-4677-88d0-ddfb0a7a0e37",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT ",
                 "ref": "Hypothermia ",
@@ -3324,7 +3324,7 @@
                 "items": []
             },
             {
-                "screenId": "fec2bc7a-25dc-47f3-8dc6-40d1868ebc36",
+                "screenId": "994b3827-e361-4ac5-9295-ea7b6b7ecdee",
                 "type": "timer",
                 "title": "VITAL SIGNS ",
                 "ref": "RR",
@@ -3350,7 +3350,7 @@
                 "items": []
             },
             {
-                "screenId": "b74b4b3f-1f48-4752-b41a-662f9dd13729",
+                "screenId": "38cacde0-8ebe-4a9b-a67d-794d9077b5d9",
                 "type": "form",
                 "title": "VITAL SIGNS  ",
                 "ref": "HR & Sats",
@@ -3427,43 +3427,7 @@
                 "items": []
             },
             {
-                "screenId": "2cf780a8-cd82-482c-9bf0-129b1e6b5f92",
-                "type": "management",
-                "title": "Referral Instructions (O2)",
-                "ref": "Emergency",
-                "condition": "$RR > 60 or $SatsAir < 90",
-                "skipToCondition": "",
-                "skipToScreen": null,
-                "managementMetadata": {
-                    "actionText": "Referral with Oxygen if available",
-                    "contentText": "Prepare this baby for referral according to instructions below.\n\nKeep the baby on oxygen if available\nIf oxygen is NOT available CALL referral hospital immediately for guidance and if possible send the baby with accompanying health worker with bag valve mask (BVM) ventilation equipment.\n\nContinue with the Neotree examination.",
-                    "infoText": "",
-                    "title": "Referral Instructions (O2)",
-                    "title1": "Stabilisation",
-                    "title2": "Communication & Documentation",
-                    "title3": "Management in Transit",
-                    "title4": "",
-                    "text1": "1. Assess ABCCCD (Airway, Breathing, Circulation, Coma, Convulsions and Dehydration) and treat emergency signs \n2. Ensure baby is on Oxygen IF AVAILABLE \n3. Keep Warm - place hat and wrap baby\n4. Review by senior clinician or nurse - if available\n5. Give stat doses of antibiotics - Xpen and Gentamicin\n6. If mum is able to express encourage feeding by cup ONLY if baby can tolerate",
-                    "text2": "1. Inform receiving facility (KDH) of case summary by phone call or Whatsapp group - discuss availability of portable oxygen & medical escort\n2. Communicate to guardian intention to refer and reasons\n3. Attach Neotree print out ready for transit\n4. Attach all relevant documents/ notes/ checks (glucose, HIV, VDRL etc.)\n",
-                    "text3": "1. Put baby on portable oxygen IF AVAILABLE\n2. Refer in KMC position unless clinical conditions require observation & care in transit\n3. Refer with escort (Nurse or clinician) with BVM equipment - IF AVAILABLE\n4. Nurse or clinician to bring emergency supplies in ambulance (bag & mask, penguin sucker, dextrose etc.)\n5. IN PERSON handover by nurse or clinician at receiving facility - if possible",
-                    "instructions": "",
-                    "instructions2": "",
-                    "instructions3": "",
-                    "instructions4": "",
-                    "notes": "",
-                    "refKey": "",
-                    "images": {
-                        "contentTextImage": null,
-                        "image1": null,
-                        "image2": null,
-                        "image3": null
-                    }
-                },
-                "fields": [],
-                "items": []
-            },
-            {
-                "screenId": "543de265-94b3-4d84-8552-15c50211f75a",
+                "screenId": "96762686-0b80-4a2d-a0b0-823717cfc5ed",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT ",
                 "ref": "Severe Resp Distress 2 ",
@@ -3511,7 +3475,43 @@
                 "items": []
             },
             {
-                "screenId": "d594a854-32ab-4430-8f48-0fadf1e3778a",
+                "screenId": "8775731d-08d3-459b-8ad3-070baec09cdb",
+                "type": "management",
+                "title": "Referral Instructions (O2)",
+                "ref": "Emergency",
+                "condition": "$RR > 60 or $SatsAir < 90",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": {
+                    "actionText": "Referral with Oxygen if available",
+                    "contentText": "Prepare this baby for referral according to instructions below.\n\nKeep the baby on oxygen if available\nIf oxygen is NOT available CALL referral hospital immediately for guidance and if possible send the baby with accompanying health worker with bag valve mask (BVM) ventilation equipment.\n\nContinue with the Neotree examination.",
+                    "infoText": "",
+                    "title": "Referral Instructions (O2)",
+                    "title1": "Stabilisation",
+                    "title2": "Communication & Documentation",
+                    "title3": "Management in Transit",
+                    "title4": "",
+                    "text1": "1. Assess ABCCCD (Airway, Breathing, Circulation, Coma, Convulsions and Dehydration) and treat emergency signs \n2. Ensure baby is on Oxygen IF AVAILABLE \n3. Keep Warm - place hat and wrap baby\n4. Review by senior clinician or nurse - if available\n5. Give stat doses of antibiotics - Xpen and Gentamicin\n6. If mum is able to express encourage feeding by cup ONLY if baby can tolerate",
+                    "text2": "1. Inform receiving facility (KDH) of case summary by phone call or Whatsapp group - discuss availability of portable oxygen & medical escort\n2. Communicate to guardian intention to refer and reasons\n3. Attach Neotree print out ready for transit\n4. Attach all relevant documents/ notes/ checks (glucose, HIV, VDRL etc.)\n",
+                    "text3": "1. Put baby on portable oxygen IF AVAILABLE\n2. Refer in KMC position unless clinical conditions require observation & care in transit\n3. Refer with escort (Nurse or clinician) with BVM equipment - IF AVAILABLE\n4. Nurse or clinician to bring emergency supplies in ambulance (bag & mask, penguin sucker, dextrose etc.)\n5. IN PERSON handover by nurse or clinician at receiving facility - if possible",
+                    "instructions": "",
+                    "instructions2": "",
+                    "instructions3": "",
+                    "instructions4": "",
+                    "notes": "",
+                    "refKey": "",
+                    "images": {
+                        "contentTextImage": null,
+                        "image1": null,
+                        "image2": null,
+                        "image3": null
+                    }
+                },
+                "fields": [],
+                "items": []
+            },
+            {
+                "screenId": "82d098a8-8b38-4538-9629-9dcfe29ee4ce",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Resus(HBB-HR)",
@@ -3562,7 +3562,7 @@
                 "items": []
             },
             {
-                "screenId": "024ac3c8-b6bb-437f-80b7-7c12176132a4",
+                "screenId": "6e62a3e9-a393-442d-ab19-d58180a20cf4",
                 "type": "form",
                 "title": "VITAL SIGNS ",
                 "ref": "SatsO2",
@@ -3588,7 +3588,7 @@
                 "items": []
             },
             {
-                "screenId": "2013da52-a8a3-4a34-9dfb-522297f42b11",
+                "screenId": "2cfed186-6064-4b37-973b-9714f9ffa59f",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Severe Resp distress 3 ",
@@ -3624,7 +3624,7 @@
                 "items": []
             },
             {
-                "screenId": "833d83b2-66d1-40f7-9482-79d9e87a5eb4",
+                "screenId": "085df1a3-d31c-4ba8-ba22-681d86f1dc02",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Resus(HBB-O2)",
@@ -3675,7 +3675,7 @@
                 "items": []
             },
             {
-                "screenId": "b0ab3a5b-e30d-4852-8633-1c6167993169",
+                "screenId": "6c0a9eca-1182-47fb-87ab-72033cbbb9b5",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Severe Resp distress 5",
@@ -3711,7 +3711,7 @@
                 "items": []
             },
             {
-                "screenId": "fb5a869b-bf77-4352-8e8f-8e31c10be77c",
+                "screenId": "133ddef4-d512-4744-bf85-0dc1f5c99e20",
                 "type": "timer",
                 "title": "VITAL SIGNS ",
                 "ref": "Manual HR",
@@ -3737,7 +3737,7 @@
                 "items": []
             },
             {
-                "screenId": "1994815e-45e4-4e3f-ba25-56868bec5592",
+                "screenId": "f01e1244-63d4-4574-ad11-9b5dfdf23fab",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Resus(HBB)3",
@@ -3788,7 +3788,7 @@
                 "items": []
             },
             {
-                "screenId": "4c10dcd8-d1dd-4977-bbe9-38d396fca113",
+                "screenId": "5e433a36-7c6e-4710-8f37-0820a6ee8981",
                 "type": "form",
                 "title": "VITAL SIGNS",
                 "ref": "Temp2",
@@ -3833,7 +3833,7 @@
                 "items": []
             },
             {
-                "screenId": "ffdbc205-fbce-4cfc-ad00-9e0bf2be2533",
+                "screenId": "c33b0565-3a7b-4f9d-8382-a3a97dc586e1",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT ",
                 "ref": "Hypothermia 2",
@@ -3874,7 +3874,7 @@
                 "items": []
             },
             {
-                "screenId": "566571de-0cf8-49e3-aeb0-8766570afade",
+                "screenId": "7cfe1c68-c804-4ac7-8123-f0bd68296985",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Hyperthermia",
@@ -3910,7 +3910,7 @@
                 "items": []
             },
             {
-                "screenId": "13aaa5aa-368a-42c2-ad06-be0c12786344",
+                "screenId": "cec4481e-299a-4327-8713-ff3a42ee32e3",
                 "type": "form",
                 "title": "VITAL SIGNS",
                 "ref": "Blood sugar",
@@ -3987,7 +3987,7 @@
                 "items": []
             },
             {
-                "screenId": "f14098d2-496c-44ca-9a85-60631ab3a74a",
+                "screenId": "7842224d-6f8e-475e-9309-ab3cb0abfc30",
                 "type": "yesno",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Hypoglycaemia1",
@@ -4019,7 +4019,7 @@
                 "items": []
             },
             {
-                "screenId": "4d0d3ad2-14d6-456f-85bb-029f3fa1c2bb",
+                "screenId": "e056f0fd-85ec-4011-8741-ce97afdc2fd6",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Hypoglycaemia 2a",
@@ -4055,7 +4055,7 @@
                 "items": []
             },
             {
-                "screenId": "5e6a90fd-d0cd-4c45-af5f-9872753a4316",
+                "screenId": "53624e1a-a474-4ff5-93bb-d650c908f6a5",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT  ",
                 "ref": "Hypoglycaemia 2b ",
@@ -4091,7 +4091,7 @@
                 "items": []
             },
             {
-                "screenId": "1056484d-10fb-4bcd-8065-8e403a24fe4a",
+                "screenId": "9c916602-9e31-448c-b858-fcb8c276cd34",
                 "type": "form",
                 "title": "VITAL SIGNS ",
                 "ref": "Weight & OFC",
@@ -4143,7 +4143,7 @@
                 "items": []
             },
             {
-                "screenId": "22a95eca-e219-44b7-83f0-97f0dcd46880",
+                "screenId": "2048c65c-a587-48db-b39e-7f1bed36e35b",
                 "type": "progress",
                 "title": "NEOTREE OVERVIEW",
                 "ref": "NeoNav0",
@@ -4216,7 +4216,7 @@
                 ]
             },
             {
-                "screenId": "7aa6ccde-225c-4e58-962f-ce5f097b2bca",
+                "screenId": "c5c7f94d-50a1-44e2-956f-15cefc82dffa",
                 "type": "multi_select",
                 "title": "PATIENT INFORMATION",
                 "ref": "AdmReason",
@@ -4527,7 +4527,7 @@
                 ]
             },
             {
-                "screenId": "12ec23cb-af85-4583-bc85-e3bb7cf128a7",
+                "screenId": "5ce61d45-1720-420f-8745-80bda400cee0",
                 "type": "form",
                 "title": "PATIENT INFORMATION",
                 "ref": "OthAdmReas",
@@ -4553,7 +4553,7 @@
                 "items": []
             },
             {
-                "screenId": "62415b63-8505-4ed1-a460-38414b8a4790",
+                "screenId": "9dbaf758-3649-43d6-98d4-dfae5dbd3762",
                 "type": "multi_select",
                 "title": "PATIENT INFORMATION",
                 "ref": "AdmReaSurgCond",
@@ -4678,7 +4678,7 @@
                 ]
             },
             {
-                "screenId": "462417d9-98f3-4d68-a717-2a5d320fe934",
+                "screenId": "47577ae8-ffe3-4c25-a5b2-2692a5907f9a",
                 "type": "form",
                 "title": "PATIENT INFORMATION",
                 "ref": "OthAdmReasSurgCond",
@@ -4704,7 +4704,7 @@
                 "items": []
             },
             {
-                "screenId": "28ce1d2c-707a-481e-96c2-230a2aec404a",
+                "screenId": "993e1ddb-4ada-4f1f-8793-54e3b5e40c1e",
                 "type": "multi_select",
                 "title": "PATIENT INFORMATION",
                 "ref": "AdmReaCongAnom",
@@ -4757,7 +4757,7 @@
                 ]
             },
             {
-                "screenId": "e2501182-b6c9-4ba4-a2cf-8821528af43e",
+                "screenId": "dc2da557-79a3-4217-8b6e-1b58caa69966",
                 "type": "form",
                 "title": "PATIENT INFORMATION",
                 "ref": "OthAdmReasCongAnom",
@@ -4783,7 +4783,7 @@
                 "items": []
             },
             {
-                "screenId": "1ea6b510-231e-4070-9e41-f523208ca33e",
+                "screenId": "2fafffab-50be-4af7-9b83-30eb661df500",
                 "type": "form",
                 "title": "PATIENT INFORMATION",
                 "ref": "UID",
@@ -4965,7 +4965,7 @@
                 "items": []
             },
             {
-                "screenId": "e479b13e-cb6a-44fa-85bc-f0056f59af9f",
+                "screenId": "bee2a712-783b-4487-b97d-0a20d67580c3",
                 "type": "single_select",
                 "title": "PATIENT INFORMATION",
                 "ref": "Sex",
@@ -5038,7 +5038,7 @@
                 ]
             },
             {
-                "screenId": "0a9768a4-f5e3-4374-b8d6-8f362a85c193",
+                "screenId": "0a53fad8-4646-47c9-83bc-0d2f6dc463da",
                 "type": "form",
                 "title": "PATIENT INFORMATION",
                 "ref": "Age ",
@@ -5178,7 +5178,7 @@
                 "items": []
             },
             {
-                "screenId": "703f943c-3686-4f04-b7fe-cfcf20962b68",
+                "screenId": "be2b1fce-74fd-47ee-8907-181e61c41c5b",
                 "type": "form",
                 "title": "PATIENT INFORMATION",
                 "ref": "Gestation",
@@ -5244,7 +5244,7 @@
                 "items": []
             },
             {
-                "screenId": "a6c1e5a5-fd6c-4d52-8bac-b5fa7868a9c0",
+                "screenId": "9e39d554-b855-4281-973e-7764bb83a382",
                 "type": "progress",
                 "title": "EXAMINATION",
                 "ref": "NeoNav1",
@@ -5317,7 +5317,7 @@
                 ]
             },
             {
-                "screenId": "75cb3f33-5b06-495b-9063-43c415df4d05",
+                "screenId": "41e215c1-3f7b-47da-88e4-05477c4cd449",
                 "type": "management",
                 "title": "EXAMINATION",
                 "ref": "Head to Toe",
@@ -5358,7 +5358,7 @@
                 "items": []
             },
             {
-                "screenId": "68ac1185-868d-4d64-9a40-1a93a82b6b22",
+                "screenId": "08c13d0a-d3f7-492f-993a-c080aea3f0d2",
                 "type": "management",
                 "title": "NEURO EXAM",
                 "ref": "Suck reflex",
@@ -5400,7 +5400,7 @@
                 "items": []
             },
             {
-                "screenId": "500acb57-6f4b-4f4a-94e0-8204580ab80f",
+                "screenId": "bc0d435d-80fd-4b92-95f3-ac5be70ab708",
                 "type": "single_select",
                 "title": "NEURO EXAM",
                 "ref": "Suck Reflex",
@@ -5473,7 +5473,7 @@
                 ]
             },
             {
-                "screenId": "5ad43085-07a5-4acb-aafd-c02f3a61010a",
+                "screenId": "e1fb5c7a-36c8-42d8-9f54-5701f5426520",
                 "type": "management",
                 "title": "Cleft lip and palate",
                 "ref": "",
@@ -5514,7 +5514,7 @@
                 "items": []
             },
             {
-                "screenId": "7ebfcb6a-82ab-4d00-81ce-99c58b121a09",
+                "screenId": "b6ee45bf-eccd-4232-aaea-3d39be8395a0",
                 "type": "single_select",
                 "title": "NEURO EXAM",
                 "ref": "Palate",
@@ -5603,7 +5603,7 @@
                 ]
             },
             {
-                "screenId": "863a73bf-089f-424e-8c96-9c5243438ede",
+                "screenId": "8c221ed7-f50f-485a-9ab3-bc022f4ba864",
                 "type": "management",
                 "title": "Referral Instructions Congenital Abnormality",
                 "ref": "Referral Cleft",
@@ -5639,7 +5639,7 @@
                 "items": []
             },
             {
-                "screenId": "cbff1a5f-12e6-4697-86b5-bdc8df682b92",
+                "screenId": "ad9c5bd1-3fa3-4b99-aa56-736413b3d2ea",
                 "type": "single_select",
                 "title": "NEURO EXAM",
                 "ref": "Fontanelle",
@@ -5712,7 +5712,7 @@
                 ]
             },
             {
-                "screenId": "bcb8ab17-6df2-40f0-9edd-da8f8c61dea7",
+                "screenId": "9f519b86-485b-427e-aa95-a33e7efc9d62",
                 "type": "single_select",
                 "title": "NEURO EXAM",
                 "ref": "Head Shape",
@@ -5817,7 +5817,7 @@
                 ]
             },
             {
-                "screenId": "cf35711f-f4b8-486d-83d5-681290f3a270",
+                "screenId": "51ac0de7-d810-43a1-be90-c153374d8669",
                 "type": "yesno",
                 "title": "NEURO EXAM",
                 "ref": "Dysmorphic",
@@ -5849,7 +5849,7 @@
                 "items": []
             },
             {
-                "screenId": "913669f1-cc8e-43eb-88a8-f5950afbfdac",
+                "screenId": "bd37ead8-5308-40f4-81b0-e7a3ee2e9879",
                 "type": "management",
                 "title": "Tone",
                 "ref": "",
@@ -5877,7 +5877,7 @@
                     "images": {
                         "contentTextImage": null,
                         "image1": {
-                            "data": "https://webeditor.neotree.org/files/84cc2d14-a505-4cb9-ad01-af2bafe8c72c?height=810&width=716",
+                            "data": "https://webeditor.neotree.org/files/84cc2d14-a505-4cb9-ad01-af2bafe8c72c?height=810&orientation=1&type=jpg&width=716",
                             "fileId": "84cc2d14-a505-4cb9-ad01-af2bafe8c72c",
                             "filename": "Tone jpeg.jpg",
                             "size": "133387"
@@ -5890,7 +5890,7 @@
                 "items": []
             },
             {
-                "screenId": "ecd2dd0c-05e6-4783-b011-f9e45b1c997a",
+                "screenId": "b0c6cac8-ddb9-4977-8e33-80c8826ff311",
                 "type": "single_select",
                 "title": "NEURO EXAM",
                 "ref": "Tone",
@@ -5979,7 +5979,7 @@
                 ]
             },
             {
-                "screenId": "06bb1fe7-debe-4ca8-bd75-d4d147dd4036",
+                "screenId": "b4e2d46b-6098-46f0-8661-3aa8f95d99d5",
                 "type": "single_select",
                 "title": "NEURO EXAM",
                 "ref": "Spine ",
@@ -6052,7 +6052,7 @@
                 ]
             },
             {
-                "screenId": "a53b05e6-1112-4867-90c7-a892552f056e",
+                "screenId": "13321db2-c700-4d96-950e-a1c638964a6e",
                 "type": "single_select",
                 "title": "NEURO EXAM",
                 "ref": "Activity",
@@ -6157,7 +6157,7 @@
                 ]
             },
             {
-                "screenId": "96084f89-ff30-441f-a0fe-a6a4be8f2124",
+                "screenId": "ab1a9d07-e9b1-47f4-ad8e-4d8b5fd937f9",
                 "type": "management",
                 "title": "THOMPSON SCORE",
                 "ref": "",
@@ -6185,19 +6185,19 @@
                     "images": {
                         "contentTextImage": null,
                         "image1": {
-                            "data": "https://webeditor.neotree.org/files/fbcf627f-4f91-4f4d-b4a5-9751d44e2e20?height=732&width=1058",
+                            "data": "https://webeditor.neotree.org/files/fbcf627f-4f91-4f4d-b4a5-9751d44e2e20?height=732&orientation=1&type=jpg&width=1058",
                             "fileId": "fbcf627f-4f91-4f4d-b4a5-9751d44e2e20",
                             "filename": "Posture jpeg.jpg",
                             "size": "200569"
                         },
                         "image2": {
-                            "data": "https://webeditor.neotree.org/files/f01bde99-8f6b-41f0-a69d-1453ff4e36f0?height=608&width=942",
+                            "data": "https://webeditor.neotree.org/files/f01bde99-8f6b-41f0-a69d-1453ff4e36f0?height=608&orientation=1&type=jpg&width=942",
                             "fileId": "f01bde99-8f6b-41f0-a69d-1453ff4e36f0",
                             "filename": "Morograsp jpeg.jpg",
                             "size": "187244"
                         },
                         "image3": {
-                            "data": "https://webeditor.neotree.org/files/4670ebdb-2fd4-435b-a0c7-f012441d0038?height=652&width=1148",
+                            "data": "https://webeditor.neotree.org/files/4670ebdb-2fd4-435b-a0c7-f012441d0038?height=652&orientation=1&type=jpg&width=1148",
                             "fileId": "4670ebdb-2fd4-435b-a0c7-f012441d0038",
                             "filename": "Thompson jpeg.jpg",
                             "size": "179793"
@@ -6208,7 +6208,7 @@
                 "items": []
             },
             {
-                "screenId": "03c088af-507c-4f16-8e30-a773322fc1d3",
+                "screenId": "171f4aa0-9189-4219-b5ef-d2defc2eeaed",
                 "type": "form",
                 "title": "Thompson score ",
                 "ref": "Thompson DD",
@@ -6457,7 +6457,7 @@
                 "items": []
             },
             {
-                "screenId": "b2a1af88-ecfc-4333-a075-10c6db4f3230",
+                "screenId": "559bb1bd-2187-48ac-8945-f60ffd86380d",
                 "type": "multi_select",
                 "title": "RESPIRATORY EXAM",
                 "ref": "Resp Distress",
@@ -6522,7 +6522,7 @@
                 ]
             },
             {
-                "screenId": "7ab5a927-798c-4d1c-8da2-81b0cb7fbcee",
+                "screenId": "42a3bb24-6a5b-465f-b944-888e44fba603",
                 "type": "single_select",
                 "title": "RESPIRATORY EXAM ",
                 "ref": "WOB",
@@ -6595,7 +6595,7 @@
                 ]
             },
             {
-                "screenId": "0da042b3-3f75-4912-bd8a-d9e0c94622da",
+                "screenId": "8c43c416-0e9e-4181-a3a6-87b0a1162aa6",
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Severe Resp distress 2",
@@ -6643,7 +6643,7 @@
                 "items": []
             },
             {
-                "screenId": "0d8c5009-15d7-4ca1-95fc-0ccecc9a4105",
+                "screenId": "80f518e3-7af8-48c2-8a52-a7ea3616fdf6",
                 "type": "yesno",
                 "title": "RESPIRATORY EXAM",
                 "ref": "Steth",
@@ -6675,7 +6675,7 @@
                 "items": []
             },
             {
-                "screenId": "76951ba1-5f1e-49b5-baaa-3df6ad68f4b2",
+                "screenId": "cefc3cc6-18e1-4556-a702-8a676bc3924c",
                 "type": "multi_select",
                 "title": "RESPIRATORY EXAM ",
                 "ref": "Chest Ausc",
@@ -6734,7 +6734,7 @@
                 ]
             },
             {
-                "screenId": "eee6b1c3-c1bb-4edd-a209-5f0bc3317f54",
+                "screenId": "8fd875d0-24da-4a66-b428-34bebe1dfd5f",
                 "type": "single_select",
                 "title": "CARDIOVASCULAR EXAM",
                 "ref": "Murmur",
@@ -6807,7 +6807,7 @@
                 ]
             },
             {
-                "screenId": "65cecb63-10ae-4f1e-820b-54f02e651d9e",
+                "screenId": "f4024c5e-1075-4117-a823-4e4f4a0dda63",
                 "type": "multi_select",
                 "title": "CARDIOVASCULAR EXAM",
                 "ref": "Colour",
@@ -6854,7 +6854,7 @@
                 ]
             },
             {
-                "screenId": "00e396e8-f0ce-4ea3-913a-739a2c975887",
+                "screenId": "6d20582b-4bc5-4d2b-99ac-65922d7ed372",
                 "type": "single_select",
                 "title": "CARDIOVASCULAR EXAM",
                 "ref": "CRT",
@@ -6911,7 +6911,7 @@
                 ]
             },
             {
-                "screenId": "d71ee051-354b-4792-8e83-c1af06598038",
+                "screenId": "85fbb46e-b09f-4f6b-833b-458687255651",
                 "type": "single_select",
                 "title": "CARDIOVASCULAR EXAM",
                 "ref": "Femorals",
@@ -7000,7 +7000,7 @@
                 ]
             },
             {
-                "screenId": "b53078e5-fbbb-4242-af58-bd8dedc4d784",
+                "screenId": "677f6083-f2db-4497-a24c-52ca21451483",
                 "type": "multi_select",
                 "title": "GASTRO EXAM",
                 "ref": "Dehydration",
@@ -7011,7 +7011,7 @@
                 "fields": [
                     {
                         "label": "Signs of Dehydration",
-                        "key": "SignsDehydrations",
+                        "key": "DehydraSigns",
                         "type": "multi_select",
                         "dataType": "multi_select_option",
                         "optional": false,
@@ -7020,7 +7020,7 @@
                         "options": [
                             {
                                 "value": "PSP",
-                                "valueLabel": "Prolonged skin pinch",
+                                "valueLabel": "Prolonged skin pinch ( > 2seconds)",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
                             },
@@ -7047,7 +7047,7 @@
                 ]
             },
             {
-                "screenId": "50401079-1f69-47af-8877-760b4a158c57",
+                "screenId": "1a092185-2f91-4e1d-998c-8d5149e59ec6",
                 "type": "multi_select",
                 "title": "GASTRO EXAM",
                 "ref": "Abdo",
@@ -7100,7 +7100,7 @@
                 ]
             },
             {
-                "screenId": "98eb5fbb-ee8c-4f0e-b920-6432ca16d09e",
+                "screenId": "1dea5bbd-78e6-4bc5-ae86-f965770c56c3",
                 "type": "management",
                 "title": "Gastroschisis vs Omphalocele",
                 "ref": "Gastro / Exomph",
@@ -7146,7 +7146,7 @@
                 "items": []
             },
             {
-                "screenId": "01a0bfdc-5c95-445d-8976-e20f6a1705a0",
+                "screenId": "63be237f-dfc3-446d-9f9b-fe91d547a70e",
                 "type": "single_select",
                 "title": "Gastroschisis or Omphalocele",
                 "ref": "",
@@ -7203,7 +7203,7 @@
                 ]
             },
             {
-                "screenId": "88f99fdb-4e0c-4e73-95f8-8dab154101ed",
+                "screenId": "76e0fbb0-3378-4972-9483-53554aab981b",
                 "type": "management",
                 "title": "Emergency Management",
                 "ref": "Gastroschisis",
@@ -7245,7 +7245,7 @@
                 "items": []
             },
             {
-                "screenId": "24f4952d-d51c-429b-8fd9-d541b269dde4",
+                "screenId": "2384bf4d-50cc-47eb-9f0f-0485775d926a",
                 "type": "multi_select",
                 "title": "GASTRO EXAM",
                 "ref": "Umbilicus",
@@ -7304,7 +7304,7 @@
                 ]
             },
             {
-                "screenId": "ea566333-eef2-4f5e-8062-411d7aa509fa",
+                "screenId": "5608415b-a26c-4a5c-88e3-a76654010d59",
                 "type": "single_select",
                 "title": "GASTRO EXAM",
                 "ref": "Genitalia",
@@ -7409,7 +7409,7 @@
                 ]
             },
             {
-                "screenId": "b848b4ab-d762-41b0-ae38-21b2828caa1f",
+                "screenId": "ef6a91e1-a335-437f-9f3f-f1a3e7ece937",
                 "type": "management",
                 "title": "Right Genitalia",
                 "ref": "",
@@ -7445,7 +7445,7 @@
                 "items": []
             },
             {
-                "screenId": "e8351667-23e1-4c4b-9161-8dd5b0318e89",
+                "screenId": "24365ffa-d9ae-43fd-90c6-87c852e8b24a",
                 "type": "single_select",
                 "title": "GASTRO EXAM",
                 "ref": "Anus",
@@ -7518,7 +7518,7 @@
                 ]
             },
             {
-                "screenId": "6b8511ba-f388-4971-84a5-083ddd820951",
+                "screenId": "46f433b2-2aef-4dd0-8107-9ca4543aba9b",
                 "type": "form",
                 "title": "Jaundice ",
                 "ref": "Jaundice",
@@ -7550,7 +7550,7 @@
                 "items": []
             },
             {
-                "screenId": "a5429b02-2c9e-4736-a3fc-81a65453542b",
+                "screenId": "fb17a3f6-7704-4b2d-92da-70952901e32e",
                 "type": "management",
                 "title": "GASTRO EXAM",
                 "ref": "Jaun mgmt",
@@ -7601,7 +7601,7 @@
                 "items": []
             },
             {
-                "screenId": "52d95c37-439d-4705-b1ae-76a76e7dd4e8",
+                "screenId": "24c70e18-f942-4297-83c4-592035784c5d",
                 "type": "form",
                 "title": "GASTRO EXAM",
                 "ref": "Jaun mld/dp",
@@ -7633,7 +7633,7 @@
                 "items": []
             },
             {
-                "screenId": "4bac79fd-b9d4-438f-967e-ce0b462edf7a",
+                "screenId": "a4e2d2ab-d976-4563-8b87-a1c0c9a0a7b4",
                 "type": "multi_select",
                 "title": "MUSCULOSKELETAL EXAM",
                 "ref": "Msk",
@@ -7686,7 +7686,7 @@
                 ]
             },
             {
-                "screenId": "d67d3089-1fca-432f-9e06-68101bb31d73",
+                "screenId": "884dc0ba-40f0-4fcd-a1e8-f20a9832f41e",
                 "type": "yesno",
                 "title": "Talipes Severity",
                 "ref": "",
@@ -7718,7 +7718,7 @@
                 "items": []
             },
             {
-                "screenId": "cf3892db-5058-48a7-a708-5e3dce8c625a",
+                "screenId": "3328f112-2fd9-408a-a548-ed8af08b33ae",
                 "type": "multi_select",
                 "title": "SKIN EXAM",
                 "ref": "Skin",
@@ -7777,7 +7777,7 @@
                 ]
             },
             {
-                "screenId": "5334336e-3d0a-4c62-ab4e-36bedbbc032a",
+                "screenId": "ea8bfc42-85e4-4b87-8c4a-d5d812ea4460",
                 "type": "progress",
                 "title": "SYMPTOM REVIEW",
                 "ref": "NeoNav2",
@@ -7850,7 +7850,7 @@
                 ]
             },
             {
-                "screenId": "6b6f1d31-110e-41af-a810-725527a79337",
+                "screenId": "b8ebd8a4-54d4-45db-9fd4-3290c4d0b0f0",
                 "type": "yesno",
                 "title": "SYMPTOM REVIEW",
                 "ref": "FeverSR",
@@ -7882,7 +7882,7 @@
                 "items": []
             },
             {
-                "screenId": "60073109-1681-4588-8859-436f5e9fa06e",
+                "screenId": "59b2b220-2f36-4adf-bb38-e277954db565",
                 "type": "single_select",
                 "title": "Fever Onset",
                 "ref": "FeverOns",
@@ -7987,7 +7987,7 @@
                 ]
             },
             {
-                "screenId": "00d42db0-47d1-4ed6-88bf-773997f512e2",
+                "screenId": "647eab32-86bf-4abd-9be4-b1cbe01e1d38",
                 "type": "multi_select",
                 "title": "SYMPTOM REVIEW",
                 "ref": "RespSR",
@@ -8025,7 +8025,7 @@
                             },
                             {
                                 "value": "Apn",
-                                "valueLabel": "Apnoea",
+                                "valueLabel": "Apnea",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
                             },
@@ -8052,7 +8052,7 @@
                 ]
             },
             {
-                "screenId": "5a484768-ac58-43d6-88fb-1686216de12a",
+                "screenId": "6dc117e5-ad5a-47b9-accf-33d3e9b743ad",
                 "type": "single_select",
                 "title": "Breathing Problems Onset",
                 "ref": "RespOns",
@@ -8157,7 +8157,7 @@
                 ]
             },
             {
-                "screenId": "b28b7607-eeb9-4240-83b2-4535341c2d94",
+                "screenId": "39a6653c-95c5-4de2-976d-704da4345215",
                 "type": "multi_select",
                 "title": "SYMPTOM REVIEW",
                 "ref": "GastroSR",
@@ -8210,7 +8210,7 @@
                 ]
             },
             {
-                "screenId": "96229a50-eaeb-41ba-9e90-2a58a087fc92",
+                "screenId": "7970559b-9875-4c15-b6d7-4c72da76b4cf",
                 "type": "single_select",
                 "title": "Gastro Problems Onset",
                 "ref": "GastOns",
@@ -8315,7 +8315,7 @@
                 ]
             },
             {
-                "screenId": "3bb11a92-1c02-49d1-898e-e3061683bf11",
+                "screenId": "cab5a948-2e4d-43c1-8417-e6755dd51283",
                 "type": "multi_select",
                 "title": "FEEDING",
                 "ref": "FEEDS",
@@ -8392,7 +8392,7 @@
                 ]
             },
             {
-                "screenId": "d57bdfaa-14fa-4e18-9a60-88c6d31fb2c5",
+                "screenId": "aa04a87d-0aba-4041-96c9-f2edcce017f6",
                 "type": "form",
                 "title": "SYMPTOM REVIEW",
                 "ref": "SR/BO/PU ",
@@ -8497,7 +8497,7 @@
                 "items": []
             },
             {
-                "screenId": "b0a2ae25-8523-4931-8b8a-3ee7f3660533",
+                "screenId": "f0b69d91-54cd-46c2-afbb-e8cb357c1849",
                 "type": "multi_select",
                 "title": "SYMPTOM REVIEW",
                 "ref": "SR Neuro/Other",
@@ -8556,7 +8556,7 @@
                 ]
             },
             {
-                "screenId": "33e8e1c3-47c5-4f20-a8e5-5c4e9ee1cdb4",
+                "screenId": "5b497544-be43-4c3d-bedb-2bba65fb74ec",
                 "type": "single_select",
                 "title": "Neuro Problems Onset",
                 "ref": "NeurOns",
@@ -8661,7 +8661,7 @@
                 ]
             },
             {
-                "screenId": "d44d4af8-e665-4d19-b43c-ae126846f283",
+                "screenId": "9dcdb743-9785-4afb-ad8d-60c620eade1a",
                 "type": "progress",
                 "title": "PLACE OF ORIGIN",
                 "ref": "HistoryNav4 ",
@@ -8734,7 +8734,7 @@
                 ]
             },
             {
-                "screenId": "9a8d089f-1737-4ab9-ba9a-e0b02e501f1f",
+                "screenId": "62652583-6a31-4136-9de1-833d46248175",
                 "type": "form",
                 "title": "Place of Origin",
                 "ref": "POrigin",
@@ -8821,7 +8821,7 @@
                         ]
                     },
                     {
-                        "label": "Name of Referring Facility",
+                        "label": "Name of referring Facility",
                         "key": "ReferredFrom",
                         "type": "dropdown",
                         "dataType": "dropdown",
@@ -8838,20 +8838,12 @@
                                 "valueLabel": "Chambwe"
                             },
                             {
-                                "value": "Chm",
-                                "valueLabel": "Chamwabvi"
-                            },
-                            {
                                 "value": "Chi",
                                 "valueLabel": "Chilanga"
                             },
                             {
                                 "value": "Chn",
                                 "valueLabel": "Chinyama"
-                            },
-                            {
-                                "value": "Chu",
-                                "valueLabel": "Chulu"
                             },
                             {
                                 "value": "Gog",
@@ -8866,24 +8858,12 @@
                                 "valueLabel": "Kaluluma Health Centre"
                             },
                             {
-                                "value": "Kam",
-                                "valueLabel": "Kamboni"
-                            },
-                            {
-                                "value": "Kap",
-                                "valueLabel": "Kapelula"
-                            },
-                            {
                                 "value": "Kai",
                                 "valueLabel": "Kapichira"
                             },
                             {
                                 "value": "Kay",
                                 "valueLabel": "Kapyanga"
-                            },
-                            {
-                                "value": "Kaw",
-                                "valueLabel": "Kawamba"
                             },
                             {
                                 "value": "Kho",
@@ -8914,10 +8894,6 @@
                                 "valueLabel": "Mnyanja"
                             },
                             {
-                                "value": "Mpe",
-                                "valueLabel": "Mpepa"
-                            },
-                            {
                                 "value": "Mtu",
                                 "valueLabel": "Mtunthama"
                             },
@@ -8938,14 +8914,6 @@
                                 "valueLabel": "Ofesi"
                             },
                             {
-                                "value": "San",
-                                "valueLabel": "Santhe"
-                            },
-                            {
-                                "value": "Sim",
-                                "valueLabel": "Simlemba"
-                            },
-                            {
                                 "value": "StA",
                                 "valueLabel": "St Andrew’s"
                             },
@@ -8960,6 +8928,42 @@
                             {
                                 "value": "Wim",
                                 "valueLabel": "Wimbe"
+                            },
+                            {
+                                "value": "Bua",
+                                "valueLabel": "Bua Health Centre"
+                            },
+                            {
+                                "value": "CHV",
+                                "valueLabel": "Chamwabvi Health Centre"
+                            },
+                            {
+                                "value": "CHL",
+                                "valueLabel": "Chulu Health Centre"
+                            },
+                            {
+                                "value": "KBM",
+                                "valueLabel": "Kamboni Health Centre"
+                            },
+                            {
+                                "value": "KPL",
+                                "valueLabel": "Kapelula Health Centre"
+                            },
+                            {
+                                "value": "KWB",
+                                "valueLabel": "Kawamba Health Centre"
+                            },
+                            {
+                                "value": "MPP",
+                                "valueLabel": "Mpepa Health Centre"
+                            },
+                            {
+                                "value": "SAN",
+                                "valueLabel": "Santhe Health Centre"
+                            },
+                            {
+                                "value": "SLB",
+                                "valueLabel": "Simlemba Health Centre"
                             },
                             {
                                 "value": "O",
@@ -9052,20 +9056,12 @@
                                 "valueLabel": "Chambwe"
                             },
                             {
-                                "value": "Chm",
-                                "valueLabel": "Chamwabvi"
-                            },
-                            {
                                 "value": "Chi",
                                 "valueLabel": "Chilanga"
                             },
                             {
                                 "value": "Chn",
                                 "valueLabel": "Chinyama"
-                            },
-                            {
-                                "value": "Chu",
-                                "valueLabel": "Chulu"
                             },
                             {
                                 "value": "Gog",
@@ -9080,24 +9076,12 @@
                                 "valueLabel": "Kaluluma Health Centre"
                             },
                             {
-                                "value": "Kam",
-                                "valueLabel": "Kamboni"
-                            },
-                            {
-                                "value": "Kap",
-                                "valueLabel": "Kapelula"
-                            },
-                            {
                                 "value": "Kai",
                                 "valueLabel": "Kapichira"
                             },
                             {
                                 "value": "Kay",
                                 "valueLabel": "Kapyanga"
-                            },
-                            {
-                                "value": "Kaw",
-                                "valueLabel": "Kawamba"
                             },
                             {
                                 "value": "Kdh",
@@ -9132,10 +9116,6 @@
                                 "valueLabel": "Mnyanja"
                             },
                             {
-                                "value": "Mpe",
-                                "valueLabel": "Mpepa"
-                            },
-                            {
                                 "value": "Mtu",
                                 "valueLabel": "Mtunthama"
                             },
@@ -9156,14 +9136,6 @@
                                 "valueLabel": "Ofesi"
                             },
                             {
-                                "value": "San",
-                                "valueLabel": "Santhe"
-                            },
-                            {
-                                "value": "Sim",
-                                "valueLabel": "Simlemba"
-                            },
-                            {
                                 "value": "StA",
                                 "valueLabel": "St Andrew’s"
                             },
@@ -9178,6 +9150,42 @@
                             {
                                 "value": "Wim",
                                 "valueLabel": "Wimbe"
+                            },
+                            {
+                                "value": "CHL",
+                                "valueLabel": "Chulu Health Centre"
+                            },
+                            {
+                                "value": "Bua",
+                                "valueLabel": "Bua"
+                            },
+                            {
+                                "value": "CHV",
+                                "valueLabel": "Chamwabvi Health Centre"
+                            },
+                            {
+                                "value": "KBM",
+                                "valueLabel": "Kamboni Health Centre"
+                            },
+                            {
+                                "value": "KPL",
+                                "valueLabel": "Kapelula Health Centre"
+                            },
+                            {
+                                "value": "KWB",
+                                "valueLabel": "Kawamba Health Centre"
+                            },
+                            {
+                                "value": "MPP",
+                                "valueLabel": "Mpepa Health Centre"
+                            },
+                            {
+                                "value": "SAN",
+                                "valueLabel": "Santhe Health Centre"
+                            },
+                            {
+                                "value": "SLB",
+                                "valueLabel": "Simlemba Health Centre"
                             },
                             {
                                 "value": "O",
@@ -9202,7 +9210,7 @@
                 "items": []
             },
             {
-                "screenId": "da5126ae-d9d8-4410-a06e-f3941fe54e69",
+                "screenId": "d82df71f-ebea-4790-a414-695bfd3a91a0",
                 "type": "progress",
                 "title": "MATERNAL HISTORY",
                 "ref": "",
@@ -9275,7 +9283,7 @@
                 ]
             },
             {
-                "screenId": "3c9618ed-f759-428d-8c4d-ef39fdb06d1c",
+                "screenId": "7059240b-6761-45c4-90e0-e4150c0ce455",
                 "type": "form",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Address",
@@ -9498,7 +9506,7 @@
                 "items": []
             },
             {
-                "screenId": "66494160-01e7-435b-8c1e-74b3aa5f6d10",
+                "screenId": "326f81e7-b764-4439-9b9e-99e6946f0dbc",
                 "type": "form",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Age/Parity",
@@ -9563,7 +9571,7 @@
                 "items": []
             },
             {
-                "screenId": "4d247e89-38c5-441b-bd56-56254544dc6a",
+                "screenId": "2b97ed7d-327a-4b6c-9e9f-3f872b646eb6",
                 "type": "single_select",
                 "title": "MATERNAL DETAILS",
                 "ref": "Marital Status ",
@@ -9652,7 +9660,7 @@
                 ]
             },
             {
-                "screenId": "429062fa-fd51-454c-8437-15fa96e21e9f",
+                "screenId": "b999f5f0-5685-4e73-b742-a1ec2ee1571a",
                 "type": "single_select",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Ethnicity",
@@ -9965,7 +9973,7 @@
                 ]
             },
             {
-                "screenId": "47a44a31-9dbb-41ed-9a38-fb6d9caaac29",
+                "screenId": "2d95d031-dee0-4116-b726-e1110b5f665c",
                 "type": "form",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Ethnicity Other",
@@ -9991,7 +9999,7 @@
                 "items": []
             },
             {
-                "screenId": "a41a7a47-b753-4c1e-878c-3b985dfe1144",
+                "screenId": "83626102-0233-4504-994b-a524c3ae62d3",
                 "type": "single_select",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Tribe",
@@ -10208,7 +10216,7 @@
                 ]
             },
             {
-                "screenId": "16eed7c3-1f3f-4034-ade2-b5e8adefe85b",
+                "screenId": "3eda86a8-9aff-4524-94e1-c726dfeb7eff",
                 "type": "form",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Tribe Other ",
@@ -10234,7 +10242,7 @@
                 "items": []
             },
             {
-                "screenId": "a1b5df54-0646-42f7-b464-5e65d6dffa49",
+                "screenId": "f29dfba8-8c1e-4ffd-9817-a7ab727bdb67",
                 "type": "single_select",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Religion",
@@ -10595,7 +10603,7 @@
                 ]
             },
             {
-                "screenId": "b0c8c54d-a217-4485-b717-41fcd73bd705",
+                "screenId": "cb30d02e-47ec-414d-ab8b-5f8510870c2b",
                 "type": "form",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Religion Other",
@@ -10621,7 +10629,7 @@
                 "items": []
             },
             {
-                "screenId": "ce56b68c-3041-415d-9f0b-0ce28aab24d8",
+                "screenId": "edd93cb0-b287-4515-9dbd-3a9b4d3602ba",
                 "type": "progress",
                 "title": "HISTORY ",
                 "ref": " HistoryNav3",
@@ -10684,7 +10692,7 @@
                 ]
             },
             {
-                "screenId": "3437d5d6-0644-4a8e-a0a6-b20a3d74daff",
+                "screenId": "ac3e08fe-f825-4de6-b3c9-788dce301a28",
                 "type": "yesno",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "HIVtest",
@@ -10716,7 +10724,7 @@
                 "items": []
             },
             {
-                "screenId": "0d7181ef-ee31-49d9-bbe3-e7c5128710bc",
+                "screenId": "cba60242-bcce-4625-bd50-a29968e51d1e",
                 "type": "management",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "HIV Test Needed",
@@ -10757,7 +10765,7 @@
                 "items": []
             },
             {
-                "screenId": "b9aa1475-2678-4e74-bdfe-e0982cdc3572",
+                "screenId": "09e03d21-39cd-4388-80cd-7e847634af2c",
                 "type": "form",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "HIV TEST details ",
@@ -10773,10 +10781,10 @@
                         "dataType": "date",
                         "value": null,
                         "valueLabel": null,
-                        "optional": false,
-                        "confidential": true,
+                        "optional": true,
+                        "confidential": false,
                         "minValue": "",
-                        "maxValue": "date_now",
+                        "maxValue": "",
                         "condition": ""
                     },
                     {
@@ -10803,12 +10811,12 @@
                         ]
                     },
                     {
-                        "label": "What was the Result?",
+                        "label": "What was the Result? ",
                         "key": "HIVtestResult",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
-                        "confidential": true,
+                        "confidential": false,
                         "condition": "",
                         "options": [
                             {
@@ -10831,7 +10839,7 @@
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
-                        "confidential": true,
+                        "confidential": false,
                         "condition": "$HIVtestResult = 'R' or $HIVtestResult = 'U'",
                         "options": [
                             {
@@ -10850,7 +10858,7 @@
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
-                        "confidential": true,
+                        "confidential": false,
                         "condition": "$HAART = 'Y'",
                         "options": [
                             {
@@ -10879,7 +10887,7 @@
                 "items": []
             },
             {
-                "screenId": "b9fe93d4-d535-4ada-a50c-bb225b00aa94",
+                "screenId": "370875ff-7b7d-4785-9527-9a94e0612e8c",
                 "type": "management",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "HIV Low Risk",
@@ -10920,7 +10928,7 @@
                 "items": []
             },
             {
-                "screenId": "1cc38aa5-b17a-4148-8de9-67a02168bd09",
+                "screenId": "20996609-23c0-4bda-8863-da221b93cbce",
                 "type": "management",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "HIV High Risk",
@@ -10961,7 +10969,7 @@
                 "items": []
             },
             {
-                "screenId": "09ccee98-f9b8-4add-8ee3-cd72dab08da8",
+                "screenId": "b88b8559-d8c9-4b25-9556-10382c9c5f41",
                 "type": "yesno",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "NVP",
@@ -10993,7 +11001,7 @@
                 "items": []
             },
             {
-                "screenId": "b0cecd60-b617-4ec6-b5fd-33e3ea64b5c6",
+                "screenId": "2a0b31d7-780f-460d-b8da-3a3b47916cee",
                 "type": "single_select",
                 "title": "HEPATITIS B TEST",
                 "ref": "HepB",
@@ -11050,7 +11058,7 @@
                 ]
             },
             {
-                "screenId": "675cb8d8-e3b9-4b9c-972d-636cd190133a",
+                "screenId": "d00ddbd1-a0f8-4dcb-9161-4e23df5afd57",
                 "type": "form",
                 "title": "HEPATITIS B TEST",
                 "ref": "HepB details  ",
@@ -11114,7 +11122,7 @@
                 "items": []
             },
             {
-                "screenId": "effd23de-a6cc-4c98-abe4-7941f625ef25",
+                "screenId": "a95ef438-1437-493e-bd7e-b53dd5eeee71",
                 "type": "management",
                 "title": "Hepatitis B Management",
                 "ref": "HepB Mgmt",
@@ -11150,7 +11158,7 @@
                 "items": []
             },
             {
-                "screenId": "da30f456-4e47-43b7-982d-bf80852fcf15",
+                "screenId": "e60910c1-878e-4de9-a360-3fe815ec0044",
                 "type": "form",
                 "title": "ANTENATAL HISTORY",
                 "ref": "Steroids",
@@ -11213,7 +11221,7 @@
                 "items": []
             },
             {
-                "screenId": "1507ea3d-fd59-47b0-9e5f-894c9eadd225",
+                "screenId": "9cc18489-9e97-48c2-9e3d-f65a38557bf8",
                 "type": "progress",
                 "title": "HISTORY",
                 "ref": "HistoryNav4",
@@ -11276,7 +11284,7 @@
                 ]
             },
             {
-                "screenId": "40c3940e-8f53-4b06-93b7-d49e75cf2e34",
+                "screenId": "d1b9afa4-a51b-4959-b770-82d5b16c94de",
                 "type": "single_select",
                 "title": "ANTENATAL HISTORY ",
                 "ref": "Syphilis test",
@@ -11349,7 +11357,7 @@
                 ]
             },
             {
-                "screenId": "9f44c66a-1106-4df6-a46c-13143e337049",
+                "screenId": "a13d50d2-f3cd-4bc2-a6fd-572c7ff1e587",
                 "type": "form",
                 "title": "ANTENATAL HISTORY ",
                 "ref": "VDRL details  ",
@@ -11436,7 +11444,7 @@
                 "items": []
             },
             {
-                "screenId": "867685a2-7e46-48f7-a97f-c2e7ec6491c0",
+                "screenId": "b7cb3c98-7666-4e0c-b997-f707f93fe1a4",
                 "type": "multi_select",
                 "title": "ANTENATAL HISTORY",
                 "ref": "Conditions ",
@@ -11525,7 +11533,7 @@
                 ]
             },
             {
-                "screenId": "351e48d6-0c45-48ae-9c0f-d41d0cbbc8f0",
+                "screenId": "20beed8b-769b-4cf2-8620-b8be33ab8912",
                 "type": "multi_select",
                 "title": "ANTENATAL HISTORY",
                 "ref": "Other STDs",
@@ -11584,7 +11592,7 @@
                 ]
             },
             {
-                "screenId": "78ea821d-28f8-4433-a0fe-f02b917c0605",
+                "screenId": "0acc9872-6d09-4b4c-8ac1-611516e66d14",
                 "type": "form",
                 "title": "ANTENATAL HISTORY",
                 "ref": "TypeSTD",
@@ -11610,7 +11618,7 @@
                 "items": []
             },
             {
-                "screenId": "5761feeb-1a00-4eeb-af40-13c7e0c33b58",
+                "screenId": "3374711a-500a-4e49-8137-f4a278b7ea94",
                 "type": "form",
                 "title": "ANTENATAL HISTORY",
                 "ref": "ANC",
@@ -11731,7 +11739,7 @@
                 "items": []
             },
             {
-                "screenId": "3341108a-cdf3-4f87-a395-03e3f2d08f8d",
+                "screenId": "683d7158-9a4a-45dd-bc7b-203ee4e85c2d",
                 "type": "single_select",
                 "title": "ANTENATAL CARE",
                 "ref": "IPT",
@@ -11868,7 +11876,7 @@
                 ]
             },
             {
-                "screenId": "fc9cdaff-fef8-41c2-abe3-1180a7178e9a",
+                "screenId": "c09f4587-cade-49b7-aadf-f99a75fd29ee",
                 "type": "progress",
                 "title": "HISTORY",
                 "ref": "HistoryNav5",
@@ -11931,7 +11939,7 @@
                 ]
             },
             {
-                "screenId": "f4bd5bb3-15d1-41d1-b715-27b4e1b31076",
+                "screenId": "878ddba6-88ff-40a7-b7d9-52f36ba3e196",
                 "type": "multi_select",
                 "title": "LABOUR HISTORY",
                 "ref": "Problems ",
@@ -11990,7 +11998,7 @@
                 ]
             },
             {
-                "screenId": "03e5aa6f-93c9-48f9-8d0a-c93660c7bf6e",
+                "screenId": "2d9c2e17-ef53-4479-90e7-a85b0cf17d21",
                 "type": "form",
                 "title": "LABOUR HISTORY ",
                 "ref": "Duration",
@@ -12016,7 +12024,7 @@
                 "items": []
             },
             {
-                "screenId": "ba4a4a31-822c-45ff-af4e-c3f35151316c",
+                "screenId": "35075b02-41d6-4313-882f-cc9a06b57594",
                 "type": "form",
                 "title": "LABOUR HISTORY  ",
                 "ref": "ROM",
@@ -12067,7 +12075,7 @@
                 "items": []
             },
             {
-                "screenId": "165ea6bf-9eac-4dd1-9db4-b5cfcacb6bcc",
+                "screenId": "3be31eff-48b5-4437-9716-f0040198dafa",
                 "type": "multi_select",
                 "title": "LABOUR HISTORY",
                 "ref": "RFSepsis",
@@ -12132,7 +12140,7 @@
                 ]
             },
             {
-                "screenId": "361087b8-82bd-47a6-9541-01fd6c4dc06b",
+                "screenId": "0db9591d-7174-4db6-a3a1-926d93ba7af6",
                 "type": "progress",
                 "title": "HISTORY",
                 "ref": "HistroyNav6",
@@ -12195,7 +12203,7 @@
                 ]
             },
             {
-                "screenId": "e7eb22cf-be4b-48ee-86b4-dfee5b4baad3",
+                "screenId": "37d760cb-48e9-414a-8f78-ad15f4bcfe6d",
                 "type": "form",
                 "title": "BIRTH HISTORY ",
                 "ref": "Pres & Deliv",
@@ -12278,7 +12286,7 @@
                 "items": []
             },
             {
-                "screenId": "92c4c746-3e5d-423a-a90e-c36f67c50eb7",
+                "screenId": "4427419b-b524-465f-8548-4fdf617f599c",
                 "type": "multi_select",
                 "title": "BIRTH HISTORY",
                 "ref": "CS Reason",
@@ -12379,7 +12387,7 @@
                 ]
             },
             {
-                "screenId": "db196e32-07d4-4bb0-986b-31b5972fb394",
+                "screenId": "5369f34c-7ed9-4ac5-a210-0681e58a72ce",
                 "type": "form",
                 "title": "BIRTH HISTORY",
                 "ref": "CS Reason Oth",
@@ -12405,7 +12413,7 @@
                 "items": []
             },
             {
-                "screenId": "849704ba-d743-4432-b213-9209eacc7e6b",
+                "screenId": "c162d669-9f3b-4901-8110-35d9cdbe0f54",
                 "type": "single_select",
                 "title": "BIRTH HISTORY",
                 "ref": "Meconium",
@@ -12478,7 +12486,7 @@
                 ]
             },
             {
-                "screenId": "512e09ff-88c7-4403-8952-71c8476d3ddd",
+                "screenId": "18a9281b-e233-4488-8870-f21cac336356",
                 "type": "single_select",
                 "title": "BIRTH HISTORY",
                 "ref": "MecThick",
@@ -12551,7 +12559,7 @@
                 ]
             },
             {
-                "screenId": "cff20b6e-b93a-4883-8898-73ab465b11a2",
+                "screenId": "dc3e8a37-6518-4a42-8a36-53a87b2de7c8",
                 "type": "form",
                 "title": "BIRTH HISTORY ",
                 "ref": "Apgars",
@@ -12626,7 +12634,7 @@
                 "items": []
             },
             {
-                "screenId": "8c1ab423-6b30-492a-9683-90266344058f",
+                "screenId": "b7cde876-f3cc-402b-939c-7029641091ec",
                 "type": "multi_select",
                 "title": "BIRTH HISTORY",
                 "ref": "Resus",
@@ -12691,7 +12699,7 @@
                 ]
             },
             {
-                "screenId": "2cc58f35-380e-4dae-a229-bb6e1ceff415",
+                "screenId": "2f710800-ae26-4e5c-b600-d7212f992ff6",
                 "type": "form",
                 "title": "Resuscitation",
                 "ref": "CPR",
@@ -12763,7 +12771,7 @@
                 "items": []
             },
             {
-                "screenId": "1841fbe1-23e3-4704-8091-8f3767fe0055",
+                "screenId": "da4712ba-2b8a-45f3-8971-7aa2b4b48b37",
                 "type": "form",
                 "title": "BIRTH HISTORY",
                 "ref": "VitK/Tetra",
@@ -12868,7 +12876,260 @@
                 "items": []
             },
             {
-                "screenId": "e683a7cd-a033-419a-8355-d5cfab8585bd",
+                "screenId": "3aae7165-8819-4922-be25-154f0c3813a9",
+                "type": "mwi_edliz_summary_table",
+                "title": "Assessment of Sepsis",
+                "ref": "SepsisFactors",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [],
+                "items": [
+                    {
+                        "itemId": "9d98bbb4-fe1d-4780-9858-e073ab247812",
+                        "key": "ARF1",
+                        "value": "ARF1",
+                        "label": "Fever >38 in mother",
+                        "valueLabel": "Fever >38 in mother",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "fea8df32-40d7-4259-97fc-45ce633426d9",
+                        "key": "ARF2",
+                        "value": "ARF2",
+                        "label": "Rupture of membranes >18h",
+                        "valueLabel": "Rupture of membranes >18h",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "d596340d-39ad-4a4b-97f2-5ac7b4fc4d8b",
+                        "key": "ARF3",
+                        "value": "ARF3",
+                        "label": "Offensive Liquor",
+                        "valueLabel": "Offensive Liquor",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "82151018-3ac2-4518-a55a-2ab5256b60b8",
+                        "key": "ARF4",
+                        "value": "ARF4",
+                        "label": "Suspected or confirmed sepsis in a twin”",
+                        "valueLabel": "Suspected or confirmed sepsis in a twin”",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "ba033dcf-34d9-4c7a-a61c-ebc04f096360",
+                        "key": "SSS1",
+                        "value": "SSS1",
+                        "label": "Temperature <35.5 or >37.5",
+                        "valueLabel": "Temperature <35.5 or >37.5",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "30477487-5c98-46b7-b7a1-0a797c5ce6b4",
+                        "key": "SSS2",
+                        "value": "SSS2",
+                        "label": "Bulging Fontanelle",
+                        "valueLabel": "Bulging Fontanelle",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "11562f15-7714-4f0f-92f3-cb1a42a593e4",
+                        "key": "SSS6",
+                        "value": "SSS6",
+                        "label": "chest indrawing",
+                        "valueLabel": "chest indrawing",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "9d4c3913-7883-4a5a-b90e-b449b8370c42",
+                        "key": "SSS8",
+                        "value": "SSS8",
+                        "label": "Umbilical redness extending to the periumbilical skin or umbilicus draining pus",
+                        "valueLabel": "Umbilical redness extending to the periumbilical skin or umbilicus draining pus",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "9f3c56f7-1fcc-4de8-a522-a657c69614d6",
+                        "key": "SSS9",
+                        "value": "SSS9",
+                        "label": "reduced movement of limbs",
+                        "valueLabel": "reduced movement of limbs",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "1b1a6201-e596-4895-90cf-aa4a66e1887d",
+                        "key": "SSS10",
+                        "value": "SSS10",
+                        "label": "Many skin pustules/big boil (abscess)",
+                        "valueLabel": "Many skin pustules/big boil (abscess)",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "152585f8-eac9-4aa5-80a3-34fe71234aa0",
+                        "key": "SSS11",
+                        "value": "SSS11",
+                        "label": "Painful joint/swelling, reduced movement and irritability if these parts are handled",
+                        "valueLabel": "Painful joint/swelling, reduced movement and irritability if these parts are handled",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "6b423e61-e6e4-4d8c-831d-bf8a2eef8a2d",
+                        "key": "SM1",
+                        "value": "SM1",
+                        "label": "Drowsiness",
+                        "valueLabel": "Drowsiness",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "26ca757d-ea33-41fd-ab5f-f2e3fe5dc981",
+                        "key": "SM2",
+                        "value": "SM2",
+                        "label": "Lethargy/unconscious",
+                        "valueLabel": "Lethargy/unconscious",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "c02027fb-0bd9-4d12-a080-ca055e35c26c",
+                        "key": "SM3",
+                        "value": "SM3",
+                        "label": "Persistent irritability",
+                        "valueLabel": "Persistent irritability",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "167a2ed8-84e8-450f-93d4-520064279361",
+                        "key": "SM4",
+                        "value": "SM4",
+                        "label": "High pitched cry",
+                        "valueLabel": "High pitched cry",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "64fe8eca-8887-4375-8935-2678014c78bc",
+                        "key": "SM5",
+                        "value": "SM5",
+                        "label": "Convulsions",
+                        "valueLabel": "Convulsions",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "83849f41-8b74-49d6-a3c5-5d92bebadbb7",
+                        "key": "SM6",
+                        "value": "SM6",
+                        "label": "Apnoeic episode",
+                        "valueLabel": "Apnoeic episode",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "8b0c3aa2-f1f4-4836-8d40-ae6a0221a12e",
+                        "key": "SDS1",
+                        "value": "SDS1",
+                        "label": "Cold hands and feet",
+                        "valueLabel": "Cold hands and feet",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "3a948689-8df8-4b4a-88a0-0fab1afae4f5",
+                        "key": "SDS2",
+                        "value": "SDS2",
+                        "label": "Capillary refill time > 3 seconds",
+                        "valueLabel": "Capillary refill time > 3 seconds",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "09863d82-edc7-4775-a453-b31e83a9e32e",
+                        "key": "SDS3",
+                        "value": "SDS3",
+                        "label": "Fast and weak pulse",
+                        "valueLabel": "Fast and weak pulse",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "a2c63c3c-2fce-483b-9109-4e55577f1992",
+                        "key": "ARFNONE",
+                        "value": "ARFNONE",
+                        "label": "NONE",
+                        "valueLabel": "NONE",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "9da43ea5-0887-40c7-a181-1308ea59d0e4",
+                        "key": "SSSNONE",
+                        "value": "SSSNONE",
+                        "label": "NONE",
+                        "valueLabel": "NONE",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "f8b8cf93-7284-4b97-8e9c-ae2073c8d688",
+                        "key": "SMNONE",
+                        "value": "SMNONE",
+                        "label": "NONE",
+                        "valueLabel": "NONE",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    },
+                    {
+                        "itemId": "1728106b-9873-4f04-89c5-2437b5c4602f",
+                        "key": "SDSNONE",
+                        "value": "SDSNONE",
+                        "label": "NONE",
+                        "valueLabel": "NONE",
+                        "disabledOtherOptionsIfSelected": false,
+                        "forbidWIth": [],
+                        "condition": ""
+                    }
+                ]
+            },
+            {
+                "screenId": "c8d7ac42-5b67-4e18-a029-a9d10702caa9",
                 "type": "progress",
                 "title": "Examination Complete",
                 "ref": "NeoNav4",
@@ -12951,7 +13212,7 @@
                 ]
             },
             {
-                "screenId": "23ed1897-0aa1-4ef2-aaf4-1165d928e5dc",
+                "screenId": "2323e90e-d6da-4e05-8c74-08c1fb0043a1",
                 "type": "diagnosis",
                 "title": "Select your diagnoses",
                 "ref": "Suggested Diagnosis",
@@ -13872,7 +14133,7 @@
                 ]
             },
             {
-                "screenId": "7c16edde-78b9-43c7-a19e-56a38816c11d",
+                "screenId": "5021c4d1-4f97-4a3a-a159-8582b39ff425",
                 "type": "multi_select",
                 "title": "Plan",
                 "ref": "Plan",
@@ -14093,7 +14354,7 @@
                 ]
             },
             {
-                "screenId": "fd09b286-d28d-4229-b2f6-a8c1f6352995",
+                "screenId": "d678a037-0b89-496c-ae9a-fb25f96b6236",
                 "type": "form",
                 "title": "Other Plan",
                 "ref": "",
@@ -14119,7 +14380,7 @@
                 "items": []
             },
             {
-                "screenId": "416460c9-dbf2-4054-a50f-ee77ebebb8a8",
+                "screenId": "975fe9bc-2395-42cd-8aea-aa3dffe4ee94",
                 "type": "multi_select",
                 "title": "Reason/ Diagnosis for Referral",
                 "ref": "RefDia",
@@ -14202,11 +14463,11 @@
                 ]
             },
             {
-                "screenId": "3ba1de4e-10de-4ade-bb23-50b38aa403ac",
+                "screenId": "288c9df9-43c8-4b19-9479-3485df20f347",
                 "type": "management",
                 "title": "Referral Instructions (O2)",
                 "ref": "Ref O2",
-                "condition": "$RefDia = 'RD' or $RefDia = 'BA'",
+                "condition": "$RefDia = 'RD'\n$RefDia = 'BA'",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": {
@@ -14238,7 +14499,7 @@
                 "items": []
             },
             {
-                "screenId": "fe31dbab-e98c-43a0-b4db-da78b439458d",
+                "screenId": "90fb9032-f0cd-454a-bf0c-85b18d217b74",
                 "type": "management",
                 "title": "Referral Instructions - Diagnoses requiring Neurological surgical management ",
                 "ref": "RefNeuroSurg",
@@ -14274,7 +14535,7 @@
                 "items": []
             },
             {
-                "screenId": "5b6d957b-f08f-4ed6-b2bb-c01fe12a7556",
+                "screenId": "877262db-30e3-4ecd-bc41-9849280dfc89",
                 "type": "management",
                 "title": "Referral Instructions - Diagnoses requiring Abdominal surgical management ",
                 "ref": "RefAbdoSurg",
@@ -14310,11 +14571,11 @@
                 "items": []
             },
             {
-                "screenId": "a6277a49-99e4-4ed7-848c-42140cee522d",
+                "screenId": "48767d44-ead9-4ad5-950c-86089d1ca2d2",
                 "type": "management",
                 "title": "Referral Instructions - General",
                 "ref": "Referral Gen",
-                "condition": "$RefDia = 'VExLBW' or $RefDia = 'LBWsick' or $RefDia = 'Conv' or $RefDia = 'NSep' or $RefDia = 'Jaun' or $RefDia = 'Cong'",
+                "condition": "$RefDia = 'VExLBW'\n$RefDia = 'LBWsick'\n$RefDia = 'Conv'\n$RefDia = 'NSep'\n$RefDia = 'Jaun'\n$RefDia = 'Cong'",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": {
@@ -14346,7 +14607,7 @@
                 "items": []
             },
             {
-                "screenId": "85943235-e031-455f-b8d8-844b929b0057",
+                "screenId": "79a7b200-1529-4b52-840d-bd3607f76498",
                 "type": "single_select",
                 "title": "Outcome of Admission Assessment",
                 "ref": "Outcome",
@@ -14467,7 +14728,7 @@
                 ]
             },
             {
-                "screenId": "3e26822d-0759-4a4d-9cc2-9a74c6bab5aa",
+                "screenId": "78f54f42-7036-425a-a495-17e6f687ed06",
                 "type": "form",
                 "title": "Other outcome",
                 "ref": "OutcomeOTH",
@@ -14493,7 +14754,7 @@
                 "items": []
             },
             {
-                "screenId": "1cc268db-8cb0-4f0a-8e7d-25e5428100c7",
+                "screenId": "e0f11713-d289-4a02-857c-9040bd884499",
                 "type": "management",
                 "title": "Management",
                 "ref": "Antibiotic Dosing by Weight Band",
@@ -14539,7 +14800,7 @@
                 "items": []
             },
             {
-                "screenId": "4d1919a2-1100-4582-bf70-30742bc973df",
+                "screenId": "26bcce34-a056-4c2c-b547-c24df2999530",
                 "type": "form",
                 "title": "Medication Given (48hrs)",
                 "ref": "MedsGiv",
@@ -14604,7 +14865,7 @@
                 "items": []
             },
             {
-                "screenId": "22154afb-b162-4de2-a12b-27f32e07d1f9",
+                "screenId": "3451d788-e055-4013-86eb-f1f86ca6382e",
                 "type": "management",
                 "title": "MANAGEMENT",
                 "ref": "ORI",
@@ -14640,7 +14901,7 @@
                 "items": []
             },
             {
-                "screenId": "98082b21-f3ee-4c16-b6ea-a9425d52ee85",
+                "screenId": "12d91e78-ad08-4bd7-9c5d-dfa677654c6e",
                 "type": "management",
                 "title": "SAFEGUARDING CONCERNS",
                 "ref": "Safeguarding Concerns",
@@ -14676,7 +14937,7 @@
                 "items": []
             },
             {
-                "screenId": "ea82583b-60fb-4cce-ab58-1c55318236a3",
+                "screenId": "a8d06274-07e6-454a-b8ad-557a845a892f",
                 "type": "progress",
                 "title": "NEOTREE COMPLETE",
                 "ref": "NeoNav4",
@@ -14779,7 +15040,7 @@
                 ]
             },
             {
-                "screenId": "6a0d92c6-ee2c-4971-b9ec-f3c8a98a0191",
+                "screenId": "37f2dc8a-f78d-4ea4-86df-20cd3188fbbb",
                 "type": "form",
                 "title": "SIGNATURE",
                 "ref": "Your Details",
@@ -15254,7 +15515,7 @@
                 "items": []
             },
             {
-                "screenId": "4f59d984-9ce9-42c0-aeb3-a65ec632694d",
+                "screenId": "f5aa4883-f48b-4ce8-aea4-a7a0ffbfeb42",
                 "type": "form",
                 "title": "NeoTree Finished - Well done!",
                 "ref": "",

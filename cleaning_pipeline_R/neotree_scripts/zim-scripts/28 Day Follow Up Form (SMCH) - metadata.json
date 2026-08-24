@@ -108,8 +108,8 @@
                         "condition": ""
                     },
                     {
-                        "label": "Outcome",
-                        "key": "NeoTreeOutcome",
+                        "label": "Outcome at discharge",
+                        "key": "NeotreeOutcome",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
@@ -130,7 +130,7 @@
                             },
                             {
                                 "value": "TRH",
-                                "valueLabel": "Transferred to other Hospital"
+                                "valueLabel": "Transferred to other hospital"
                             },
                             {
                                 "value": "TRO",
@@ -449,7 +449,7 @@
                             },
                             {
                                 "value": "DUM",
-                                "valueLabel": "Dumped baby"
+                                "valueLabel": "Abandoned baby"
                             },
                             {
                                 "value": "HIVLR",
@@ -469,7 +469,7 @@
                             },
                             {
                                 "value": "HypogSy",
-                                "valueLabel": "Hypoglycaemia (Symptomatic)"
+                                "valueLabel": "Hypoglycaemia (symptomatic)"
                             },
                             {
                                 "value": "RiHypog",
@@ -477,7 +477,7 @@
                             },
                             {
                                 "value": "HIE",
-                                "valueLabel": "Birth Asphyxia/ Hypoxic Ischaemic Encephalopathy (HIE)"
+                                "valueLabel": "Birth Asphyxia / Hypoxic Ischaemic Encephalopathy (HIE)"
                             },
                             {
                                 "value": "GSchis",
@@ -485,7 +485,7 @@
                             },
                             {
                                 "value": "MJ",
-                                "valueLabel": "Physiological Jaundice"
+                                "valueLabel": "Jaundice (physiological)"
                             },
                             {
                                 "value": "LBW",
@@ -545,7 +545,7 @@
                             },
                             {
                                 "value": "VPrem",
-                                "valueLabel": "Very Premature (28-31 weeks)"
+                                "valueLabel": "Very Premature (28 to 31.6 weeks)"
                             },
                             {
                                 "value": "ExPrem",
@@ -573,19 +573,19 @@
                             },
                             {
                                 "value": "TermRD",
-                                "valueLabel": "Term with RD"
+                                "valueLabel": "Respiratory Distress (term baby)"
                             },
                             {
                                 "value": "DJ",
-                                "valueLabel": "Pathological Jaundice"
+                                "valueLabel": "Jaundice (pathological)"
                             },
                             {
                                 "value": "sHIE",
                                 "valueLabel": "Suspected Hypoxic Ischaemic Encephalopathy"
                             },
                             {
-                                "value": "PJaundice",
-                                "valueLabel": "Prolonged Jaundice"
+                                "value": "ProJ",
+                                "valueLabel": "Jaundice (prolonged)"
                             },
                             {
                                 "value": "CleftLip",
@@ -609,11 +609,11 @@
                             },
                             {
                                 "value": "CDH",
-                                "valueLabel": "Congenital Dislocation of the hip (CDH)"
+                                "valueLabel": "Congenital dislocation of the hip (CDH)"
                             },
                             {
                                 "value": "MiTalipes",
-                                "valueLabel": "Mild Talipes (club foot)"
+                                "valueLabel": "Talipes MILD (club foot)"
                             },
                             {
                                 "value": "MoTalipes",

@@ -1,0 +1,730 @@
+[
+    {
+        "scriptId": "e820e1dd-f8c0-44b6-b598-3a34ce5f70f6",
+        "title": "EQ-TIPS-5L Neotree Sub-Study",
+        "hospitalName": "EQ-Tips",
+        "diagnoses": [],
+        "problems": [],
+        "screens": [
+            {
+                "screenId": "dd2979b3-6123-4de3-bfa8-2ea4eb73c915",
+                "type": "form",
+                "title": "EQ-TIPS-5L-INT",
+                "ref": "All",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Study Site",
+                        "key": "EQStudySite",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQStudySiteKDH",
+                                "valueLabel": "Kasungu District Hospital"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Participant ID",
+                        "key": "EQPartnpID",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Medical Condition",
+                        "key": "EQMedCondtn",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQHEALTHY",
+                                "valueLabel": "Healthy"
+                            },
+                            {
+                                "value": "EQhypiscenthy",
+                                "valueLabel": "Hypoxic Ischemic Encephalopathy"
+                            },
+                            {
+                                "value": "EQRDS",
+                                "valueLabel": "RDS"
+                            },
+                            {
+                                "value": "EQSepsis",
+                                "valueLabel": "Sepsis"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Is RDS Term or Preterm?",
+                        "key": "EQRDSOPTNS",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$EQMedCondtn = 'EQRDS'",
+                        "options": [
+                            {
+                                "value": "EQRDSOptn1",
+                                "valueLabel": "Term"
+                            },
+                            {
+                                "value": "EQRDSOptn2",
+                                "valueLabel": "Preterm"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Sepsis Confirmed or Suspected?",
+                        "key": "EQSepsisOptns",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$EQMedCondtn = 'EQSepsis'",
+                        "options": [
+                            {
+                                "value": "EQSepsisOptn1",
+                                "valueLabel": "Confirmed"
+                            },
+                            {
+                                "value": "EQSepsisOptn2",
+                                "valueLabel": "Suspected"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "e082e8d5-c988-4810-bc37-5ae97eda02e3",
+                "type": "form",
+                "title": "EQ-TIPS-5L",
+                "ref": "All",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Start Time",
+                        "key": "EQStartTime",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Muli ndi Zaka Zingati?",
+                        "key": "EQAGE",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    },
+                    {
+                        "label": "Ndinu Mwamuna kapena Nkazi",
+                        "key": "EQGender",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQM",
+                                "valueLabel": "Mwamuna"
+                            },
+                            {
+                                "value": "EQF",
+                                "valueLabel": "Nkazi"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Sukulu Munalekezela Pati?",
+                        "key": "EQEDUCATION",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQNOEDUCATION",
+                                "valueLabel": "Sindinaphunzile"
+                            },
+                            {
+                                "value": "EQPrimary",
+                                "valueLabel": "Pulayimale"
+                            },
+                            {
+                                "value": "EQSecondary",
+                                "valueLabel": "Sekondale"
+                            },
+                            {
+                                "value": "EQUniversity",
+                                "valueLabel": "Sukulu ya Ukachenjede"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "KUSUNTHA (mwachitsanzo, kubweretsa manja kukamwa, kuwongolera mutu, kufikira zinthu,kukhala,kukwawa,kuyenda,kuthamanga)",
+                        "key": "EQKUSUNTHA",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQMAVPAL1",
+                                "valueLabel": "1 = Palibe Vuto"
+                            },
+                            {
+                                "value": "EQMAVPANP2",
+                                "valueLabel": "2 = Pali vuto pang'ono penipeni"
+                            },
+                            {
+                                "value": "EQMAVPA3",
+                                "valueLabel": "3 = Pali mavuto pang'ono"
+                            },
+                            {
+                                "value": "EQMAVAAK4",
+                                "valueLabel": "4 = Pali mavuto aakulu"
+                            },
+                            {
+                                "value": "EQMAVAZ5",
+                                "valueLabel": "5 = Pali mavuto aakulu zedi"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "KUDYA KAPENA KUMWA (mwachitsanzo, kuyamwa/ kumwa kuchokera m’botolo, kumeza, kusunga chakudya)",
+                        "key": "EQKUDYAKUMWA",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQMAVPAL1",
+                                "valueLabel": "1 = Palibe Vuto"
+                            },
+                            {
+                                "value": "EQMAVPANP2",
+                                "valueLabel": "2 = Pali vuto pang'ono penipeni"
+                            },
+                            {
+                                "value": "EQMAVPA3",
+                                "valueLabel": "3 = Pali mavuto pang'ono"
+                            },
+                            {
+                                "value": "EQMAVAAK4",
+                                "valueLabel": "4 = Pali mavuto aakulu"
+                            },
+                            {
+                                "value": "EQMAVAZ5",
+                                "valueLabel": "5 = Pali mavuto aakulu zedi"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "TULO (mwachitsanzo; kuyamba kugona tulo, kukhala mtulo, mlingo watulo) Palibe vuto kugona tulo",
+                        "key": "EQTULO",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQMAVPAL1",
+                                "valueLabel": "1 = Palibe Vuto"
+                            },
+                            {
+                                "value": "EQMAVPANP2",
+                                "valueLabel": "2 = Pali vuto pang'ono penipeni"
+                            },
+                            {
+                                "value": "EQMAVPA3",
+                                "valueLabel": "3 = Pali mavuto pang'ono"
+                            },
+                            {
+                                "value": "EQMAVAAK4",
+                                "valueLabel": "4 = Pali mavuto aakulu"
+                            },
+                            {
+                                "value": "EQMAVAZ5",
+                                "valueLabel": "5 = Pali mavuto aakulu zedi"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "KUPWETEKA (mwana amene akumva kuwawa kapena kuphwanya m'thupi akhoza kulira mosalekeza, kusakhazikika mosowa mtendere kapena kukhala phee mwachilendo, kuipitsa",
+                        "key": "EQKUPWETEKA",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQMAVPAL1",
+                                "valueLabel": "1 = Palibe Vuto"
+                            },
+                            {
+                                "value": "EQMAVPANP2",
+                                "valueLabel": "2 = Pali vuto pang'ono penipeni"
+                            },
+                            {
+                                "value": "EQMAVPA3",
+                                "valueLabel": "3 = Pali mavuto pang'ono"
+                            },
+                            {
+                                "value": "EQMAVAAK4",
+                                "valueLabel": "4 = Pali mavuto aakulu"
+                            },
+                            {
+                                "value": "EQMAVAZ5",
+                                "valueLabel": "5 = Pali mavuto aakulu zedi"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "KUTONTHOZEKA (mwachitsanzo, mwana akhoza kutonthozedwa akakhumudwa, akakwiya, ali ndi mantha kapena kumva kupweteka, kusangalala)",
+                        "key": "EQKUTONTHOZEKA",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQMAVPAL1",
+                                "valueLabel": "1 = Palibe Vuto"
+                            },
+                            {
+                                "value": "EQMAVPANP2",
+                                "valueLabel": "2 = Pali vuto pang'ono penipeni"
+                            },
+                            {
+                                "value": "EQMAVPA3",
+                                "valueLabel": "3 = Pali mavuto pang'ono"
+                            },
+                            {
+                                "value": "EQMAVAAK4",
+                                "valueLabel": "4 = Pali mavuto aakulu"
+                            },
+                            {
+                                "value": "EQMAVAZ5",
+                                "valueLabel": "5 = Pali mavuto aakulu zedi"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "KUMASUKA KOMANSO KULANKHULANA NDI ENA (mwachitsanzo,kuyang'ana munthu akamalankhula naye,kumwetulira,kuseka,kuonetsa zizindikilo polankhulana,kulankhula)",
+                        "key": "EQKUMASUKA",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQMAVPAL1",
+                                "valueLabel": "1 = Palibe Vuto"
+                            },
+                            {
+                                "value": "EQMAVPANP2",
+                                "valueLabel": "2 = Pali vuto pang'ono penipeni"
+                            },
+                            {
+                                "value": "EQMAVPA3",
+                                "valueLabel": "3 = Pali mavuto pang'ono"
+                            },
+                            {
+                                "value": "EQMAVAAK4",
+                                "valueLabel": "4 = Pali mavuto aakulu"
+                            },
+                            {
+                                "value": "EQMAVAZ5",
+                                "valueLabel": "5 = Pali mavuto aakulu zedi"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "KUSEWERA (mwachitsanzo, kufufuza/kumvetsetsa zinthu kapena zoseweretsa, kusewera masewera, kuchita masanje)",
+                        "key": "EQKUSEWELA",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQMAVPAL1",
+                                "valueLabel": "1 = Palibe Vuto"
+                            },
+                            {
+                                "value": "EQMAVPANP2",
+                                "valueLabel": "2 = Pali vuto pang'ono penipeni"
+                            },
+                            {
+                                "value": "EQMAVPA3",
+                                "valueLabel": "3 = Pali mavuto pang'ono"
+                            },
+                            {
+                                "value": "EQMAVAAK4",
+                                "valueLabel": "4 = Pali mavuto aakulu"
+                            },
+                            {
+                                "value": "EQMAVAZ5",
+                                "valueLabel": "5 = Pali mavuto aakulu zedi"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "454e8c75-0a9e-4d5a-af26-322a1ecbb099",
+                "type": "form",
+                "title": "EQ-TIPS-5L-VAS",
+                "ref": "All",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "THANZI LA MWANA WANU LEROLO",
+                        "key": "EQVAS",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "0",
+                        "maxValue": "100",
+                        "condition": ""
+                    },
+                    {
+                        "label": "End Time",
+                        "key": "EQEndTime",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "90850919-f49a-486c-90fd-059f36f68d22",
+                "type": "form",
+                "title": "Interviewer Observations",
+                "ref": "Script End",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Did they need further assistance to understand instructions?",
+                        "key": "EQASSUNDIN",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQEYA",
+                                "valueLabel": "1 = Y"
+                            },
+                            {
+                                "value": "EQAYI",
+                                "valueLabel": "2 = N"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Did they need any assistance to fill the questionnaire?",
+                        "key": "EQASSFILL",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQEYA",
+                                "valueLabel": "1 = Y"
+                            },
+                            {
+                                "value": "EQAYI",
+                                "valueLabel": "2 = N"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Any other assistance given/observation. Please specify here",
+                        "key": "EQANYOBS",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": true,
+                        "confidential": false,
+                        "minValue": "",
+                        "maxValue": "",
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "2e37a215-6b43-4db6-9f2e-20faba1853f5",
+                "type": "form",
+                "title": "SIGNATURE",
+                "ref": "Your Details ",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Health Care Worker Signature",
+                        "key": "EQHCWSig",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQHCW1",
+                                "valueLabel": "Goodluck Mandele"
+                            },
+                            {
+                                "value": "EQHCW2",
+                                "valueLabel": "Wezzie Mphande"
+                            },
+                            {
+                                "value": "EQHCW3",
+                                "valueLabel": "Davie Flemmings"
+                            },
+                            {
+                                "value": "EQHCW4",
+                                "valueLabel": "Nellie Mandah"
+                            },
+                            {
+                                "value": "EQHCW5",
+                                "valueLabel": "Mark Frazer"
+                            },
+                            {
+                                "value": "EQHCW6",
+                                "valueLabel": "Jacqueline Wallace"
+                            },
+                            {
+                                "value": "EQHCW7",
+                                "valueLabel": "Enala Theu"
+                            },
+                            {
+                                "value": "EQHCW8",
+                                "valueLabel": "Tiwonge Mwale"
+                            },
+                            {
+                                "value": "EQHCW9",
+                                "valueLabel": "Carien Banda"
+                            },
+                            {
+                                "value": "EQHC10",
+                                "valueLabel": "Olive Chibvumbi"
+                            },
+                            {
+                                "value": "EQHC11",
+                                "valueLabel": "Faith Nthala"
+                            },
+                            {
+                                "value": "EQHC12",
+                                "valueLabel": "Beleya James"
+                            },
+                            {
+                                "value": "EQHC13",
+                                "valueLabel": "Sangwani Ng'ambi"
+                            },
+                            {
+                                "value": "EQHC14",
+                                "valueLabel": "Winfred Chunda"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "d930cc18-04a3-41ed-bdf1-496bd43e6157",
+                "type": "form",
+                "title": "Timepoint ",
+                "ref": "Timepoint",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Timepoint of participant recruitment",
+                        "key": "EQTiPont",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQTiPontOpt1",
+                                "valueLabel": "1 = Baseline"
+                            },
+                            {
+                                "value": "EQTiPontOpt2",
+                                "valueLabel": "2 = After 24 hours"
+                            },
+                            {
+                                "value": "EQTiPontOpt3",
+                                "valueLabel": "3 = At discharge"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "98515f35-5689-40bd-94c0-71a0157a200c",
+                "type": "form",
+                "title": "Data Quality Control",
+                "ref": "Data QC",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Who did data quality control?",
+                        "key": "EQDQC",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "EQHCW1",
+                                "valueLabel": "Goodluck Mandele"
+                            },
+                            {
+                                "value": "EQHCW2",
+                                "valueLabel": "Wezzie Mphande"
+                            },
+                            {
+                                "value": "EQHCW3",
+                                "valueLabel": "Davie Flemmings"
+                            },
+                            {
+                                "value": "EQHCW4",
+                                "valueLabel": "Nellie Mandah"
+                            },
+                            {
+                                "value": "EQHCW5",
+                                "valueLabel": "Mark Frazer"
+                            },
+                            {
+                                "value": "EQHCW6",
+                                "valueLabel": "Jacqueline Wallace"
+                            },
+                            {
+                                "value": "EQHCW7",
+                                "valueLabel": "Enala Theu"
+                            },
+                            {
+                                "value": "EQHCW8",
+                                "valueLabel": "Tiwonge Mwale"
+                            },
+                            {
+                                "value": "EQHCW9",
+                                "valueLabel": "Carien Banda"
+                            },
+                            {
+                                "value": "EQHC10",
+                                "valueLabel": "Olive Chibvumbi"
+                            },
+                            {
+                                "value": "EQHC11",
+                                "valueLabel": "Faith Nthala"
+                            },
+                            {
+                                "value": "EQHC12",
+                                "valueLabel": "Beleya James"
+                            },
+                            {
+                                "value": "EQHC13",
+                                "valueLabel": "Sangwani Ng'ambi"
+                            },
+                            {
+                                "value": "EQHC14",
+                                "valueLabel": "Winfred Chunda"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "054fb184-c8d5-45d1-8e70-a082cad776a5",
+                "type": "form",
+                "title": "Well done for finishing the EQ-Tips Neotree Sub-study!",
+                "ref": "Script End",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [],
+                "items": []
+            }
+        ]
+    }
+]

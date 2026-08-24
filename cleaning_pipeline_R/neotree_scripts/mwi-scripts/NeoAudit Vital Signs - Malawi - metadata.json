@@ -1,0 +1,1049 @@
+[
+    {
+        "scriptId": "114f7783-17f9-421c-8b25-8f7b561326f7",
+        "title": "NeoAudit Vital Signs - Malawi",
+        "hospitalName": "Kamuzu Central Hospital",
+        "diagnoses": [],
+        "problems": [],
+        "screens": [
+            {
+                "screenId": "2aa00235-a21a-45fe-856e-4f78336c61f2",
+                "type": "form",
+                "title": "Patient Details",
+                "ref": "Patient details",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "NEOTREE ID",
+                        "key": "NUID",
+                        "type": "text",
+                        "dataType": "uid",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Length of stay in days",
+                        "key": "LengthOfStay",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Is this baby in the sepsis study?",
+                        "key": "NSS",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "ff0b68be-f409-4e7c-bfa7-0a0e16d754c5",
+                "type": "form",
+                "title": "Day 1",
+                "ref": "Day 1",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Date (Day 1)",
+                        "key": "D1Date",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Day of the week (Day 1)",
+                        "key": "D1DayOfWk",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "M",
+                                "valueLabel": "Monday"
+                            },
+                            {
+                                "value": "T",
+                                "valueLabel": "Tuesday"
+                            },
+                            {
+                                "value": "W",
+                                "valueLabel": "Wednesday"
+                            },
+                            {
+                                "value": "Th",
+                                "valueLabel": "Thursday"
+                            },
+                            {
+                                "value": "F",
+                                "valueLabel": "Friday"
+                            },
+                            {
+                                "value": "Sat",
+                                "valueLabel": "Saturday"
+                            },
+                            {
+                                "value": "Sun",
+                                "valueLabel": "Sunday"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Is it a public holiday? (Day 1)",
+                        "key": "D1PH",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Number of nurses on day shift (Day1)",
+                        "key": "D1DayNurses",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nurses on night shift (Day1)",
+                        "key": "D1NightNurses",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nurses working a continuous shift without rest (Day 1)",
+                        "key": "D1Nurses40",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of babies in Ethel (Day 1)",
+                        "key": "D1Patients",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nursing students present (Day 1)",
+                        "key": "D1students",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Location of baby (Day 1)",
+                        "key": "D1Location",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": true,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "HR",
+                                "valueLabel": "High-Risk"
+                            },
+                            {
+                                "value": "LR",
+                                "valueLabel": "Low-Risk"
+                            },
+                            {
+                                "value": "Iso",
+                                "valueLabel": "Isolation"
+                            },
+                            {
+                                "value": "KMC",
+                                "valueLabel": "Kangaroo Mother Care"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "cab2b227-16fd-4fa1-b6cc-d8ea488d5b18",
+                "type": "form",
+                "title": "Day 1 time of vital signs",
+                "ref": "Day 1 timings",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Frequency of monitoring of vital signs (Day 1)",
+                        "key": "D1FreqMon",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Time of 1st vital signs (Day 1)",
+                        "key": "D1Time1",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D1FreqMon > 0"
+                    },
+                    {
+                        "label": "Time of 2nd vital signs (Day 1)",
+                        "key": "D1Time2",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D1FreqMon > 1"
+                    },
+                    {
+                        "label": "Time of 3rd vital signs (Day 1)",
+                        "key": "D1Time3",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D1FreqMon > 2"
+                    },
+                    {
+                        "label": "Time of 4th vital signs (Day 1)",
+                        "key": "D1Time4",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D1FreqMon > 3"
+                    },
+                    {
+                        "label": "Time of 5th vital signs (Day 1)",
+                        "key": "D1Time5",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D1FreqMon > 4"
+                    },
+                    {
+                        "label": "Time of 6th vital signs (Day 1)",
+                        "key": "D1Time6",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D1FreqMon > 5"
+                    },
+                    {
+                        "label": "test",
+                        "key": "test",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": null,
+                        "maxValue": null,
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "60866336-86e8-4850-b686-b2129130d440",
+                "type": "form",
+                "title": "Day 2",
+                "ref": "Day 2",
+                "condition": "$LengthOfStay > 1",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Date (Day 2)",
+                        "key": "D2Date",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Day of the week (Day 2)",
+                        "key": "D2DayOfWk",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "M",
+                                "valueLabel": "Mon"
+                            },
+                            {
+                                "value": "T",
+                                "valueLabel": "Tues"
+                            },
+                            {
+                                "value": "W",
+                                "valueLabel": "Wed"
+                            },
+                            {
+                                "value": "Th",
+                                "valueLabel": "Thurs"
+                            },
+                            {
+                                "value": "F",
+                                "valueLabel": "Fri"
+                            },
+                            {
+                                "value": "Sat",
+                                "valueLabel": "Saturday"
+                            },
+                            {
+                                "value": "Sun",
+                                "valueLabel": "Sunday"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Is it a public holiday? (Day2)",
+                        "key": "D2PH",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Number of nurses on day shift (Day 2)",
+                        "key": "D2DayNurses",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nurses on night shift (Day 2)",
+                        "key": "D2NightNurses",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nurses working a continuous shift without rest (Day 2)",
+                        "key": "D2Nurses40",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of babies in Ethel (Day 2)",
+                        "key": "D2Patients",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nursing students present (day 2)",
+                        "key": "D2Students",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Location of baby (day 2)",
+                        "key": "D2Location",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": true,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "HR",
+                                "valueLabel": "High-Risk"
+                            },
+                            {
+                                "value": "LR",
+                                "valueLabel": "Low-Risk"
+                            },
+                            {
+                                "value": "Iso",
+                                "valueLabel": "Isolation"
+                            },
+                            {
+                                "value": "KMC",
+                                "valueLabel": "Kangaroo Mother Care"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "bbcd9569-8665-4667-a9cf-317f6b7c4bb7",
+                "type": "form",
+                "title": "Day 2 time of vital signs",
+                "ref": "Day 2 timings",
+                "condition": "$LengthOfStay > 1",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Frequency of monitoring (Day 2)",
+                        "key": "D2FreqMon",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Time of 1st vital signs (Day 2)",
+                        "key": "D2Time1",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D2FreqMon > 0"
+                    },
+                    {
+                        "label": "Time of 2nd vital signs (Day 2)",
+                        "key": "D2Time2",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D2FreqMon > 1"
+                    },
+                    {
+                        "label": "Time of 3rd vital signs (Day 2)",
+                        "key": "D2Time3",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D2FreqMon > 2"
+                    },
+                    {
+                        "label": "Time of 4th vital signs (Day 2)",
+                        "key": "D2Time4",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D2FreqMon > 3"
+                    },
+                    {
+                        "label": "Time of 5th vital signs (Day 2)",
+                        "key": "D2Time5",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D2FreqMon > 4"
+                    },
+                    {
+                        "label": "Time of 6th vital signs (Day 2)",
+                        "key": "D3Time6",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D2FreqMon > 5"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "649212df-6291-44d8-8804-054cdb1c8cc6",
+                "type": "form",
+                "title": "Day 3",
+                "ref": "Day 3",
+                "condition": "$LengthOfStay > 2",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Date (Day 3)",
+                        "key": "D3Date",
+                        "type": "date",
+                        "dataType": "date",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Day of the week (Day 3)",
+                        "key": "D3DayOfWk",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "M",
+                                "valueLabel": "Monday"
+                            },
+                            {
+                                "value": "T",
+                                "valueLabel": "Tuesday"
+                            },
+                            {
+                                "value": "W",
+                                "valueLabel": "Wednesday"
+                            },
+                            {
+                                "value": "Th",
+                                "valueLabel": "Thursday"
+                            },
+                            {
+                                "value": "F",
+                                "valueLabel": "Friday"
+                            },
+                            {
+                                "value": "Sat",
+                                "valueLabel": "Saturday"
+                            },
+                            {
+                                "value": "Sun",
+                                "valueLabel": "Sunday"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Is it a public holiday? (Day 3)",
+                        "key": "D3PH",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "Number of nurses on day shift (Day 3)",
+                        "key": "D3DayNurses",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nurses working on night shift (Day 3)",
+                        "key": "D3NightNurses",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nurses working a continuous shift without rest (Day 3)",
+                        "key": "D3Nurses40",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of babies in Ethel (Day 3)",
+                        "key": "D3Patients",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Number of nursing students present (Day 3)",
+                        "key": "D3Students",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Location of baby (Day 3)",
+                        "key": "D3Location",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": true,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "HR",
+                                "valueLabel": "HIgh-Risk"
+                            },
+                            {
+                                "value": "LR",
+                                "valueLabel": "Low-Risk"
+                            },
+                            {
+                                "value": "Iso",
+                                "valueLabel": "Isolation"
+                            },
+                            {
+                                "value": "KMC",
+                                "valueLabel": "Kangaroo Mother Care"
+                            }
+                        ]
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "38051507-47d1-4122-abe9-60162c68d46e",
+                "type": "form",
+                "title": "Day 3 time of vital signs",
+                "ref": "Day 3 timings",
+                "condition": "$LengthOfStay > 2",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Frequency of monitoring of vital signs (Day 3)",
+                        "key": "D3FreqMon",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    },
+                    {
+                        "label": "Time of 1st vital signs (Day3)",
+                        "key": "D3Time1",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D3FreqMon > 0"
+                    },
+                    {
+                        "label": "Time of 2nd vital signs (Day3)",
+                        "key": "D3Time2",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D3FreqMon > 1"
+                    },
+                    {
+                        "label": "Time of 3rd vital signs (Day3)",
+                        "key": "D3Time3",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D3FreqMon > 2"
+                    },
+                    {
+                        "label": "Time of 4th vital signs (Day 3)",
+                        "key": "D3Time4",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D3FreqMon > 3"
+                    },
+                    {
+                        "label": "Time of 5th vital signs (Day 3)",
+                        "key": "D3Time5",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D3FreqMon > 4"
+                    },
+                    {
+                        "label": "Time of 6th vital signs (Day 3)",
+                        "key": "D3Time6",
+                        "type": "time",
+                        "dataType": "time",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$D3FreqMon > 5"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "2dec0cbf-b8bd-434f-9f78-c3b23ce07a2c",
+                "type": "form",
+                "title": "Hypothermia?",
+                "ref": "Hypothermia",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Was this baby hypothermic during their stay?",
+                        "key": "HypothPres",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What was the temperature?",
+                        "key": "Temp1",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "30.0",
+                        "maxValue": "36.4",
+                        "condition": "$HypothPres = 'Y'"
+                    },
+                    {
+                        "label": "Date and time of first Temperature",
+                        "key": "TimeTemp1",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$HypothPres = 'Y'"
+                    },
+                    {
+                        "label": "Was a follow up temperature done?",
+                        "key": "Temp2done",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$HypothPres = 'Y'",
+                        "options": [
+                            {
+                                "value": "Y",
+                                "valueLabel": "Yes"
+                            },
+                            {
+                                "value": "N",
+                                "valueLabel": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "label": "What was the follow up temperature?",
+                        "key": "Temp2",
+                        "type": "number",
+                        "dataType": "number",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "minValue": "30.0",
+                        "maxValue": "42.0",
+                        "condition": "$HypothPres = 'Y' and $Temp2done = 'Y'"
+                    },
+                    {
+                        "label": "Date and time of follow up temperature?",
+                        "key": "TimeTemp2",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$HypothPres = 'Y' and $Temp2done = 'Y'"
+                    }
+                ],
+                "items": []
+            },
+            {
+                "screenId": "228b6b47-caa9-4ddd-a9a9-be01faa1e9c7",
+                "type": "form",
+                "title": "Signature",
+                "ref": "Signature",
+                "condition": "",
+                "skipToCondition": "",
+                "skipToScreen": null,
+                "managementMetadata": null,
+                "fields": [
+                    {
+                        "label": "Signature",
+                        "key": "Signature",
+                        "type": "dropdown",
+                        "dataType": "dropdown",
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "",
+                        "options": [
+                            {
+                                "value": "Prdi",
+                                "valueLabel": "Precious Dinga"
+                            },
+                            {
+                                "value": "Rhch",
+                                "valueLabel": "Rhoda Chifisi"
+                            },
+                            {
+                                "value": "Waku",
+                                "valueLabel": "Watson Kumwenda"
+                            },
+                            {
+                                "value": "Wyph",
+                                "valueLabel": "Wyness Phiri"
+                            },
+                            {
+                                "value": "Ench",
+                                "valueLabel": "Enalla Chirambo"
+                            },
+                            {
+                                "value": "Liph",
+                                "valueLabel": "Linna Phiri"
+                            },
+                            {
+                                "value": "Shbw",
+                                "valueLabel": "Shameela Bwanali"
+                            },
+                            {
+                                "value": "Mach",
+                                "valueLabel": "Mapopa Chunga"
+                            },
+                            {
+                                "value": "Doma",
+                                "valueLabel": "Dorthy Mandebvu"
+                            },
+                            {
+                                "value": "Teka",
+                                "valueLabel": "Teleza Kachingwe"
+                            },
+                            {
+                                "value": "Bete",
+                                "valueLabel": "Bentley Tembo"
+                            },
+                            {
+                                "value": "Prma",
+                                "valueLabel": "Prince Magawa"
+                            },
+                            {
+                                "value": "Name",
+                                "valueLabel": "Naomi Meke"
+                            },
+                            {
+                                "value": "CeKa",
+                                "valueLabel": "Cecelia Kameza"
+                            },
+                            {
+                                "value": "Oth",
+                                "valueLabel": "Other"
+                            },
+                            {
+                                "value": "",
+                                "valueLabel": ""
+                            }
+                        ]
+                    },
+                    {
+                        "label": "HCW-ID",
+                        "key": "HCWID",
+                        "type": "text",
+                        "dataType": "string",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": "$Signature = 'Oth'"
+                    },
+                    {
+                        "label": "End of script",
+                        "key": "EndScriptDatetime",
+                        "type": "datetime",
+                        "dataType": "datetime",
+                        "value": null,
+                        "valueLabel": null,
+                        "optional": false,
+                        "confidential": false,
+                        "condition": ""
+                    }
+                ],
+                "items": []
+            }
+        ]
+    }
+]

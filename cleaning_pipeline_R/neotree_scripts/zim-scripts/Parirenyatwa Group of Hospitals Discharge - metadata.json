@@ -17,8 +17,8 @@
                 "managementMetadata": null,
                 "fields": [
                     {
-                        "label": "Outcome",
-                        "key": "NeoTreeOutcome",
+                        "label": "Outcome at discharge",
+                        "key": "NeotreeOutcome",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
@@ -35,7 +35,7 @@
                             },
                             {
                                 "value": "DDA",
-                                "valueLabel": "Died During Admission"
+                                "valueLabel": "Died during admission"
                             },
                             {
                                 "value": "ABS",
@@ -43,7 +43,7 @@
                             },
                             {
                                 "value": "TRH",
-                                "valueLabel": "Transferred to other Hospital"
+                                "valueLabel": "Transferred to other hospital"
                             },
                             {
                                 "value": "TRO",
@@ -621,7 +621,7 @@
                 "managementMetadata": null,
                 "fields": [
                     {
-                        "label": "Presenting Complaint",
+                        "label": "Presenting complaint",
                         "key": "AdmReason",
                         "type": "dropdown",
                         "dataType": "dropdown",
@@ -687,15 +687,15 @@
                             },
                             {
                                 "value": "HypogSy",
-                                "valueLabel": "Hypoglycaemia (Symptomatic)"
+                                "valueLabel": "Hypoglycaemia (symptomatic)"
                             },
                             {
                                 "value": "RiHypog",
                                 "valueLabel": "Risk of hypoglycaemia"
                             },
                             {
-                                "value": "BA",
-                                "valueLabel": "Hypoxic Ischaemic Encephalopathy"
+                                "value": "HIE",
+                                "valueLabel": "Birth Asphyxia / Hypoxic Ischaemic Encephalopathy (HIE)"
                             },
                             {
                                 "value": "GSchis",
@@ -703,7 +703,7 @@
                             },
                             {
                                 "value": "MJ",
-                                "valueLabel": "Physiological Jaundice"
+                                "valueLabel": "Jaundice (physiological)"
                             },
                             {
                                 "value": "LBW",
@@ -755,7 +755,7 @@
                             },
                             {
                                 "value": "VPrem",
-                                "valueLabel": "Very Premature (28-31 weeks)"
+                                "valueLabel": "Very Premature (28 to 31.6 weeks)"
                             },
                             {
                                 "value": "ExPrem",
@@ -771,7 +771,7 @@
                             },
                             {
                                 "value": "NSep",
-                                "valueLabel": "Suspected neonatal sepsis"
+                                "valueLabel": "Sepsis suspected"
                             },
                             {
                                 "value": "Safe",
@@ -795,15 +795,15 @@
                             },
                             {
                                 "value": "DJ",
-                                "valueLabel": "Pathological Jaundice"
+                                "valueLabel": "Jaundice (pathological)"
                             },
                             {
                                 "value": "sHIE",
                                 "valueLabel": "Suspected Hypoxic Ischaemic Encephalopathy"
                             },
                             {
-                                "value": "PJaundice",
-                                "valueLabel": "Prolonged Jaundice"
+                                "value": "ProJ",
+                                "valueLabel": "Jaundice (prolonged)"
                             },
                             {
                                 "value": "CleftLip",
@@ -827,11 +827,11 @@
                             },
                             {
                                 "value": "CDH",
-                                "valueLabel": "Congenital Dislocation of the hip (CDH)"
+                                "valueLabel": "Congenital dislocation of the hip (CDH)"
                             },
                             {
                                 "value": "MiTalipes",
-                                "valueLabel": "Mild Talipes (club foot)"
+                                "valueLabel": "Talipes MILD (club foot)"
                             },
                             {
                                 "value": "MoTalipes",
@@ -974,7 +974,7 @@
                         "key": "BirthPlace",
                         "type": "dropdown",
                         "dataType": "dropdown",
-                        "optional": true,
+                        "optional": false,
                         "confidential": false,
                         "condition": "",
                         "options": [
@@ -983,7 +983,7 @@
                                 "valueLabel": "Parirenyatwa Group of Hospitals"
                             },
                             {
-                                "value": "OtH",
+                                "value": "OthHarare",
                                 "valueLabel": "Other clinic in Harare"
                             },
                             {
@@ -997,7 +997,7 @@
                         ]
                     },
                     {
-                        "label": "Gestation at birth (weeks.days)",
+                        "label": "Estimated Gestational age at birth (weeks.days)",
                         "key": "Gestation",
                         "type": "number",
                         "dataType": "number",
@@ -1228,15 +1228,15 @@
                             },
                             {
                                 "value": "HypogSy",
-                                "valueLabel": "Hypoglycaemia (Symptomatic)"
+                                "valueLabel": "Hypoglycaemia (symptomatic)"
                             },
                             {
                                 "value": "RiHypog",
                                 "valueLabel": "Risk of hypoglycaemia"
                             },
                             {
-                                "value": "BA",
-                                "valueLabel": "Hypoxic Ischaemic Encephalopathy"
+                                "value": "HIE",
+                                "valueLabel": "Birth Asphyxia / Hypoxic Ischaemic Encephalopathy (HIE)"
                             },
                             {
                                 "value": "GSchis",
@@ -1244,7 +1244,7 @@
                             },
                             {
                                 "value": "MJ",
-                                "valueLabel": "Physiological Jaundice"
+                                "valueLabel": "Jaundice (physiological)"
                             },
                             {
                                 "value": "LBW",
@@ -1296,7 +1296,7 @@
                             },
                             {
                                 "value": "VPrem",
-                                "valueLabel": "Very Premature (28-31 weeks)"
+                                "valueLabel": "Very Premature (28 to 31.6 weeks)"
                             },
                             {
                                 "value": "ExPrem",
@@ -1335,8 +1335,8 @@
                                 "valueLabel": "Suspected Hypoxic Ischaemic Encephalopathy"
                             },
                             {
-                                "value": "PJaundice",
-                                "valueLabel": "Prolonged Jaundice"
+                                "value": "ProJ",
+                                "valueLabel": "Jaundice (prolonged)"
                             },
                             {
                                 "value": "CleftLip",
@@ -1352,7 +1352,7 @@
                             },
                             {
                                 "value": "NSepNC",
-                                "valueLabel": "Risk factors for sepsis (but sepsis ruled out)"
+                                "valueLabel": "Sepsis (risk factors, but ruled out)"
                             },
                             {
                                 "value": "CleftRD",
@@ -1372,11 +1372,11 @@
                             },
                             {
                                 "value": "CDH",
-                                "valueLabel": "Congenital Dislocation of the hip (CDH)"
+                                "valueLabel": "Congenital dislocation of the hip (CDH)"
                             },
                             {
                                 "value": "MiTalipes",
-                                "valueLabel": "Mild Talipes (club foot)"
+                                "valueLabel": "Talipes MILD (club foot)"
                             },
                             {
                                 "value": "MoTalipes",
@@ -1776,15 +1776,15 @@
                             },
                             {
                                 "value": "HypogSy",
-                                "valueLabel": "Hypoglycaemia (Symptomatic)"
+                                "valueLabel": "Hypoglycaemia (symptomatic)"
                             },
                             {
                                 "value": "RiHypog",
                                 "valueLabel": "Risk of hypoglycaemia"
                             },
                             {
-                                "value": "BA",
-                                "valueLabel": "Hypoxic Ischaemic Encephalopathy"
+                                "value": "HIE",
+                                "valueLabel": "Birth Asphyxia / Hypoxic Ischaemic Encephalopathy (HIE)"
                             },
                             {
                                 "value": "GSchis",
@@ -1792,7 +1792,7 @@
                             },
                             {
                                 "value": "MJ",
-                                "valueLabel": "Physiological Jaundice"
+                                "valueLabel": "Jaundice (physiological)"
                             },
                             {
                                 "value": "LBW",
@@ -1844,7 +1844,7 @@
                             },
                             {
                                 "value": "VPrem",
-                                "valueLabel": "Very Premature (28-31 weeks)"
+                                "valueLabel": "Very Premature (28 to 31.6 weeks)"
                             },
                             {
                                 "value": "ExPrem",
@@ -1883,8 +1883,8 @@
                                 "valueLabel": "Suspected Hypoxic Ischaemic Encephalopathy"
                             },
                             {
-                                "value": "PJaundice",
-                                "valueLabel": "Prolonged Jaundice"
+                                "value": "ProJ",
+                                "valueLabel": "Jaundice (prolonged)"
                             },
                             {
                                 "value": "CleftLip",
@@ -1916,11 +1916,11 @@
                             },
                             {
                                 "value": "CDH",
-                                "valueLabel": "Congenital Dislocation of the hip (CDH)"
+                                "valueLabel": "Congenital dislocation of the hip (CDH)"
                             },
                             {
                                 "value": "MiTalipes",
-                                "valueLabel": "Mild Talipes (club foot)"
+                                "valueLabel": "Talipes MILD (club foot)"
                             },
                             {
                                 "value": "MoTalipes",
@@ -2497,14 +2497,6 @@
                             {
                                 "value": "GDS",
                                 "valueLabel": "Group D Streptococcus"
-                            },
-                            {
-                                "value": "KP",
-                                "valueLabel": "Klebsiella Pneumoniae"
-                            },
-                            {
-                                "value": "PA",
-                                "valueLabel": "Pseudomonas Aeruginosa"
                             },
                             {
                                 "value": "SA",
@@ -3665,10 +3657,6 @@
                                 "valueLabel": "Klabsiella Pneumoniae"
                             },
                             {
-                                "value": "PA",
-                                "valueLabel": "Pseudomonas Aeruginosa"
-                            },
-                            {
                                 "value": "SA",
                                 "valueLabel": "Staphylococcus Aureus"
                             },
@@ -4093,14 +4081,6 @@
                             {
                                 "value": "GDS",
                                 "valueLabel": "Group D Streptococcus"
-                            },
-                            {
-                                "value": "KP",
-                                "valueLabel": "Klebsiella pneumoniae"
-                            },
-                            {
-                                "value": "PA",
-                                "valueLabel": "Pseudomonas aeruginosa"
                             },
                             {
                                 "value": "SA",
@@ -5678,12 +5658,6 @@
                                 "forbidWIth": []
                             },
                             {
-                                "value": "Neuro",
-                                "valueLabel": "Neurology",
-                                "disabledOtherOptionsIfSelected": false,
-                                "forbidWIth": []
-                            },
-                            {
                                 "value": "Endoc",
                                 "valueLabel": "Endocrinology",
                                 "disabledOtherOptionsIfSelected": false,
@@ -5901,7 +5875,7 @@
                         ]
                     },
                     {
-                        "label": "If yes which clinic?",
+                        "label": "Review Clinic",
                         "key": "REVCLINTYP",
                         "type": "dropdown",
                         "dataType": "dropdown",
@@ -5940,10 +5914,6 @@
                             {
                                 "value": "PC",
                                 "valueLabel": "Plastics Clinic"
-                            },
-                            {
-                                "value": "NSC",
-                                "valueLabel": "Neuro Surgery Clinic"
                             }
                         ]
                     },
@@ -6378,7 +6348,7 @@
                 "managementMetadata": null,
                 "fields": [
                     {
-                        "label": "Gestation (weeks.days)",
+                        "label": "Estimated Gestational age at birth (weeks.days)",
                         "key": "Gestation",
                         "type": "number",
                         "dataType": "number",
@@ -7729,10 +7699,6 @@
                                 "valueLabel": "African"
                             },
                             {
-                                "value": "AA",
-                                "valueLabel": "African/AfricanAmerican"
-                            },
-                            {
                                 "value": "AS",
                                 "valueLabel": "Asian/Pacific Islander"
                             },
@@ -8231,7 +8197,7 @@
                         "dataType": "date",
                         "value": null,
                         "valueLabel": null,
-                        "optional": true,
+                        "optional": false,
                         "confidential": true,
                         "minValue": "",
                         "maxValue": "",
@@ -8280,8 +8246,8 @@
                         ]
                     },
                     {
-                        "label": "Mother on HAART?",
-                        "key": "HAART",
+                        "label": "Is the mother on HAART?",
+                        "key": "MaHAART",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
@@ -8299,13 +8265,13 @@
                         ]
                     },
                     {
-                        "label": "Mother on HAART since when?",
+                        "label": "Maternal HAART Initiation",
                         "key": "LengthHAART",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
                         "confidential": true,
-                        "condition": "$HAART = 'Y'",
+                        "condition": "$MaHAART = 'Y'",
                         "options": [
                             {
                                 "value": "1stTrim",
@@ -9162,7 +9128,7 @@
                             },
                             {
                                 "value": "Pr2nd",
-                                "valueLabel": "Prolonged second stage",
+                                "valueLabel": "Prolonged second stage labour",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
                             },

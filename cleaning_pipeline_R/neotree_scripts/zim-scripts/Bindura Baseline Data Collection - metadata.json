@@ -894,7 +894,7 @@
                 "managementMetadata": null,
                 "fields": [
                     {
-                        "label": "Outcome",
+                        "label": "Outcome at discharge",
                         "key": "NeotreeOutcome",
                         "type": "dropdown",
                         "dataType": "dropdown",

@@ -47,7 +47,7 @@
             },
             {
                 "diagnosisId": "a6017f4d-5bac-4d1e-871e-d0eb3d49a963",
-                "name": "Born Before Arrival",
+                "name": "Born before arrival",
                 "key": "BBA",
                 "keyId": "e3cb5ede-7fc1-43aa-8d79-bd36a4cd332e",
                 "position": 7101,
@@ -67,8 +67,8 @@
             },
             {
                 "diagnosisId": "70cb6f1e-ac11-46c4-b70f-c8a8f684f6da",
-                "name": "Birth Trauma",
-                "key": "BI",
+                "name": "Birth injury / Trauma",
+                "key": "BT",
                 "keyId": "ec2adc2a-3fa6-438d-89de-7e3b87f568c6",
                 "position": 7102,
                 "source": "editor",
@@ -1429,7 +1429,7 @@
             },
             {
                 "diagnosisId": "5951439a-ad3e-4487-8a14-c9e7990ce26d",
-                "name": "? Congenital Pneumonia",
+                "name": "Congenital Pneumonia",
                 "key": "CongPneu",
                 "keyId": "2f74e32f-d1a8-4a5a-b672-cee9b6d6fd38",
                 "position": 7129,
@@ -3032,7 +3032,7 @@
                 "type": "form",
                 "title": "VITAL SIGNS ",
                 "ref": "SatsO2",
-                "condition": "($NoPulseOx = false and $SatsAir < 90) or ($NoPulseOx = false and $RR > 60)",
+                "condition": "$SatsAir < 90 or $RR > 60",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -3449,7 +3449,7 @@
                         ]
                     },
                     {
-                        "label": "Blood Sugar (mmol/L)      (2.5 - 4.5)",
+                        "label": "Blood Sugar (mmol/L)      (2.6 - 8.3)",
                         "key": "BloodSugarmmol",
                         "type": "number",
                         "dataType": "number",
@@ -3482,7 +3482,7 @@
                 "type": "yesno",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "Hypoglycaemia1",
-                "condition": "$BloodSugarmmol < 2.6 or $BloodSugarmg < 46.8",
+                "condition": "$BloodSugarmmol < 2.6 or $BloodSugarmg < 47",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -3494,7 +3494,7 @@
                         "dataType": "boolean",
                         "optional": false,
                         "confidential": false,
-                        "condition": "$BloodSugarmmol < 2.6 or $BloodSugarmg < 46.8",
+                        "condition": "$BloodSugarmmol < 2.6 or $BloodSugarmg < 47",
                         "options": [
                             {
                                 "value": "true",
@@ -3806,7 +3806,7 @@
                             },
                             {
                                 "value": "Prem",
-                                "valueLabel": "Prematurity"
+                                "valueLabel": "Premature"
                             },
                             {
                                 "value": "PremRDS",
@@ -3838,7 +3838,7 @@
                             },
                             {
                                 "value": "NSep",
-                                "valueLabel": "Suspected neonatal sepsis"
+                                "valueLabel": "Sepsis suspected"
                             },
                             {
                                 "value": "Syph_Exp",
@@ -3975,7 +3975,7 @@
                             },
                             {
                                 "value": "Prem",
-                                "valueLabel": "Prematurity",
+                                "valueLabel": "Premature",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
                             },
@@ -4047,7 +4047,7 @@
                         "confidential": true,
                         "minValue": null,
                         "maxValue": null,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU')"
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')])"
                     },
                     {
                         "label": "Mother's Surname",
@@ -4060,7 +4060,7 @@
                         "confidential": true,
                         "minValue": null,
                         "maxValue": null,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU')"
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')])"
                     },
                     {
                         "label": "Date & time of admission",
@@ -4105,7 +4105,7 @@
                         "confidential": false,
                         "minValue": "1",
                         "maxValue": "10",
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU')"
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')])"
                     },
                     {
                         "label": "Baby's First Name",
@@ -4338,13 +4338,13 @@
                 "type": "form",
                 "title": "PATIENT INFORMATION",
                 "ref": "Gestation",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')])",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
                 "fields": [
                     {
-                        "label": "Gestational age at birth (weeks.days)",
+                        "label": "Estimated Gestational age at birth (weeks.days)",
                         "key": "Gestation",
                         "type": "number",
                         "dataType": "number",
@@ -4387,7 +4387,7 @@
                 "type": "form",
                 "title": "BIRTH HISTORY ",
                 "ref": "Apgars",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -4462,7 +4462,7 @@
                 "type": "multi_select",
                 "title": "BIRTH HISTORY",
                 "ref": "Resus",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -4474,7 +4474,7 @@
                         "dataType": "multi_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "Stim",
@@ -7082,7 +7082,7 @@
                                 "forbidWIth": []
                             },
                             {
-                                "value": "UNK",
+                                "value": "Unk",
                                 "valueLabel": "Unknown",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
@@ -7133,8 +7133,8 @@
                     },
                     {
                         "itemId": "c9fe39c2-04db-41cc-9d6d-4f52e2fb2966",
-                        "key": "UNK",
-                        "value": "UNK",
+                        "key": "Unk",
+                        "value": "Unk",
                         "label": "Unknown",
                         "valueLabel": "Unknown",
                         "disabledOtherOptionsIfSelected": false,
@@ -7252,7 +7252,7 @@
                                 "forbidWIth": []
                             },
                             {
-                                "value": "UNK",
+                                "value": "Unk",
                                 "valueLabel": "Unknown",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
@@ -7303,8 +7303,8 @@
                     },
                     {
                         "itemId": "4dfe7f91-2496-4984-baec-9a89af40272f",
-                        "key": "UNK",
-                        "value": "UNK",
+                        "key": "Unk",
+                        "value": "Unk",
                         "label": "Unknown",
                         "valueLabel": "Unknown",
                         "disabledOtherOptionsIfSelected": false,
@@ -7410,7 +7410,7 @@
                                 "forbidWIth": []
                             },
                             {
-                                "value": "UNK",
+                                "value": "Unk",
                                 "valueLabel": "Unknown",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
@@ -7461,8 +7461,8 @@
                     },
                     {
                         "itemId": "710607e6-904e-46e8-b6d8-aee2cee6f491",
-                        "key": "UNK",
-                        "value": "UNK",
+                        "key": "Unk",
+                        "value": "Unk",
                         "label": "Unknown",
                         "valueLabel": "Unknown",
                         "disabledOtherOptionsIfSelected": false,
@@ -7645,7 +7645,7 @@
                                 "valueLabel": "Passing urine normally"
                             },
                             {
-                                "value": "NoPU",
+                                "value": "NPU",
                                 "valueLabel": "Not passing urine"
                             }
                         ]
@@ -7756,7 +7756,7 @@
                                 "forbidWIth": []
                             },
                             {
-                                "value": "UNK",
+                                "value": "Unk",
                                 "valueLabel": "Unknown",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
@@ -7807,8 +7807,8 @@
                     },
                     {
                         "itemId": "8d931dea-0e86-41be-83ae-b6a30879a883",
-                        "key": "UNK",
-                        "value": "UNK",
+                        "key": "Unk",
+                        "value": "Unk",
                         "label": "Unknown",
                         "valueLabel": "Unknown",
                         "disabledOtherOptionsIfSelected": false,
@@ -9812,7 +9812,7 @@
                 "type": "yesno",
                 "title": "Maternal Admission",
                 "ref": "",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -9824,7 +9824,7 @@
                         "dataType": "boolean",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "true",
@@ -9901,7 +9901,7 @@
                 "type": "form",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Address",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -10030,7 +10030,7 @@
                 "type": "form",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Age",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')])",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -10088,7 +10088,7 @@
                 "type": "single_select",
                 "title": "MATERNAL DETAILS",
                 "ref": "Marital Status ",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -10100,7 +10100,7 @@
                         "dataType": "single_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "MAR",
@@ -10177,7 +10177,7 @@
                 "type": "form",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Ethnicity",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -10194,10 +10194,6 @@
                             {
                                 "value": "A",
                                 "valueLabel": "African"
-                            },
-                            {
-                                "value": "AA",
-                                "valueLabel": "AfricanAmerican"
                             },
                             {
                                 "value": "AS",
@@ -10238,7 +10234,7 @@
                 "type": "single_select",
                 "title": "MATERNAL DETAILS",
                 "ref": "Maternal Religion",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -10250,7 +10246,7 @@
                         "dataType": "single_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "AP",
@@ -10545,7 +10541,7 @@
                 "type": "yesno",
                 "title": "MATERNAL SEROSTATUS",
                 "ref": "HIVtest",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -10557,7 +10553,7 @@
                         "dataType": "boolean",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "true",
@@ -10643,7 +10639,7 @@
                         "dataType": "date",
                         "value": null,
                         "valueLabel": null,
-                        "optional": true,
+                        "optional": false,
                         "confidential": true,
                         "minValue": "",
                         "maxValue": "",
@@ -10686,10 +10682,6 @@
                                 "valueLabel": "Positive"
                             },
                             {
-                                "value": "NR",
-                                "valueLabel": "Negative"
-                            },
-                            {
                                 "value": "U",
                                 "valueLabel": "Unknown"
                             }
@@ -10719,8 +10711,8 @@
                         ]
                     },
                     {
-                        "label": "Maternal HAART Status",
-                        "key": "HAART",
+                        "label": "Is the mother on HAART?",
+                        "key": "MaHAART",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
@@ -10738,13 +10730,13 @@
                         ]
                     },
                     {
-                        "label": "Mother on HAART since when?",
+                        "label": "Maternal HAART Initiation",
                         "key": "LengthHAART",
                         "type": "dropdown",
                         "dataType": "dropdown",
                         "optional": false,
                         "confidential": true,
-                        "condition": "$HAART = 'Y'",
+                        "condition": "$MaHAART = 'Y'",
                         "options": [
                             {
                                 "value": "1stTrim",
@@ -10775,7 +10767,7 @@
                         "dataType": "dropdown",
                         "optional": false,
                         "confidential": false,
-                        "condition": "$HAART= 'Y'",
+                        "condition": "$MaHAART = 'Y'",
                         "options": [
                             {
                                 "value": "Y",
@@ -10792,7 +10784,7 @@
                         ]
                     },
                     {
-                        "label": "Viral Load",
+                        "label": "Viral Load (copies/ml)",
                         "key": "VLNumber",
                         "type": "number",
                         "dataType": "number",
@@ -10898,7 +10890,7 @@
                 "type": "progress",
                 "title": "HISTORY",
                 "ref": "HistoryNav4",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -10941,7 +10933,7 @@
                 "type": "single_select",
                 "title": "ANTENATAL HISTORY ",
                 "ref": "Syphilis test",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -10953,7 +10945,7 @@
                         "dataType": "single_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "Y",
@@ -11156,7 +11148,7 @@
                 "type": "multi_select",
                 "title": "ANTENATAL HISTORY",
                 "ref": "Conditions ",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -11168,7 +11160,7 @@
                         "dataType": "multi_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "An",
@@ -11323,7 +11315,7 @@
                 "type": "form",
                 "title": "ANTENATAL HISTORY",
                 "ref": "ANC",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -11418,7 +11410,7 @@
                 "type": "single_select",
                 "title": "Malaria IPTp",
                 "ref": "PregConditions",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')])",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -11430,7 +11422,7 @@
                         "dataType": "single_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')])",
                         "options": [
                             {
                                 "value": "IPT0",
@@ -11555,7 +11547,7 @@
                 "type": "single_select",
                 "title": "ANTENATAL HISTORY",
                 "ref": "Steroids",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -11567,7 +11559,7 @@
                         "dataType": "single_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "Y",
@@ -11628,7 +11620,7 @@
                 "type": "progress",
                 "title": "HISTORY",
                 "ref": "HistoryNav5",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -11671,7 +11663,7 @@
                 "type": "multi_select",
                 "title": "LABOUR HISTORY",
                 "ref": "Problems ",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -11683,7 +11675,7 @@
                         "dataType": "multi_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "SVB",
@@ -11865,7 +11857,7 @@
                 "type": "form",
                 "title": "LABOUR HISTORY",
                 "ref": "ROM",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -11897,7 +11889,7 @@
                 "type": "multi_select",
                 "title": "LABOUR HISTORY",
                 "ref": "RFSepsis",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -11909,7 +11901,7 @@
                         "dataType": "multi_select_option",
                         "optional": false,
                         "confidential": false,
-                        "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                        "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                         "options": [
                             {
                                 "value": "PROM",
@@ -11931,7 +11923,7 @@
                             },
                             {
                                 "value": "Pr2nd",
-                                "valueLabel": "Prolonged second stage",
+                                "valueLabel": "Prolonged second stage labour",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
                             },
@@ -11962,7 +11954,7 @@
                 "type": "form",
                 "title": "BIRTH HISTORY ",
                 "ref": "Pres & Deliv",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -12172,7 +12164,7 @@
                 "type": "form",
                 "title": "BIRTH HISTORY",
                 "ref": "VitK/Tetra",
-                "condition": "!($AdmReason = 'DU' or $AdmReasonAdd = 'DU' or $ReferredFrom2 = 'DU')",
+                "condition": "!($AdmReason = 'DU' or [$AdmReasonAdd includes ('DU')] or $ReferredFrom2 = 'DU')",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": null,
@@ -12889,13 +12881,13 @@
                             },
                             {
                                 "value": "BBA",
-                                "valueLabel": "Born Before Arrival",
+                                "valueLabel": "Born before arrival",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
                             },
                             {
-                                "value": "BI",
-                                "valueLabel": "Birth Trauma",
+                                "value": "BT",
+                                "valueLabel": "Birth injury / Trauma",
                                 "disabledOtherOptionsIfSelected": false,
                                 "forbidWIth": []
                             },
@@ -13211,18 +13203,18 @@
                         "itemId": "cc7bea33-7482-4f90-bb04-8003e0d83c67",
                         "key": "BBA",
                         "value": "BBA",
-                        "label": "Born Before Arrival",
-                        "valueLabel": "Born Before Arrival",
+                        "label": "Born before arrival",
+                        "valueLabel": "Born before arrival",
                         "disabledOtherOptionsIfSelected": false,
                         "forbidWIth": [],
                         "condition": ""
                     },
                     {
                         "itemId": "636d5f68-a551-4caf-9708-1cff6205de2f",
-                        "key": "BI",
-                        "value": "BI",
-                        "label": "Birth Trauma",
-                        "valueLabel": "Birth Trauma",
+                        "key": "BT",
+                        "value": "BT",
+                        "label": "Birth injury / Trauma",
+                        "valueLabel": "Birth injury / Trauma",
                         "disabledOtherOptionsIfSelected": false,
                         "forbidWIth": [],
                         "condition": ""
@@ -13724,7 +13716,7 @@
                 "type": "management",
                 "title": "EMERGENCY MANAGEMENT",
                 "ref": "TRY CPAP 1",
-                "condition": "($DangerSigns = 'Grun' or $RR > 60 or $SatsO2 < 90 or $WOB = 'Mod' or $WOB = 'Sev' or $Diagnoses = 'RDN' or $AdmReason = 'PREMRDS') and $NobCPAP = false",
+                "condition": "($DangerSigns = 'Grun' or $RR > 60 or $SatsO2 < 90 or $WOB = 'Mod' or $WOB = 'Sev' or $AdmReason = 'PREMRDS') ",
                 "skipToCondition": "",
                 "skipToScreen": null,
                 "managementMetadata": {
