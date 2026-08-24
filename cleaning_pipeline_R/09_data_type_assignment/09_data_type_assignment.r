@@ -78,6 +78,7 @@ assign_data_types <- function(df, cfg, report_filepath = NULL) {
   type_map  <- character(length(col_names))
   names(type_map) <- col_names
   comma_stripped <- 0L   # values whose comma thousands-separator was removed
+  digits_recovered <- 0L # values recovered by the embedded-digit fallback below
 
   # -- Build datetime parse orders ---------------------------------------------
   # Standard ISO / numeric formats (cover direct database exports)
@@ -115,7 +116,21 @@ assign_data_types <- function(df, cfg, report_filepath = NULL) {
         raw_chr[has_comma] <- gsub(",", "", raw_chr[has_comma], fixed = TRUE)
         comma_stripped <- comma_stripped + sum(has_comma)
       }
-      df[[col]] <- suppressWarnings(as.numeric(raw_chr))
+      parsed <- suppressWarnings(as.numeric(raw_chr))
+      # Fallback: some fields mix bare numbers with coded/free-text variants of
+      # the same value (e.g. "ANC4", "4 ANC visits" alongside plain "4" for
+      # antenatalcare). A direct as.numeric() on those returns NA even though
+      # the intended count is unambiguous. Recover it by extracting the first
+      # embedded digit run -- this only ever fills in values that already
+      # failed to parse; it can never overwrite a value that parsed cleanly.
+      needs_fallback <- is.na(parsed) & !is.na(raw_chr) & raw_chr != ""
+      if (any(needs_fallback)) {
+        extracted <- stringr::str_extract(raw_chr[needs_fallback], "[0-9]+")
+        recovered_vals <- suppressWarnings(as.numeric(extracted))
+        parsed[needs_fallback] <- recovered_vals
+        digits_recovered <- digits_recovered + sum(!is.na(recovered_vals))
+      }
+      df[[col]] <- parsed
       counts$numeric <- counts$numeric + 1L
       type_map[col] <- "numeric"
 
@@ -154,9 +169,11 @@ assign_data_types <- function(df, cfg, report_filepath = NULL) {
 
   log_info(
     paste("assign_data_types: numeric=%d | boolean=%d | categorical=%d |",
-          "object=%d | datetime=%d | unchanged=%d | comma_stripped=%d"),
+          "object=%d | datetime=%d | unchanged=%d | comma_stripped=%d |",
+          "digits_recovered=%d"),
     counts$numeric, counts$boolean, counts$categorical,
-    counts$object, counts$datetime, counts$unchanged, comma_stripped
+    counts$object, counts$datetime, counts$unchanged, comma_stripped,
+    digits_recovered
   )
 
   if (!is.null(report_filepath) && nzchar(report_filepath)) {
@@ -183,6 +200,12 @@ assign_data_types <- function(df, cfg, report_filepath = NULL) {
                   comma_stripped)
         else
           "Metabase comma-stripping    : not applied (database source)",
+        sprintf(
+          paste("Embedded-digit fallback     : %d value(s) recovered from",
+                "coded/free-text numeric strings (e.g. \"ANC4\", \"4 ANC visits\")",
+                "that plain as.numeric() would have dropped as NA"),
+          digits_recovered
+        ),
         if (cfg$data_source == "metabase")
           "Metabase datetime orders    : BdYIMp, BdYHMp, BdY, dBYIMp, dBYHMp, dBY added"
         else

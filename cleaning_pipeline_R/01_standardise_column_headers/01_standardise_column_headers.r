@@ -79,6 +79,29 @@ clean_columns <- function(df, report_filepath = NULL) {
   names(df)       <- cleaned_names
   n_renamed       <- sum(cleaned_names != original_names)
 
+  # -- Step 1b: Resolve collisions with reserved system key columns -----------
+  # A raw data field whose standardised name equals "facility"/"uid"/
+  # "uniquekey" (or shares that prefix once its .value/.label suffix is
+  # stripped later) would otherwise be silently discarded by Module 07's
+  # prefix-based duplicate-column logic, which always keeps the
+  # always-populated system column. See cfg$reserved_column_renames
+  # (set per-dataset in 00_setup.r) for known collisions.
+  reserved_renames <- if (exists("cfg")) cfg$reserved_column_renames else NULL
+  n_reserved_renamed <- 0L
+  if (!is.null(reserved_renames) && length(reserved_renames) > 0) {
+    hits <- names(df) %in% names(reserved_renames)
+    if (any(hits)) {
+      old_hit_names <- names(df)[hits]
+      names(df)[hits] <- unname(reserved_renames[old_hit_names])
+      n_reserved_renamed <- length(old_hit_names)
+      log_info(
+        "clean_columns: renamed %d column(s) to avoid collision with a reserved system key column: %s",
+        n_reserved_renamed,
+        paste(sprintf("%s -> %s", old_hit_names, reserved_renames[old_hit_names]), collapse = ", ")
+      )
+    }
+  }
+
   # -- Step 2: Drop .parentKey columns ----------------------------------------
   parentkey_cols  <- grep("\\.parentkey$", names(df), value = TRUE,
                           ignore.case = TRUE)
@@ -120,6 +143,7 @@ clean_columns <- function(df, report_filepath = NULL) {
         "",
         sprintf("Columns in raw file      : %d", length(original_names)),
         sprintf("Column names standardised: %d", n_renamed),
+        sprintf("Reserved-collision renames: %d", n_reserved_renamed),
         sprintf(".parentKey cols dropped  : %d", n_parentkey),
         sprintf("Metadata cols dropped    : %d", n_meta),
         sprintf("Columns after cleaning   : %d", ncol(df)),

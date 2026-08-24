@@ -18,7 +18,7 @@ For each column:
 
 | Feature list | Conversion applied |
 |-------------|-------------------|
-| `cfg$num` (numeric) | `as.numeric()` -- non-numeric values become `NA`. For Metabase exports, thousands-separator commas are stripped first (e.g. `"3,500"` -> `3500`). |
+| `cfg$num` (numeric) | `as.numeric()` -- non-numeric values become `NA`. For Metabase exports, thousands-separator commas are stripped first (e.g. `"3,500"` -> `3500`). If the direct parse fails, an embedded-digit fallback then extracts the first run of digits from the raw string and retries (e.g. `"ANC4"` -> `4`, `"4 ANC visits"` -> `4`) -- this only fires on values that already failed to parse, so it can only recover data, never overwrite a value that parsed cleanly. |
 | `cfg$bool` (boolean) | Mapped to `TRUE`/`FALSE`/`NA` via a lookup table: `"true"`, `"yes"`, `"y"`, `"1"` -> `TRUE`; `"false"`, `"no"`, `"n"`, `"0"` -> `FALSE`; anything else -> `NA`. |
 | `cfg$cat` (categorical) | `as.factor()` |
 | `cfg$obj` (object/free-text) | `as.character()` |
@@ -59,6 +59,7 @@ Columns not matched by any feature list are kept as character.
 
 ## Notes
 
-- Type failures are silent -- a value that cannot be coerced to the target type becomes `NA` rather than raising an error.
+- Type failures are silent -- a value that cannot be coerced to the target type becomes `NA` rather than raising an error, unless the embedded-digit fallback (numeric columns only) recovers a value.
+- **Embedded-digit fallback:** some fields mix bare numeric strings with coded or free-text variants that still carry an unambiguous count (e.g. a "number of visits" field recorded as `"4"`, `"ANC4"`, or `"4 visits"` depending on how the form was completed). A plain `as.numeric()` silently drops everything but the bare digits. After the normal parse, any value still `NA` is retried by extracting its first digit run (`stringr::str_extract(x, "[0-9]+")`); values with no digits at all (e.g. an explicit "unknown" code) remain `NA` as before. The count recovered this way is logged as `digits_recovered` and written to the module report.
 - Thousands-separator stripping (`cfg$data_source == "metabase"`) only applies to numeric columns and only removes commas that appear within a number (e.g. `"3,500"` -> `3500`). This is needed because Metabase formats large numbers with commas.
 - The primary key columns (`facility`, `uid`, `uniquekey`) are explicitly excluded from type coercion -- they remain as character strings.

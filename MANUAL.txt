@@ -5,8 +5,8 @@
   A single-file compilation of every documentation file shipped with the
   Neotree data cleaning pipeline.
 
-  Version   : 1.2.0  (see CHANGELOG.md)
-  Generated : 12 August 2026
+  Version   : 1.2.1  (see CHANGELOG.md)
+  Generated : 24 August 2026
   Source    : the README and documentation files in cleaning_pipeline_R/,
               reproduced here in full.
 
@@ -3150,6 +3150,12 @@ This produces compact, consistent names such as `babycry.value`, `datetimeadmiss
 
 Previously, `scriptid`, `script_version`, `scriptversion`, `transformed`, and related columns were also dropped here. They are now **retained** because they carry useful session-level provenance (form version, transformation status). They survive as bare columns and are passed through to the final output by Module 15's bare-column passthrough. See Module 15 README for details.
 
+### Columns renamed to avoid a reserved-column collision
+
+A raw data field whose name normalises to `facility`, `uid`, or `uniquekey` (the reserved system key columns) would otherwise silently lose to that system column later in the pipeline: Module 07's duplicate-column logic groups columns by name and always keeps whichever twin has more non-missing data, and the always-populated system column wins every time -- discarding the genuine clinical field with no warning.
+
+Immediately after name normalisation, any raw column listed in `cfg$reserved_column_renames` (set per-dataset in `00_setup.r`) is renamed to a non-colliding name before Module 07 ever runs. For example, MWI `phc_discharges` renames its own `Facility.value`/`Facility.label` field -- distinct from the system `facility` column, and otherwise erased by it -- to `facilityname.value`/`facilityname.label`. The rename count is logged as "Reserved-collision renames" in the module report. `cfg$reserved_column_renames` is `NULL` for datasets with no known collision, so this step is a no-op everywhere else.
+
 ---
 
 ## Inputs
@@ -3872,7 +3878,7 @@ For each column:
 
 | Feature list | Conversion applied |
 |-------------|-------------------|
-| `cfg$num` (numeric) | `as.numeric()` -- non-numeric values become `NA`. For Metabase exports, thousands-separator commas are stripped first (e.g. `"3,500"` -> `3500`). |
+| `cfg$num` (numeric) | `as.numeric()` -- non-numeric values become `NA`. For Metabase exports, thousands-separator commas are stripped first (e.g. `"3,500"` -> `3500`). If the direct parse fails, an embedded-digit fallback then extracts the first run of digits from the raw string and retries (e.g. `"ANC4"` -> `4`, `"4 ANC visits"` -> `4`) -- this only fires on values that already failed to parse, so it can only recover data, never overwrite a value that parsed cleanly. |
 | `cfg$bool` (boolean) | Mapped to `TRUE`/`FALSE`/`NA` via a lookup table: `"true"`, `"yes"`, `"y"`, `"1"` -> `TRUE`; `"false"`, `"no"`, `"n"`, `"0"` -> `FALSE`; anything else -> `NA`. |
 | `cfg$cat` (categorical) | `as.factor()` |
 | `cfg$obj` (object/free-text) | `as.character()` |
@@ -3913,7 +3919,8 @@ Columns not matched by any feature list are kept as character.
 
 ## Notes
 
-- Type failures are silent -- a value that cannot be coerced to the target type becomes `NA` rather than raising an error.
+- Type failures are silent -- a value that cannot be coerced to the target type becomes `NA` rather than raising an error, unless the embedded-digit fallback (numeric columns only) recovers a value.
+- **Embedded-digit fallback:** some fields mix bare numeric strings with coded or free-text variants that still carry an unambiguous count (e.g. a "number of visits" field recorded as `"4"`, `"ANC4"`, or `"4 visits"` depending on how the form was completed). A plain `as.numeric()` silently drops everything but the bare digits. After the normal parse, any value still `NA` is retried by extracting its first digit run (`stringr::str_extract(x, "[0-9]+")`); values with no digits at all (e.g. an explicit "unknown" code) remain `NA` as before. The count recovered this way is logged as `digits_recovered` and written to the module report.
 - Thousands-separator stripping (`cfg$data_source == "metabase"`) only applies to numeric columns and only removes commas that appear within a number (e.g. `"3,500"` -> `3500`). This is needed because Metabase formats large numbers with commas.
 - The primary key columns (`facility`, `uid`, `uniquekey`) are explicitly excluded from type coercion -- they remain as character strings.
 

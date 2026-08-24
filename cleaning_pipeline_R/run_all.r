@@ -227,6 +227,8 @@ PIPELINE_GLOBALS <- c(
   "EXTRA_META_COLS", "TIMESTAMP_COLS", "KEY_COLS",
   # Module 02: uid repair separators + paired-file resolution
   "UID_REPAIR_SEPARATORS", "PAIRED_DATASET", "paired_info",
+  # Module 01: reserved-system-column-name collision renames
+  "RESERVED_COLUMN_RENAMES",
   # Output flags
   "SAVE_DEIDENTIFIED", "SAVE_STAGE1_CHECKPOINT", "SAVE_HARMONISED",
   "SAVE_NA_CODED", "SAVE_NA_REASONS_LONG", "SKIP_DEDUP_STAGE2",

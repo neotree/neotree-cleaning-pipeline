@@ -31,6 +31,12 @@ This produces compact, consistent names such as `babycry.value`, `datetimeadmiss
 
 Previously, `scriptid`, `script_version`, `scriptversion`, `transformed`, and related columns were also dropped here. They are now **retained** because they carry useful session-level provenance (form version, transformation status). They survive as bare columns and are passed through to the final output by Module 15's bare-column passthrough. See Module 15 README for details.
 
+### Columns renamed to avoid a reserved-column collision
+
+A raw data field whose name normalises to `facility`, `uid`, or `uniquekey` (the reserved system key columns) would otherwise silently lose to that system column later in the pipeline: Module 07's duplicate-column logic groups columns by name and always keeps whichever twin has more non-missing data, and the always-populated system column wins every time -- discarding the genuine clinical field with no warning.
+
+Immediately after name normalisation, any raw column listed in `cfg$reserved_column_renames` (set per-dataset in `00_setup.r`) is renamed to a non-colliding name before Module 07 ever runs. For example, MWI `phc_discharges` renames its own `Facility.value`/`Facility.label` field -- distinct from the system `facility` column, and otherwise erased by it -- to `facilityname.value`/`facilityname.label`. The rename count is logged as "Reserved-collision renames" in the module report. `cfg$reserved_column_renames` is `NULL` for datasets with no known collision, so this step is a no-op everywhere else.
+
 ---
 
 ## Inputs

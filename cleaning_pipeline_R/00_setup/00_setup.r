@@ -213,6 +213,31 @@ if (!exists("RESOLVE_NEOLAB_DATEBCT")) RESOLVE_NEOLAB_DATEBCT <- TRUE
 #   invents corrections rather than fixing them.
 if (!exists("UID_REPAIR_SEPARATORS")) UID_REPAIR_SEPARATORS <- c(",", "/")
 
+# Raw data columns whose standardised base name collides with a reserved
+# system key column (facility | uid | uniquekey).  Module 01 renames these
+# immediately after name standardisation so Module 07's prefix-based
+# duplicate-column logic never sees two columns sharing the "facility"
+# prefix -- without this, Module 07 always keeps the always-populated system
+# column and silently discards the genuine clinical data field.
+#
+# MWI phc_discharges: the NeoDischarge (PHC) script's own "Facility" field
+# (dropdown; Name of Facility -- KRH/LH etc, confirmed via
+# neotree_scripts/mwi-scripts/NeoDischarge (PHC) - metadata.json) exports as
+# raw columns Facility.value / Facility.label, which standardise to
+# facility.value / facility.label -- colliding with the system "facility"
+# key column (always "PHC" in this extract). Renamed to facilityname.* so
+# the field survives as its own variable; see dictionary question_key
+# "facilityname" in dictionary_mwi_phc_discharges.xlsx.
+#   Format: dataset -> named character vector (standardised name -> new name)
+if (!exists("RESERVED_COLUMN_RENAMES")) {
+  RESERVED_COLUMN_RENAMES <- list(
+    phc_discharges = c(
+      "facility.value" = "facilityname.value",
+      "facility.label" = "facilityname.label"
+    )
+  )
+}
+
 # Harmonised (snake_case) CSV + RDS written by Module 00b.
 # Set TRUE if your downstream analysis uses harmonised column names.
 if (!exists("SAVE_HARMONISED"))        SAVE_HARMONISED        <- FALSE
@@ -253,7 +278,7 @@ NEOTREE_SCRIPTS_DIR <- normalizePath(NEOTREE_SCRIPTS_DIR, mustWork = FALSE)
 # -- Pipeline version ----------------------------------------------------------
 # Stamped into every per-run log so a cleaned output can always be traced back to
 # the code that produced it.  Bump this together with CHANGELOG.md on release.
-PIPELINE_VERSION <- "1.2.0"
+PIPELINE_VERSION <- "1.2.1"
 
 # -- Logging -------------------------------------------------------------------
 log_appender(appender_tee(file = file.path(RUN_OUTPUT_DIR, paste0(file_stem, ".log"))))
@@ -774,6 +799,11 @@ cfg <- list(
 
   # Module 02: characters treated as a mistyped hyphen in a uid.
   uid_repair_separators = UID_REPAIR_SEPARATORS,
+
+  # Module 01: raw columns to rename to avoid colliding with a reserved
+  # system key column (facility/uid/uniquekey) after suffix stripping.
+  # NULL when the current dataset has no known collision.
+  reserved_column_renames = RESERVED_COLUMN_RENAMES[[DATASET]],
 
   # Module 16: NA Reason Coding
   neotree_scripts_dir = NEOTREE_SCRIPTS_DIR, # path to neotree_scripts/

@@ -417,6 +417,50 @@ LEGACY_VARIABLES <- list(
       "Injected via LEGACY_VARIABLES 2026-05 so Module 04 applies value cleaning. ",
       "ValueMaps (R/Positive->R, NR/Negative->NR, U/Unknown->U) added via VALUEMAP_PATCHES."
     )
+  ),
+
+  # facilityname -- Name of Facility (MWI phc_discharges)
+  # The NeoDischarge (PHC) script's own "Facility" field (dropdown: KRH =
+  # Kabudula Community Hospital, LH = Lumbadzi Health Center; confirmed via
+  # neotree_scripts/mwi-scripts/NeoDischarge (PHC) - metadata.json) is absent
+  # from data-keys-metadata.json for this dataset, so to_db_name("Facility")
+  # never produced a Variables row at all -- the raw Facility.value/.label
+  # columns passed through completely undocumented.
+  #
+  # Registered under "facilityname" rather than "facility" because the raw
+  # column, once standardised, would otherwise collide with the reserved
+  # system "facility" key column: Module 07's duplicate-column logic always
+  # keeps whichever twin has more non-missing data, and the always-populated
+  # system column would silently win every time, discarding this field with
+  # no warning. cfg$reserved_column_renames in 00_setup.r renames the raw
+  # Facility.value/.label columns to facilityname.value/.label immediately
+  # after Module 01 standardisation, before that collision can occur -- this
+  # question_key must match that rename target exactly.
+  # (2026-08-24, following a data-completeness report from a colleague.)
+  list(
+    country         = "MWI",
+    datasets        = c("phc_discharges"),
+    question_key    = "facilityname",
+    label           = "Name of Facility",
+    data_type       = "dropdown",
+    r_type          = "categorical",
+    weight_unit     = NA_character_,
+    use_in_analysis = TRUE,
+    plausible_min   = NA_real_,
+    plausible_max   = NA_real_,
+    note = paste0(
+      "Raw script field key is 'Facility'; absent from data-keys-metadata.json ",
+      "for phc_discharges despite being present in raw data (confirmed via ",
+      "neotree_scripts/mwi-scripts/NeoDischarge (PHC) - metadata.json). ",
+      "Registered as 'facilityname' (not 'facility') because the raw column ",
+      "collides with the reserved system 'facility' key column after suffix ",
+      "stripping; see cfg$reserved_column_renames in 00_setup.r, which renames ",
+      "Facility.value/.label to facilityname.value/.label in Module 01 before ",
+      "Module 07's duplicate-column logic can discard it in favour of the ",
+      "always-populated system column. Injected via LEGACY_VARIABLES 2026-08-24. ",
+      "ValueMaps (KRH->Kabudula Community Hospital, LH->Lumbadzi Health Center) ",
+      "added via VALUEMAP_PATCHES."
+    )
   )
 
 )
@@ -868,6 +912,23 @@ VALUEMAP_PATCHES <- list(
          raw_code       = c("Y",   "N"),
          option_label   = c("Yes", "No"),
          canonical_code = c("Y",   "N"),
+         stringsAsFactors = FALSE
+       )),
+
+  # MWI phc_discharges: facilityname ValueMaps (field injected via LEGACY_VARIABLES).
+  # Raw data mixes the short dropdown code and the free-text full facility name
+  # for the same option (e.g. some rows record "KRH", others "Kabudula Community
+  # Hospital"). Module 04's label_to_code lookup (built from option_label, not
+  # just raw_code) already normalises the full-name form to the same canonical
+  # code, so a single row per option is sufficient -- confirmed against the
+  # actual raw data 2026-08-24. Codes confirmed via neotree_scripts/mwi-scripts/
+  # NeoDischarge (PHC) - metadata.json.
+  list(country = "MWI", datasets = c("phc_discharges"),
+       question_key = "facilityname", action = "add_rows",
+       rows = data.frame(
+         raw_code       = c("KRH",                          "LH"),
+         option_label   = c("Kabudula Community Hospital",   "Lumbadzi Health Center"),
+         canonical_code = c("KRH",                           "LH"),
          stringsAsFactors = FALSE
        )),
 

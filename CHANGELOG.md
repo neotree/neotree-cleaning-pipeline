@@ -7,6 +7,41 @@ Repository releases are published as git tags / GitHub releases, starting at
 v1.0.0. (The data dictionaries packaged in this release are versioned
 separately by Neotree as "v8".)
 
+## [v1.2.1] — 2026-08
+
+Two silent data-completeness defects in the MWI PHC datasets, found via a
+raw-vs-cleaned completeness audit after a data-quality report.
+
+### Fixed
+
+- **Module 09 dropped a numeric field's values when they were recorded with a
+  coded or free-text variant of the same number** (e.g. a "number of visits"
+  field recorded as `"4"` on some records and `"ANC4"` or `"4 visits"` on
+  others, depending on how the form was completed). A plain `as.numeric()`
+  coercion silently turned every non-bare-digit variant into `NA` -- about 70%
+  of that field's captured values were lost this way. Module 09 now retries a
+  failed numeric parse by extracting the first embedded digit run before
+  giving up; this only recovers values that already failed to parse, so it
+  cannot overwrite a value that parsed correctly, and applies pipeline-wide,
+  not just to the field that surfaced it.
+
+- **A raw data field named `Facility` was silently and completely discarded**
+  when its standardised column name collided with the reserved system
+  `facility` key column. Module 07's duplicate-column logic groups columns by
+  name and always keeps whichever twin has more non-missing data; the
+  always-populated system column won every time, so the genuine clinical
+  field (name of the discharging/referral facility) never appeared in the
+  cleaned output under any name, with no warning. Module 01 now renames any
+  raw column listed in a new `cfg$reserved_column_renames` map (per dataset,
+  set in `00_setup.r`) immediately after name standardisation, before Module
+  07 can see the collision. The field is registered in the dictionary via
+  `LEGACY_VARIABLES` (it was also absent from the web-editor export) so the
+  fix survives a dictionary rebuild.
+
+  **Anyone who has run the MWI `phc_admissions` or `phc_discharges` cleaning
+  step on an earlier version should re-run it** -- both are read silently, not
+  loud failures, so a prior run gives no indication anything was lost.
+
 ## [v1.2.0] — 2026-08
 
 A defect in PII redaction was deleting three real patient records from Zimbabwe
