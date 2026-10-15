@@ -1,0 +1,2834 @@
+================================================================================
+  NEOTREE CLEANING PIPELINE -- COMPLETE MANUAL
+================================================================================
+
+  A single-file compilation of every documentation file shipped with the
+  Neotree data cleaning pipeline.
+
+  Version   : 2.0.0  (see CHANGELOG.md)
+  Source    : the README and documentation files in cleaning_pipeline_R/,
+              reproduced here in full.
+
+================================================================================
+ABOUT THIS MANUAL
+================================================================================
+
+This file exists so that the whole documentation set can be read, searched
+and printed as one document. Each section below is the verbatim content of
+a README file that also ships in its own module folder, so the two never
+disagree: if you prefer to read documentation next to the code, open the
+README in the relevant folder instead.
+
+This repository holds the cleaning pipeline: it takes raw Neotree exports
+and produces cleaned, validated, dictionary-conformant datasets.
+Entry point: cleaning_pipeline_R/run_all.r
+
+Downstream work -- joining admissions to discharges, building master
+datasets, and cutting analysis-ready subsamples -- lives in a separate
+repository:
+
+  https://github.com/neotree/neotree-sample-maker
+
+The two are loosely coupled: this pipeline writes cleaned datasets to
+output/, and the sample maker reads whatever it is given. Neither requires
+the other to be present to run.
+
+This manual documents the CODE ONLY -- what each module does and how to run
+it. It deliberately contains no Neotree study data, no site-level findings and
+no catalogue of data-quality issues; those are maintained separately by the
+Neotree team and are not part of this repository.
+
+HOW TO NAVIGATE
+================================================================================
+
+Every section begins with a banner line of equals signs followed by its
+number and title, so you can jump between sections by searching for the
+section number (for example "3.7") or for the banner character sequence.
+
+Files not reproduced here
+  Some reference material ships only in the repository, because it is
+  tabular rather than prose:
+
+    cleaning_pipeline_R/16_na_reason_coding/skip_logic_reference.csv
+    cleaning_pipeline_R/16_na_reason_coding/skip_logic_reference.md
+    cleaning_pipeline_R/16_na_reason_coding/skip_logic_reference.docx
+        The full per-variable skip-logic table used by Module 16.
+
+    cleaning_pipeline_R/dictionaries/*.xlsx
+        The generated per-table data dictionaries.
+
+    cleaning_pipeline_R/og_dictionaries/*.xlsx
+        The upstream source dictionaries the build reads from.
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+
+PART I -- CLEANING PIPELINE: OVERVIEW AND OPERATION
+  1.1   Cleaning pipeline -- overview
+  1.2   Cleaning pipeline -- how to run
+
+PART II -- CLEANING PIPELINE: DICTIONARY BUILD (MODULE 00)
+  2.1   Module 00 -- build dictionary (overview)
+  2.2   Module 00c -- enrich from Neotree scripts
+  2.3   Module 00e -- enrich from the public dictionary
+  2.4   Module 00d -- build the user dictionary
+  2.5   Dictionaries folder -- contents and conventions
+
+PART III -- CLEANING PIPELINE: MODULE REFERENCE (00 - 16)
+  3.1   Module 00 -- setup and shared helpers
+  3.2   Module 00a -- PII detection and removal
+  3.3   Module 00b -- rename harmonised columns
+  3.4   Module 01 -- standardise column headers
+  3.5   Module 02 -- frame shift correction
+  3.6   Module 03 -- duplicate column merging
+  3.7   Module 04 -- dictionary value cleaning
+  3.8   Module 05 -- forward fill placeholders
+  3.9   Module 06 -- forward fill numeric and datetime
+  3.10  Module 07 -- drop label columns
+  3.11  Module 08 -- drop autopopulated columns
+  3.12  Module 09 -- data type assignment
+  3.13  Module 10 -- remove duplicate rows
+  3.14  Module 11 -- numeric validation
+  3.15  Module 12 -- boolean validation
+  3.16  Module 13 -- categorical and object validation
+  3.17  Module 14 -- datetime validation
+  3.18  Module 14a -- resolve NeoLab DateBCT
+  3.19  Module 15 -- final merge and output
+  3.20  Module 16 -- NA reason coding
+
+
+
+################################################################################
+#
+#  PART I -- CLEANING PIPELINE: OVERVIEW AND OPERATION
+#
+################################################################################
+
+
+================================================================================
+  1.1  Cleaning pipeline -- overview
+================================================================================
+  Source file: cleaning_pipeline_R/readme.md
+================================================================================
+
+# Neotree cleaning pipeline
+
+## Purpose
+
+The pipeline cleans raw Neotree data exports for Zimbabwe (`ZIM`) and Malawi (`MWI`). It takes one CSV file per dataset, removes personal data, standardises the columns and values against a data dictionary, assigns a type to every column, validates the values, and writes a cleaned dataset together with reports and a code for every empty cell.
+
+The pipeline is written in R and is made of numbered modules that run in a fixed order. Each input file is processed on its own.
+
+## Folder layout
+
+```
+cleaning_pipeline_R/
+  run_all.r                  batch runner: every recognised file in input/
+  run_pipeline.r             single-file runner: runs the modules in order
+  install_packages.r         installs the required CRAN packages
+  required_packages.txt      list of the required packages
+  readme.md                  this file
+  how_to_run.md              run guide
+
+  00_setup/                  settings, shared helpers, configuration list
+  00a_pii_detection_removal/ ... 16_na_reason_coding/
+                             one folder per module: the script and its README.md
+  00_build_dictionary/       scripts that build and check the dictionaries
+
+  dictionaries/              data dictionaries read by the pipeline (.xlsx)
+  user_dictionaries/         dictionaries for data users (.xlsx)
+  og_dictionaries/           public data dictionary read by the dictionary build
+  neotree_data_keys/         data-key exports read by the dictionary build (downloaded)
+  neotree_scripts/           Neotree script metadata, zim-scripts/ and mwi-scripts/ (downloaded)
+  tests/                     test scripts
+
+  input/                     raw CSV files to clean
+  output/                    everything the pipeline writes
+```
+
+## Modules
+
+`run_pipeline.r` sources the modules in this order. Every module sources `00_setup/00_setup.r` first, so the settings and the configuration list `cfg` are available to each one.
+
+| Module | Folder | What it does |
+|--------|--------|--------------|
+| 00 | [`00_setup`](00_setup/README.md) | Loads the libraries, the settings and the dictionary; defines the shared parsers and the personal-data guard; builds `cfg`. |
+| 00a | [`00a_pii_detection_removal`](00a_pii_detection_removal/README.md) | Reads the raw CSV, removes columns holding personal data, blanks values that look like personal data, writes the audit report and the completion marker. |
+| 01 | [`01_standardise_column_headers`](01_standardise_column_headers/README.md) | Gives every column a standard lower-case name and drops the `.parentKey` columns. |
+| 02 | [`02_frame_shift_correction`](02_frame_shift_correction/README.md) | Repairs `uid` values in which another character replaces the hyphen and removes rows with an empty `uid`. |
+| 03 | [`03_duplicate_column_merging`](03_duplicate_column_merging/README.md) | Merges columns that share a name into one column. |
+| 04 | [`04_dictionary_value_cleaning`](04_dictionary_value_cleaning/README.md) | Rewrites categorical values as the canonical codes of the dictionary where a value matches exactly one code. |
+| 05 | [`05_forward_fill_placeholders`](05_forward_fill_placeholders/README.md) | Copies fixed placeholder words from a label column into its empty value column. |
+| 06 | [`06_forward_fill_numeric_datetime`](06_forward_fill_numeric_datetime/README.md) | Fills empty values from the paired label column where the label is a number or a datetime, then drops the paired label columns. |
+| 07 | [`07_drop_label_columns`](07_drop_label_columns/README.md) | Drops the remaining label columns and keeps one column per variable prefix. |
+| 08 | [`08_drop_autopopulated_columns`](08_drop_autopopulated_columns/README.md) | Passes the data through unchanged and writes a report. |
+| 09 | [`09_data_type_assignment`](09_data_type_assignment/README.md) | Converts every column from text to the type given in the dictionary. |
+| 10 | [`10_remove_duplicate_rows`](10_remove_duplicate_rows/README.md) | Removes duplicate rows, first per visit and then per patient, keeping the most complete row. |
+| 11 | [`11_numeric_validation`](11_numeric_validation/README.md) | Validates numeric columns, converts weights to grams and applies the dictionary ranges. |
+| 12 | [`12_boolean_validation`](12_boolean_validation/README.md) | Sets every boolean column to `TRUE`, `FALSE` or `NA`. |
+| 13 | [`13_categorical_object_validation`](13_categorical_object_validation/README.md) | Cleans categorical and free-text columns and turns missing-value text into `NA`. |
+| 14 | [`14_datetime_validation`](14_datetime_validation/README.md) | Reads every datetime column as a date-time and sets unrecognised values to `NA`. |
+| 14a | [`14a_resolve_neolab_datebct`](14a_resolve_neolab_datebct/README.md) | For the `neolab` dataset, fills missing blood-culture dates from the admissions file, in new columns. |
+| 15 | [`15_final_merge_output`](15_final_merge_output/README.md) | Joins the validated columns, strips the column-name suffixes, adds derived columns and writes the cleaned CSV and RDS. |
+| 00b | [`00b_rename_harmonised_columns`](00b_rename_harmonised_columns/README.md) | Writes a copy of the cleaned dataset with harmonised column names. Runs only when `SAVE_HARMONISED` is `TRUE`. |
+| 16 | [`16_na_reason_coding`](16_na_reason_coding/README.md) | Gives every empty cell of the cleaned dataset a reason code and writes the companion files. |
+
+After the last module, `run_pipeline.r` joins the text reports of the run into one file.
+
+## Input files
+
+Raw CSV files are placed in `input/`. `run_all.r` recognises a file when its name has one of two forms:
+
+```
+<country>_<dataset>_<date>.csv
+<country>_<source>_<dataset>_<date>.csv
+```
+
+| Part | Accepted values |
+|------|-----------------|
+| `country` | `zim` or `mwi` |
+| `source` | `db` or `mb`. Optional. It is recorded in the run plan and does not change how the file is read. |
+| `dataset` | `admissions`, `discharges`, `maternal_outcomes`, `phc_admissions`, `phc_discharges`, `combined_maternity_outcomes`, `dhis2_maternal_outcomes`, `maternity_completeness`, `joined_admissions_discharges`, `neolab`, `baseline`, `infections`, `twenty_8_day_follow_up` |
+| `date` | `YYYY-MM-DD`, `YYYYMMDD` or `YYYYMMDDHHMM` |
+
+Examples: `zim_admissions_2026-01-31.csv`, `mwi_phc_discharges_2026-01-31.csv`, `mwi_db_admissions_20260131.csv`, `zim_mb_maternal_outcomes_202601311030.csv`.
+
+A file whose name has neither form, or whose dataset is not in the list, is listed as skipped and the other files are still processed.
+
+The pipeline reads exports with database-style headers (`unique_key`) and with Metabase-style headers (`Unique Key`), and values in either style or a mixture. `00_setup.r` detects the style of each file and records it in the log; the style does not change how the file is parsed.
+
+## Outputs
+
+Everything written for one input file goes to `output/<file stem>/`, where `<file stem>` is the input file name without `.csv`.
+
+| File | Content | Written |
+|------|---------|---------|
+| `<file stem>_cleaned.csv` | Cleaned dataset. Date-times as `YYYY-MM-DD HH:MM:SS` (UTC); `NA` as an empty field. | Always |
+| `<file stem>_cleaned.rds` | Cleaned dataset with typed columns. | Always |
+| `<file stem>_cleaned_na_coded.csv` | Cleaned dataset, every column as text, with each empty cell replaced by its reason code. | When `SAVE_NA_CODED` is `TRUE` (default) |
+| `<file stem>_cleaned_na_reasons.csv.gz` | Same rows and columns as the cleaned dataset; each cell holds the reason code where the cleaned cell is empty. | When Module 16 runs |
+| `<file stem>_cleaned_na_reasons_summary.csv` | One row per variable: number of rows, values present and missing, and cells per reason code. | When Module 16 runs |
+| `<file stem>_cleaned_na_reasons_long.csv.gz` | One row per coded cell, with the raw value. | When `SAVE_NA_REASONS_LONG` is `TRUE` |
+| `<file stem>_cleaned_harmonised.csv`, `.rds` | Cleaned dataset with harmonised column names. | When `SAVE_HARMONISED` is `TRUE` |
+| `<file stem>_cleaned_stage1.rds` | Data frame after duplicate-row removal. | When `SAVE_STAGE1_CHECKPOINT` is `TRUE` |
+| `<file stem>_deidentified.csv` | Raw data after removal of personal data, before any cleaning. | When `SAVE_DEIDENTIFIED` is `TRUE` |
+| `<file stem>.log` | Run log. Messages are appended. | Always |
+| `00a_pii_removal_complete.dcf` | Completion marker of Module 00a. | Always |
+| `reports/` | One text report per module, and `00_pipeline_report.txt`, which joins them. | Unless reports are suppressed |
+
+The reason codes are:
+
+| Code | Meaning |
+|------|---------|
+| `-6` | Redacted: the raw value matches a personal-data value pattern. |
+| `-7` | Not applicable: the skip condition of the field in the Neotree script is false for the record. |
+| `-8` | Invalid or removed: the raw cell held a value and the cleaned cell is empty. |
+| `-9` | Unknown: every other empty cell. |
+
+Module 16 runs when the folder `neotree_scripts/` exists. Otherwise a warning is logged and the NA-reason and NA-coded files are not written.
+
+## Data keys and script metadata
+
+The dictionary build reads the data-key exports in `neotree_data_keys/`, and the build and Module 16 read the script metadata in `neotree_scripts/`. Both are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-dev-webeditor.neotree.org/, with a Neotree account. They contain the names of health workers and are not part of the published repository. The README file in each folder lists the files and where they go.
+
+## Dictionaries
+
+The pipeline reads one workbook per country and dataset, `dictionaries/dictionary_<country>_<dataset>.xlsx`. The dictionary determines how each column is treated:
+
+| Sheet | Used for |
+|-------|----------|
+| `Variables` | The type of each variable (`numeric`, `boolean`, `categorical`, `datetime`, `object`), whether it is used in analysis, whether it is confidential, which weights are in grams, the lower and upper limits of numeric variables, and the harmonised name. |
+| `ValueMaps` | The raw codes, option labels and canonical codes of each categorical variable. |
+| `PII_Patterns` | Column-name patterns that mark personal data. |
+
+When a dataset has no workbook of its own, the workbook of a related dataset is used where a fallback is defined in `00_setup.r`. A column of the input file that the dictionary does not cover passes through as text: it is not typed or validated. Such columns are reported on the console, in the log and in `00c_undocumented_columns.txt` in the report folder.
+
+The workbooks are generated by the scripts in `00_build_dictionary/` and are replaced by a rebuild. Their sheets and columns are described in [`dictionaries/README.md`](dictionaries/README.md); the build is described in [`00_build_dictionary/README.md`](00_build_dictionary/README.md). The `_enriched.xlsx` workbooks and the workbooks in `user_dictionaries/` are documentation and are not read by the cleaning modules.
+
+## Personal data
+
+Module 00a is the only module that reads the raw CSV in full, and it runs before any cleaning. It applies three rules:
+
+| Rule | Action |
+|------|--------|
+| Tier 1 | Removes the value and label columns of every variable flagged `confidential` in the dictionary. |
+| Tier 2 | Removes every column whose name matches a pattern of the `PII_Patterns` sheet or a built-in pattern in `00_setup.r`. |
+| Tier 3 | Sets to `NA` every value that matches a value pattern: phone numbers, e-mail addresses, a three-part number pattern and two national identity number shapes. |
+
+The key and system columns (`uid`, `facility`, `uniquekey`, the timestamp columns, `scriptversion`, `scriptid`) are tested by Tier 3 but never changed; a match is reported. Columns that match a quasi-identifier pattern, such as a village or district, are kept and listed in the audit report. The audit report, `reports/00a_pii_audit_report.txt`, holds column names and counts only.
+
+### Guard
+
+When Module 00a finishes, it writes the completion marker `00a_pii_removal_complete.dcf` in the run folder and attaches a run id to the data frame. The marker records the input file (path, size, modification time) and the checksum of the dictionary. Any marker left by an earlier run is deleted when Module 00a starts.
+
+The function `assert_pii_removed()` in `00_setup.r` stops the run unless:
+
+1. the marker exists and is complete;
+2. the marker describes the current input file and dictionary;
+3. no column belongs to a confidential variable or matches a column-name pattern;
+4. no value outside the exempt columns matches a value pattern.
+
+Module 01 stops if the de-identified data frame does not exist, and calls the guard with an extra check that the data frame carries the run id in the marker. The guard is called again before each write of row-level data: the removed rows of Module 02, the checkpoint of Module 10, the cleaned outputs of Module 15, the harmonised outputs of Module 00b and each table of Module 16. If a check fails, the file is not written. Messages from the guard give column names, pattern names and counts, never values.
+
+## Derived columns
+
+The pipeline adds these columns to the cleaned dataset. The columns they are derived from are not changed.
+
+| Column | Added by | Content |
+|--------|----------|---------|
+| `mat_age_date_years` | Module 11 | `matagedate` (maternal age in hours) converted to whole years. Added when `matagedate` is present. |
+| `hepbdate_date` | Module 14 | The values of `hepbdate` that are dates. Added when `hepbdate` is present and is not itself a datetime column. |
+| `datebct_resolved` | Module 14a | `datebct` where present, otherwise the admission date-time of the same patient. `neolab` dataset only. |
+| `datebct_source` | Module 14a | `"original"`, `"from_admission"` or `NA`. `neolab` dataset only. |
+| `birthweight_g` | Module 15 | First non-missing of `birthweight`, `bwt`, `bwtdis`, in grams. |
+| `admission_weight_g` | Module 15 | `admissionweight` in grams. Added when `admissionweight` is present. |
+| `discharge_weight_g` | Module 15 | `dischweight` in grams. Added when `dischweight` is present. |
+| `mat_age_years_combined` | Module 15 | `matageyrs` where present, otherwise `mat_age_date_years`. Added when either is present. |
+| `mat_age_source` | Module 15 | `"matageyrs"`, `"matagedate_derived"` or `"none"`. |
+
+In the cleaned dataset the suffixes `.value` and `.valuedischarge` are removed from all column names.
+
+## Further documentation
+
+| Subject | File |
+|---------|------|
+| Installing, running, settings, outputs, tests | [`how_to_run.md`](how_to_run.md) |
+| Rules applied by one module | `README.md` in the folder of that module (linked in the table above) |
+| Dictionary sheets and columns | [`dictionaries/README.md`](dictionaries/README.md) |
+| Building and checking the dictionaries | [`00_build_dictionary/README.md`](00_build_dictionary/README.md) |
+
+
+================================================================================
+  1.2  Cleaning pipeline -- how to run
+================================================================================
+  Source file: cleaning_pipeline_R/how_to_run.md
+================================================================================
+
+# How to run the Neotree cleaning pipeline
+
+This guide covers installation, input files, the two runners, the settings, the outputs, the dictionary rebuild and the tests. What each module does is described in [`readme.md`](readme.md) and in the `README.md` of each module folder.
+
+All commands are given from the pipeline folder, `cleaning_pipeline_R/`. The runners set the working directory to their own folder when they start, so they can be launched from any directory.
+
+## Requirements
+
+- R.
+- Twelve CRAN packages: `jsonlite`, `readr`, `readxl`, `writexl`, `dplyr`, `tidyr`, `stringr`, `lubridate`, `purrr`, `logger`, `janitor`, `tibble`. `required_packages.txt` lists them with their minimum versions.
+- `openxlsx`, for the dictionary scripts other than `00_build_dictionary.r`. `install_packages.r` does not install it.
+
+### Installing the packages
+
+```
+Rscript install_packages.r
+```
+
+or, in an R session:
+
+```r
+source("install_packages.r")
+```
+
+The script installs the missing packages with their dependencies from `https://cloud.r-project.org`, then loads each required package and prints `[OK]` or `[FAIL]` for it. If a package fails to load, the script prints the `install.packages()` call to run by hand.
+
+## Input files
+
+Place the raw CSV files in `input/`. `run_all.r` processes a file when its name has one of these forms:
+
+```
+<country>_<dataset>_<date>.csv
+<country>_<source>_<dataset>_<date>.csv
+```
+
+| Part | Accepted values |
+|------|-----------------|
+| `country` | `zim` or `mwi` |
+| `source` | `db` or `mb`. Optional; it does not change how the file is read. |
+| `dataset` | `admissions`, `discharges`, `maternal_outcomes`, `phc_admissions`, `phc_discharges`, `combined_maternity_outcomes`, `dhis2_maternal_outcomes`, `maternity_completeness`, `joined_admissions_discharges`, `neolab`, `baseline`, `infections`, `twenty_8_day_follow_up` |
+| `date` | `YYYY-MM-DD`, `YYYYMMDD` or `YYYYMMDDHHMM` |
+
+Examples:
+
+```
+zim_admissions_2026-01-31.csv
+zim_discharges_2026-01-31.csv
+mwi_phc_admissions_2026-01-31.csv
+mwi_db_neolab_20260131.csv
+zim_mb_maternal_outcomes_202601311030.csv
+```
+
+The file extension is `.csv` in lower case.
+
+Two modules read a second file from the same folder as the input file:
+
+| Module | Second file | Found by |
+|--------|-------------|----------|
+| 02 | The other half of an admissions/discharges pair (`admissions` with `discharges`, `phc_admissions` with `phc_discharges`). | The input file name with the dataset swapped; if that file is absent, the last file in sorted order named `<country>_[db_\|mb_]<paired dataset>_<date>.csv`. |
+| 14a | The admissions file, when the dataset is `neolab`. | The input file name with `neolab` replaced by `admissions`. |
+
+Both modules run without the second file. Module 02 then gives its repairs the status `unchecked`, and Module 14a leaves missing dates unresolved.
+
+Each dataset needs a dictionary, `dictionaries/dictionary_<country>_<dataset>.xlsx`, or a fallback defined in `00_setup.r` (see [`00_setup/README.md`](00_setup/README.md)).
+
+## Running a batch: `run_all.r`
+
+```
+Rscript run_all.r
+```
+
+or, in an R session:
+
+```r
+source("run_all.r")
+```
+
+`run_all.r` does the following.
+
+1. Lists the `.csv` files in `input/` and applies the two filters below.
+2. Reads the country, source and dataset from each file name. A file is skipped when its name has neither accepted form (`filename does not match expected pattern`) or when its dataset is not in the list (`unrecognised dataset type '<dataset>' (not in KNOWN_DATASETS)`).
+3. Prints the run plan: the files to process and the files skipped, with the reason.
+4. For each file, sets `COUNTRY`, `DATASET`, `DATA_SOURCE` and `CSV_FILEPATH`, sets `DICT_FILEPATH`, `OUTPUT_CSV`, `OUTPUT_RDS`, `REPORT_DIR` and `NEOTREE_SCRIPTS_DIR` to `NULL` and `OUTPUT_DIR` to `"output"`, and sources `run_pipeline.r`.
+5. If a file fails, records the error message and continues with the next file.
+6. Removes the objects of the run from the global environment before the next file.
+7. Prints the batch summary: the number of files that succeeded and failed, the total time, each failed file with its error message, and each file that succeeded with its country, detected export style and dataset.
+
+### Batch filters
+
+Both are set near the top of `run_all.r`.
+
+| Setting | Default | Effect |
+|---------|---------|--------|
+| `RUN_ALL_FILTER` | `NULL` | A regular expression applied to the file name. Only matching files are kept. `NULL` keeps every file. Example: `"^zim_"`, or `"admissions\|discharges"`. |
+| `RUN_ALL_SKIP` | `character(0)` | File names to leave out, written in full. |
+
+## Running one file: `run_pipeline.r`
+
+`run_pipeline.r` runs the modules in order for the file named in `CSV_FILEPATH`. The settings are defined in the user configuration block of `00_setup/00_setup.r`. Each one is assigned only if it does not already exist, so there are two ways to set them.
+
+Edit the defaults in `00_setup/00_setup.r`, then:
+
+```
+Rscript run_pipeline.r
+```
+
+Or set them in an R session before sourcing the runner:
+
+```r
+COUNTRY      <- "ZIM"
+DATASET      <- "admissions"
+CSV_FILEPATH <- "input/zim_admissions_2026-01-31.csv"
+source("run_pipeline.r")
+```
+
+A setting defined in the session keeps its value for later runs in that session. This includes the paths that `00_setup.r` resolves when they are `NULL`. Before running a second file in the same session, set `DICT_FILEPATH`, `OUTPUT_CSV`, `OUTPUT_RDS`, `REPORT_DIR` and `NEOTREE_SCRIPTS_DIR` back to `NULL` and remove `SKIP_DEDUP_STAGE2`, as `run_all.r` does, or start a new session.
+
+When it finishes, `run_pipeline.r` prints the time taken, the paths of the cleaned CSV and RDS, the number of rows and columns, and the report folder.
+
+## Settings
+
+All settings below are in the user configuration block of `00_setup/00_setup.r`.
+
+### Identity and paths
+
+| Setting | Default | Effect |
+|---------|---------|--------|
+| `COUNTRY` | `"ZIM"` | `"ZIM"` or `"MWI"`. |
+| `DATASET` | `"admissions"` | One of the datasets listed under *Input files*. |
+| `DATA_SOURCE` | `"auto"` | Accepts `auto`, `database`, `metabase`, `mixed` or `unknown`. It does not change how the file is parsed and is replaced by the export style detected from the file. |
+| `CSV_FILEPATH` | a file in `input/` | Path of the raw CSV. |
+| `DICT_FILEPATH` | `NULL` | Path of the dictionary. `NULL` gives `dictionaries/dictionary_<country>_<dataset>.xlsx`, or the fallback dictionary when that file does not exist. |
+| `OUTPUT_DIR` | `"output"` | Base folder for everything the pipeline writes. The run folder is `<OUTPUT_DIR>/<file stem>/`. |
+| `OUTPUT_CSV`, `OUTPUT_RDS` | `NULL` | Paths of the cleaned outputs. `NULL` gives `<file stem>_cleaned.csv` and `<file stem>_cleaned.rds` in the run folder. |
+| `REPORT_DIR` | `NULL` | `NULL` gives `reports/` in the run folder. A path writes the reports there. `FALSE` or `""` suppresses the module reports. |
+| `NEOTREE_SCRIPTS_DIR` | `NULL` | Folder holding `zim-scripts/` and `mwi-scripts/`, read by Module 16. `NULL` gives `neotree_scripts/` in the pipeline folder. If the folder does not exist, Module 16 is not run. |
+
+### Output flags
+
+| Setting | Default | Effect when `TRUE` |
+|---------|---------|--------------------|
+| `SAVE_DEIDENTIFIED` | `FALSE` | Module 00a writes `<file stem>_deidentified.csv`. Personal data is removed in either case. |
+| `SAVE_STAGE1_CHECKPOINT` | `FALSE` | Module 10 writes `<file stem>_cleaned_stage1.rds`. |
+| `SAVE_HARMONISED` | `FALSE` | Module 00b runs and writes `<file stem>_cleaned_harmonised.csv` and `.rds`. |
+| `SAVE_NA_CODED` | `TRUE` | Module 16 writes `<file stem>_cleaned_na_coded.csv`. |
+| `SAVE_NA_REASONS_LONG` | `FALSE` | Module 16 writes `<file stem>_cleaned_na_reasons_long.csv.gz`. The table holds the raw value of every coded cell and is checked by the personal-data guard before it is written; the run stops if a raw value matches a value pattern. |
+
+### Module behaviour
+
+| Setting | Default | Effect |
+|---------|---------|--------|
+| `SKIP_DEDUP_STAGE2` | `TRUE` when the dataset is `infections` or `neolab`, otherwise `FALSE` | `TRUE` makes Module 10 skip its patient-level stage, so several rows per patient are kept. Module 15 then keeps one row per `uid`, `facility` and `uniquekey` instead of one per `uid` and `facility`. |
+| `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Module 14a adds `datebct_resolved` and `datebct_source`. Used only when the dataset is `neolab`. `FALSE` adds no columns. |
+| `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Characters Module 02 treats as a mistyped hyphen in a `uid`. |
+| `RESERVED_COLUMN_RENAMES` | for `phc_discharges`: `facility.value` to `facilityname.value`, `facility.label` to `facilityname.label` | Per dataset, standardised column names that Module 01 renames so that they do not share a name with a key column. |
+
+Two further settings are entries of the `cfg` list, set where `cfg` is built in `00_setup/00_setup.r`. Both are empty lists by default.
+
+| Setting | Format | Effect |
+|---------|--------|--------|
+| `cfg$value_mappings` | `list(column = list(canonical = c("alias1", "alias2")))` | Module 13 replaces each alias with the canonical value in that column. |
+| `cfg$values_to_delete` | `list(column = c("value1", "value2"))` | Module 13 sets each listed value to `NA` in that column. |
+
+### Settings in a batch
+
+`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS` and `RESERVED_COLUMN_RENAMES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`.
+
+## Outputs
+
+Each input file has its own run folder, `output/<file stem>/`.
+
+```
+output/zim_admissions_2026-01-31/
+  zim_admissions_2026-01-31_cleaned.csv
+  zim_admissions_2026-01-31_cleaned.rds
+  zim_admissions_2026-01-31_cleaned_na_coded.csv
+  zim_admissions_2026-01-31_cleaned_na_reasons.csv.gz
+  zim_admissions_2026-01-31_cleaned_na_reasons_summary.csv
+  zim_admissions_2026-01-31.log
+  00a_pii_removal_complete.dcf
+  reports/
+```
+
+| File | Content |
+|------|---------|
+| `_cleaned.csv` | Cleaned dataset. Date-times are written as `YYYY-MM-DD HH:MM:SS` (UTC) and `NA` as an empty field. |
+| `_cleaned.rds` | Cleaned dataset with typed columns. |
+| `_cleaned_na_coded.csv` | Cleaned dataset as text, with every empty cell replaced by its reason code (`-6`, `-7`, `-8` or `-9`). |
+| `_cleaned_na_reasons.csv.gz` | The reason code of every empty cell, in the layout of the cleaned dataset. |
+| `_cleaned_na_reasons_summary.csv` | One row per variable: `n_total`, `n_present`, `n_missing`, `pct_missing`, `n_not_applicable`, `n_invalid`, `n_unknown`, `n_redacted`. |
+| `.log` | Run log, at level INFO and above. Messages are appended to an existing log. |
+| `00a_pii_removal_complete.dcf` | Completion marker of Module 00a, read by the personal-data guard. |
+
+The optional files (`_deidentified.csv`, `_cleaned_stage1.rds`, `_cleaned_harmonised.csv` and `.rds`, `_cleaned_na_reasons_long.csv.gz`) are written to the same folder when their flags are `TRUE`.
+
+### Reports
+
+The reports are text files in `reports/`. They hold counts and column names; the exceptions are stated in the table.
+
+| Report | Written by | Content |
+|--------|-----------|---------|
+| `00_pipeline_report.txt` | `run_pipeline.r` | A header with the country, dataset, detected export style and input file name, followed by every `.txt` file of the folder. |
+| `00a_pii_audit_report.txt` | Module 00a | Columns removed, quasi-identifier columns, number of values redacted per column, matches in exempt columns. |
+| `00c_undocumented_columns.txt` | Module 00 | Input columns that are not in the dictionary. Written only when there are any. |
+| `01_column_standardisation_report.txt` | Module 01 | Names standardised, reserved renames, `.parentKey` columns dropped. |
+| `02_frame_shift_report.txt` | Module 02 | `uid` repairs with their status, rows removed, UIDs without a hyphen. Lists `uid` values. |
+| `02_frame_shift_dirty_rows.csv` | Module 02 | The rows removed for an empty `uid`. Written only when a row is removed. |
+| `03_duplicate_column_report.txt` | Module 03 | Duplicate column names merged. |
+| `04_dictionary_cleaning_report.txt` | Module 04 | Per column, each replaced value with its replacement and each unresolved value, with the number of records. |
+| `05_forward_fill_placeholder_report.txt` | Module 05 | Values filled per column pair. |
+| `06_forward_fill_numeric_datetime_report.txt` | Module 06 | Values filled per column. |
+| `07_drop_columns_report.txt` | Module 07 | Per prefix, the column kept and the columns dropped. |
+| `08_autopopulated_columns_report.txt` | Module 08 | Number of columns. |
+| `09_data_type_assignment_report.txt` | Module 09 | Columns per type and values read by each parsing rule. |
+| `10_duplicate_row_removal_report.txt` | Module 10 | Rows before and after, rows removed at each stage. |
+| `11_numeric_validation_report.txt` | Module 11 | Values changed at each step and out-of-range counts per column. |
+| `12_boolean_validation_report.txt` | Module 12 | Values set to `TRUE` or `FALSE` and to `NA`. |
+| `13_categorical_validation_report.txt` | Module 13 | Values replaced, removed and set to `NA`. |
+| `14_datetime_validation_report.txt` | Module 14 | Values parsed and set to `NA`; dates placed in `hepbdate_date`. |
+| `14a_resolve_neolab_datebct_report.txt` | Module 14a | Rows per `datebct_source`. `neolab` dataset only. |
+| `15_final_merge_summary.txt` | Module 15 | Input and output paths, final numbers of rows and columns. |
+| `15b_maternal_age_summary.txt` | Module 15 | Rows per `mat_age_source`. Written when the maternal-age columns are derived. |
+| `00b_harmonised_rename_report.txt` | Module 00b | Columns renamed and unchanged. Written when `SAVE_HARMONISED` is `TRUE`. |
+| `16_na_reason_coding_summary.txt` | Module 16 | Cells per reason code and the variables with most empty cells. |
+
+## Messages that stop a run
+
+| Message | Raised by | Cause and action |
+|---------|-----------|------------------|
+| `No CSV files found in 'input/'. Nothing to do.` | `run_all.r` | `input/` holds no `.csv` file. |
+| `Nothing to process. Exiting.` | `run_all.r` | Every file was filtered out or skipped. The reasons are listed above the message. |
+| `COUNTRY must be 'ZIM' or 'MWI'` | Module 00 | `COUNTRY` has another value. |
+| `DATASET must be one of: ...` | Module 00 | `DATASET` is not an accepted dataset. |
+| `DATA_SOURCE must be 'auto', 'database' or 'metabase'` | Module 00 | `DATA_SOURCE` has a value that is not accepted. |
+| `Dictionary not found: '<path>'` | Module 00 | The dictionary workbook does not exist. Build it with `00_build_dictionary/00_build_dictionary.r`. |
+| `Module 01: df_raw not found` | Module 01 | Module 00a has not run in the session. Run `run_pipeline.r` or `run_all.r`. |
+| `PII guard [<stage>]: Module 00a completion marker not found` | `assert_pii_removed()` | Module 00a has not run for this input file. Run the full pipeline. |
+| `PII guard [<stage>]: Module 00a completion marker is unreadable or incomplete` | `assert_pii_removed()` | The marker file lacks a required field. Run the full pipeline. |
+| `PII guard [<stage>]: the 00a marker was written for a different input` | `assert_pii_removed()` | The marker in the run folder names another input path. Run the full pipeline. |
+| `PII guard [<stage>]: the 00a marker ... is older than the input file` | `assert_pii_removed()` | The input file was modified after Module 00a ran. Run the full pipeline. |
+| `PII guard [<stage>]: the input file has changed since Module 00a ran` | `assert_pii_removed()` | The size or modification time of the input file differs from the marker. Run the full pipeline. |
+| `PII guard [<stage>]: the dictionary ... has changed since Module 00a ran` | `assert_pii_removed()` | The dictionary checksum differs from the marker. Run the full pipeline. |
+| `PII guard [<stage>]: the data frame was not produced by the Module 00a run recorded in the marker` | `assert_pii_removed()` | The data frame given to Module 01 does not carry the run id of the marker. Run the full pipeline. |
+| `PII guard [<stage>]: ... column(s) match the dictionary confidential flag (Tier 1) and ... match a PII name pattern (Tier 2)` | `assert_pii_removed()` | A column about to be written is a personal-data column. The message lists the column names. Nothing is written. |
+| `PII guard [<stage>]: ... column/pattern combination(s) contain PII-like values` | `assert_pii_removed()` | A value about to be written matches a value pattern. The message lists the columns, the pattern names and the counts. Nothing is written. |
+| `df_clean not found` | Modules 00b and 16 | The module was sourced before Module 15. |
+| `cfg$neotree_scripts_dir not set or directory not found` | Module 16 | Module 16 was sourced directly and the scripts folder does not exist. |
+| `Cannot read raw CSV` | Module 16 | The input CSV could not be read again. |
+| `Module 16: the NA summary 'variable' column contains entries that are not column names of the cleaned dataset` | Module 16 | The summary table failed its check before the guard. Nothing is written. |
+
+`<stage>` names the point of the check: `01_input`, `02_frame_shift_rows`, `10_stage1_checkpoint`, `15_cleaned_output`, `00b_harmonised_output`, `16_na_reasons_wide`, `16_na_reasons_long`, `16_na_reasons_summary` or `16_na_coded_output`.
+
+The banner `DICT COVERAGE WARNING` on the console does not stop the run. It lists input columns that the dictionary does not cover; these pass through as text. Rebuilding the dictionary from a data-key export that includes them removes the warning.
+
+## Rebuilding the dictionaries
+
+The dictionaries in `dictionaries/` are generated files. They are rebuilt when a new data-key export is placed in `neotree_data_keys/downloaded/`, when a constant of the build script or a row of `user_ranges.xlsx` is changed, or when new Neotree script files are placed in `neotree_scripts/`. The data keys and the script metadata are downloaded from the Neotree web editors with a Neotree account (see the README file in each folder).
+
+`00_build_dictionary.r` runs the whole build: the base dictionaries, the two enrichment steps, the user dictionaries, the removal of staff names and a final check. The other scripts below can still be run one by one.
+
+```r
+source("00_build_dictionary/00_build_dictionary.r")
+source("00_build_dictionary/00c_enrich_dictionary_from_scripts.r")
+source("00_build_dictionary/00e_enrich_from_public_dictionary.r")
+source("00_build_dictionary/00d_build_user_dictionary.r")
+source("00_build_dictionary/validate_dictionaries.r")
+```
+
+The first script writes the workbooks the cleaning modules read. The next three write documentation workbooks, and the last checks the result. The steps, their inputs and the constants that hold permanent changes are described in [`00_build_dictionary/README.md`](00_build_dictionary/README.md).
+
+## Tests
+
+Two test scripts are in `tests/`. They are run with `Rscript` from the pipeline folder:
+
+```
+Rscript tests/test_input_naming.r
+Rscript tests/test_pii_guard.r
+```
+
+Both generate synthetic input from the dictionaries (column names and value-map codes) and run in a temporary copy of the pipeline under `tempdir()`. They do not read or write `input/` or `output/`. Both need `readr` and `readxl`, and both start full pipeline runs in separate R processes.
+
+| Script | Covers |
+|--------|--------|
+| `test_input_naming.r` | File-name parsing in `run_all.r`; detection of the export style; resolution of the paired admissions/discharges file; a batch run on synthetic files in database, Metabase and mixed style; the datetime and number parsers and the boolean tokens of `00_setup.r`; the list encoding of Module 04; the derived column `hepbdate_date` of Module 14. |
+| `test_pii_guard.r` | The column-name and value patterns; a full run with the expected removals and redactions; the guard stopping when Module 00a is skipped, when the marker does not match the input file or dictionary, and when a personal-data column or value is added before the Module 15 write; the same checks through `run_all.r`. |
+
+Each script prints `[PASS]` or `[FAIL]` for every check and a summary line. The exit status is 0 when every check passes and 1 otherwise. After a failure the script prints the folder that holds the logs of the test runs.
+
+
+
+################################################################################
+#
+#  PART II -- CLEANING PIPELINE: DICTIONARY BUILD (MODULE 00)
+#
+################################################################################
+
+
+================================================================================
+  2.1  Module 00 -- build dictionary (overview)
+================================================================================
+  Source file: cleaning_pipeline_R/00_build_dictionary/README.md
+================================================================================
+
+# Dictionary build scripts
+
+## Purpose
+
+The scripts in this folder build the data dictionaries that the cleaning pipeline reads, add documentation columns to them, build the dictionaries for data users, and check the result.
+
+## Scripts and order
+
+| Step | Script | Writes | Described in |
+|------|--------|--------|--------------|
+| 1 | `00_build_dictionary.r` | `dictionaries/dictionary_<country>_<dataset>.xlsx` | this file |
+| 2 | `00c_enrich_dictionary_from_scripts.r` | `dictionaries/dictionary_<country>_<dataset>_enriched.xlsx` | `README_enrich_from_scripts.md` |
+| 3 | `00e_enrich_from_public_dictionary.r` | adds columns to the `_enriched.xlsx` workbooks | `README_enrich_from_public.md` |
+| 4 | `00d_build_user_dictionary.r` | `user_dictionaries/neotree_user_dict_<country>.xlsx` | `README_user_dictionary.md` |
+| 5 | `validate_dictionaries.r` | console report | this file |
+
+The sheets and columns of the dictionary workbooks are described in `dictionaries/README.md`.
+
+Running `00_build_dictionary.r` runs steps 1 to 4 in order, removes staff names (see below) and checks the result; step 5 is run separately. With `RUN_FOLLOW_ON_STEPS` set to `FALSE` the script builds the base dictionaries only, and does not remove staff names.
+
+Step 1 is required before the cleaning pipeline can run. Steps 2 to 4 produce documentation and are not read by the cleaning pipeline. Step 3 must follow step 2, because step 2 starts again from the base workbook and replaces the `_enriched.xlsx` copy.
+
+The data keys and the script metadata are downloaded from the Neotree web editors with a Neotree account; see `neotree_data_keys/README.md` and `neotree_scripts/README.md`. They are not part of the published repository.
+
+## When to run it
+
+Run `00_build_dictionary.r` when:
+
+- a new data-key export is placed in `neotree_data_keys/downloaded/`;
+- a constant in `00_build_dictionary.r` or a row of `user_ranges.xlsx` is changed;
+- new Neotree script files are placed in `neotree_scripts/`.
+
+## `00_build_dictionary.r`
+
+### What it does
+
+The script builds one workbook for each country and dataset listed in `BUILD_PLAN`. If one combination fails, the error is printed and the others are still built. For each combination, `build_dictionary()` does the following.
+
+1. **Selects the keys of the dataset.** A data key belongs to the dataset when it is used by a script whose title matches the regular expression of the dataset in `DATASET_FILTERS` (case is ignored). Deleted keys and option entries are left out.
+2. **Keeps one row per variable.** `question_key` is the key name in lower case with everything except letters and digits removed. When several keys give the same `question_key`, the one with the latest publish date is kept. An entry in `KEY_UUID_OVERRIDES` names the key to keep instead, for one country, dataset and `question_key`.
+3. **Fills the `Variables` columns.** `r_type` comes from `PIPELINE_TYPE_MAP`. `use_in_analysis` is `FALSE` for free-text keys, summary-table keys and draft keys. `weight_unit` is `grams` for the keys in `WEIGHT_KEYS_GRAMS`. The record-level system keys in `RECORD_ID_KEYS` receive a `record_id_role`; `uid` and `facility` receive a `linkage_role`.
+4. **Adds legacy variables.** Each entry of `LEGACY_VARIABLES` for the country and dataset is added as a row, unless the `question_key` is already present. These are fields that occur in the data but not in the data-key export.
+5. **Adds derived variables.** Each entry of `DERIVED_VARIABLES` for the country and dataset is added as a row, unless already present. These are columns computed by the cleaning pipeline. Their `raw_value_column` and `raw_label_column` are empty and their `raw_data_type` is `derived`.
+6. **Applies `MANUAL_RANGES`.** For each listed `question_key`, the lower and upper limits are filled where they are still empty.
+7. **Applies `user_ranges.xlsx`.** See below. These limits replace any limit set so far.
+8. **Assigns PII tiers.** `pii_tier` is `1` where `confidential` is `TRUE`. Each pattern of `PII_PATTERNS_DATA` is then tested against `question_key`; a match on a variable without a tier gives tier `2`, with the category and the pattern recorded. Each pattern of `QUASI_ID_PATTERNS` is tested in the same way and gives `quasi` to a variable still without a tier.
+9. **Builds `ValueMaps`.** The options of the kept key are listed in order, with `canonical_code` equal to `raw_code`. Leading and trailing spaces are removed from codes and labels. Each label is kept once per variable. Options that exist in other non-deleted versions of the same key, and whose code and label are both absent so far, are appended after them.
+10. **Applies `VARIABLE_PATCHES`.** Each entry sets the named columns of one variable in the listed datasets of one country.
+11. **Applies `VALUEMAP_PATCHES`.** Each entry carries one action on one variable:
+
+    | Action | Effect |
+    |--------|--------|
+    | `add_rows` | Appends the given options. An option whose label already exists for the variable is not added. |
+    | `update_canonical` | Sets `canonical_code` for the given `raw_code` values. |
+    | `remove_duplicate_raw_code` | Where a `raw_code` has several rows, keeps the row with the given label and removes the others. |
+
+    A patch for a variable or code that is not present is skipped.
+12. **Builds `ReviewNeeded`.** Lists categorical variables with no row in `ValueMaps`, numeric variables with no limits, and variables with no `r_type`.
+13. **Writes the workbook** with the sheets `Variables`, `ValueMaps`, `PII_Patterns` and `ReviewNeeded`.
+
+### Staff names
+
+Some answer options in the data keys and the scripts are the names or codes of health workers, and some script titles contain names. No dictionary receives them:
+
+1. **Script titles.** Each title listed in `00_build_dictionary/private/script_title_replacements.tsv` (columns `original_title` and `published_title`) is replaced as soon as the data keys are read. The `private/` folder is not part of the published repository.
+2. **Answer options of staff fields.** The fields are the keys matched by `STAFF_KEY_PATTERN` in `staff_fields.r`. Their options are not written to `ValueMaps`, and their `Values / Codes` cell in the user dictionaries reads `Not listed (staff identifier)`. `00d_build_user_dictionary.r` reads the same file.
+3. **Other text.** The answer options of staff fields in the data keys and the scripts are collected. Any of them still found in a cell of a dictionary is replaced by `[staff]`. Names of two or more words are matched in any letter case; single words and codes only in their exact case. Header rows are not changed, and a string that is also used outside staff fields, such as `Other` or a word that occurs in a question, is left as it is.
+4. **Check.** Every workbook file in `dictionaries/` and `user_dictionaries/` is then read in full, including text kept in the file but shown in no cell. The run stops with an error, naming the files and the number of matches, if a staff name, a staff code or a listed title is found.
+
+### Datasets
+
+`BUILD_PLAN` lists the datasets built for each country:
+
+| Country | Datasets |
+|---------|----------|
+| `ZIM` | `admissions`, `discharges`, `maternal_outcomes`, `phc_admissions`, `phc_discharges`, `neolab`, `baseline`, `infections`, `twenty_8_day_follow_up` |
+| `MWI` | `admissions`, `discharges`, `maternal_outcomes`, `phc_admissions`, `phc_discharges`, `combined_maternity_outcomes`, `dhis2_maternal_outcomes`, `maternity_completeness`, `neolab` |
+
+`DATASET_FILTERS` gives the script-title expression of each dataset:
+
+```
+admissions                   Admission
+discharges                   Discharge
+maternal_outcomes            Maternal
+maternity_completeness       Maternal
+phc_admissions               PHC.*Admission|Generic PHC Admission|Kasungu.*Admission
+phc_discharges               PHC.*Discharge|Generic PHC Discharge|NeoDischarge.*PHC
+combined_maternity_outcomes  Maternal|DHIS2 Mat|Maternity
+dhis2_maternal_outcomes      DHIS2.*Mat|DHIS.*Matern
+neolab                       ^NeoLab - (Zim|Malawi)
+baseline                     Baseline|Retrospective
+infections                   Infection|NeoInfect
+twenty_8_day_follow_up       28.?[Dd]ay|Follow.?[Uu]p|28.*[Ff]ollow|NeoFollow
+```
+
+### Types
+
+`PIPELINE_TYPE_MAP` gives the `r_type` of each data type of the export:
+
+| Data type in the export | `r_type` |
+|-------------------------|----------|
+| `number`, `period`, `timer` | `numeric` |
+| `date`, `datetime` | `datetime` |
+| `yesno` | `boolean` |
+| `single_select`, `dropdown`, `multi_select`, `checklist`, `diagnosis`, `diagnosis_symptom_risk`, `diagnosis_symptom_sign` | `categorical` |
+| `text`, `zw_edliz_summary_table`, `mwi_edliz_summary_table` | `object` |
+
+### Limits for numeric variables
+
+`MANUAL_RANGES` holds limits that apply in every dataset containing the variable:
+
+| `question_key` | Lowest | Highest |
+|----------------|--------|---------|
+| `apgar1`, `apgar5`, `apgar10` | 0 | 10 |
+| `satsair`, `satso2`, `dischsats` | 0 | 100 |
+| `thompscore` | 0 | 22 |
+| `bcreturntime` | 0 | 1440 |
+| `poshours` | 0 | 120 |
+| `timespent` | 0 | 72 |
+| `episode` | 1 | none |
+
+Legacy and derived variables carry the limits given in their own entries.
+
+`user_ranges.xlsx`, in this folder, holds further limits and is edited by hand. The build script only reads it. It has one sheet per dataset:
+
+| Dataset | Sheet |
+|---------|-------|
+| `admissions` | `Admissions` |
+| `discharges` | `Discharges` |
+| `maternal_outcomes` | `Maternal_outcomes` |
+| `phc_admissions` | `PHC_admissions` |
+| `phc_discharges` | `PHC_discharges` |
+| `neolab` | `Neolab` |
+| `infections` | `Infections` |
+| `baseline` | `Baseline` |
+| `twenty_8_day_follow_up` | `Follow_up` |
+| `combined_maternity_outcomes` | `Comb_maternity` |
+| `dhis2_maternal_outcomes` | `DHIS2_maternal` |
+| `maternity_completeness` | `Maternity_completeness` |
+
+The first row of a sheet is skipped and the second row is the header. The columns read are `question_key`, `suggested_plausible_min` and `suggested_plausible_max`. A row is used when its `question_key` exists in the dataset and at least one limit is a number; both limits of the variable are then set to the values of the row, so a blank limit in the row leaves that side without a limit. Rows with a blank `question_key` are ignored. If the file or the sheet is missing, the step is skipped with a message.
+
+### Inputs
+
+| File | Description |
+|------|-------------|
+| `neotree_data_keys/downloaded/neotree_data_keys_zimbabwe/data-keys-metadata.json` | Data keys and options of the Zimbabwe export |
+| `neotree_data_keys/downloaded/neotree_data_keys_zimbabwe/data-keys-usage.xlsx` | Which script uses which key |
+| `neotree_data_keys/downloaded/neotree_data_keys_malawi/data-keys-metadata.json` | Data keys and options of the Malawi export |
+| `neotree_data_keys/downloaded/neotree_data_keys_malawi/data-keys-usage.xlsx` | Which script uses which key |
+| `00_build_dictionary/user_ranges.xlsx` | Limits for numeric variables (optional) |
+| `neotree_scripts/zim-scripts/*.json`, `neotree_scripts/mwi-scripts/*.json` | Script metadata, read for the staff-name check and by steps 2 and 4 |
+| `00_build_dictionary/private/script_title_replacements.tsv` | Script titles to replace (optional, not published) |
+| `00_build_dictionary/staff_fields.r` | Keys of the staff fields |
+
+The folder names are set in `DOWNLOADED_KEYS_BASE` and `COUNTRY_FOLDERS`.
+
+### Outputs
+
+| File | Description |
+|------|-------------|
+| `dictionaries/dictionary_<country>_<dataset>.xlsx` | One workbook per combination in `BUILD_PLAN`. An existing file is replaced. |
+| `dictionaries/dictionary_<country>_<dataset>_enriched.xlsx`, `user_dictionaries/neotree_user_dict_<country>.xlsx` | Written by steps 2 to 4 when `RUN_FOLLOW_ON_STEPS` is `TRUE` |
+| `neotree_pipeline.log` | Log lines are appended; they are also printed on the console. |
+
+### Constants
+
+A permanent change to a dictionary is made in one of these constants, followed by a rebuild.
+
+| Constant | Holds |
+|----------|-------|
+| `RUN_FOLLOW_ON_STEPS` | Whether steps 2 to 4, the removal of staff names and the check are run |
+| `STAFF_GENERIC_OPTIONS` | Answer options never treated as staff names |
+| `STAFF_TEXT_PLACEHOLDER` | Text written in place of a staff name |
+| `TITLE_REPLACEMENTS_FILE` | Location of the list of script titles to replace |
+| `BUILD_PLAN` | Datasets built per country |
+| `DATASET_FILTERS` | Script-title expression per dataset |
+| `PIPELINE_TYPE_MAP` | `r_type` per data type |
+| `RECORD_ID_KEYS` | Record-level system keys |
+| `WEIGHT_KEYS_GRAMS` | Weight variables |
+| `MANUAL_RANGES` | Limits for numeric variables |
+| `KEY_UUID_OVERRIDES` | The key to keep where two keys share a `question_key` |
+| `LEGACY_VARIABLES` | Variables absent from the export |
+| `DERIVED_VARIABLES` | Variables computed by the cleaning pipeline |
+| `VARIABLE_PATCHES` | Corrections to columns of `Variables` |
+| `VALUEMAP_PATCHES` | Corrections to `ValueMaps` |
+| `PII_PATTERNS_DATA` | Content of the `PII_Patterns` sheet |
+| `QUASI_ID_PATTERNS` | Patterns that give `pii_tier` `quasi` |
+
+A variable added to `DERIVED_VARIABLES` must also be added to `DERIVED_KEYS` in `00d_build_user_dictionary.r` to appear in the user dictionary.
+
+### Functions
+
+`load_country_keys(country)` reads the two export files of a country and returns a list with `metadata`, `usage` and `opt_lookup`.
+
+`build_dictionary(country, dataset, out_path = NULL, include_review = TRUE, keys = NULL)` writes one workbook and returns, invisibly, a list with `variables`, `value_maps` and `review_needed`. With `out_path = NULL` the file is named `dictionary_<country>_<dataset>.xlsx` in `dictionaries/`. With `include_review = FALSE` the `ReviewNeeded` sheet is left out.
+
+## `validate_dictionaries.r`
+
+Checks the base workbooks in `dictionaries/` and prints `[OK]`, `[WARN]` or `[FAIL]` for each check, then a summary. It changes no file.
+
+The six workbooks for `admissions`, `discharges` and `maternal_outcomes` of both countries must exist. The other workbooks are checked when present.
+
+| Check | Result if not met |
+|-------|-------------------|
+| The sheets `Variables`, `ValueMaps`, `PII_Patterns` and `ReviewNeeded` exist | fail |
+| `Variables`, `ValueMaps` and `PII_Patterns` have all their columns | fail |
+| `PII_Patterns` has at least one row and no blank pattern | fail |
+| `PII_Patterns` has no repeated pattern | warning |
+| Every variable with `use_in_analysis` `TRUE` has an `r_type` | warning |
+| Every `question_key` in `ValueMaps` exists in `Variables` | warning |
+| Where both limits are set, the lower is below the upper | fail |
+| `pii_tier` is `1`, `2`, `quasi` or empty | fail |
+| Every tier 2 variable has a `pii_matching_pattern` | warning |
+| Every variable with `confidential` `TRUE` has tier `1` or `2` | warning |
+| In the Zimbabwe admissions workbook, the Apgar, oxygen saturation and Thompson score limits equal those of `EXPECTED_RANGES_ZIM_ADM` | warning |
+
+For each workbook it also prints the number of variables, value-map rows and review items, and the number of variables per `r_type` and per `pii_tier`.
+
+When run with `Rscript`, the exit status is 1 if any check failed and 0 otherwise.
+
+## How to run it
+
+Each script finds the pipeline folder from its own location, so it can be started from any working directory. One command runs steps 1 to 4, the removal of staff names and the check:
+
+```r
+source("00_build_dictionary/00_build_dictionary.r")
+```
+
+The validation is run afterwards:
+
+```r
+source("00_build_dictionary/validate_dictionaries.r")
+```
+
+or, from a terminal:
+
+```
+Rscript 00_build_dictionary/00_build_dictionary.r
+```
+
+Packages used: `jsonlite`, `readxl`, `dplyr`, `tidyr`, `stringr`, `writexl`, `tibble`, `janitor`, `purrr`, `logger` (build); `jsonlite`, `openxlsx`, `readxl` (steps 2 to 4); `openxlsx` (validation).
+
+
+================================================================================
+  2.2  Module 00c -- enrich from Neotree scripts
+================================================================================
+  Source file: cleaning_pipeline_R/00_build_dictionary/README_enrich_from_scripts.md
+================================================================================
+
+# `00c_enrich_dictionary_from_scripts.r`
+
+## Purpose
+
+Adds four columns to the `Variables` sheet of each dictionary workbook, taken from the Neotree script files: the label shown in the app, whether the field is optional, its skip condition, and a comparison of its options with the `ValueMaps` sheet.
+
+## When to run it
+
+After `00_build_dictionary.r` and before `00e_enrich_from_public_dictionary.r`. Run it again when the dictionaries are rebuilt or when the files in `neotree_scripts/` change.
+
+## What it does
+
+For each base workbook `dictionaries/dictionary_<country>_<dataset>.xlsx` (files ending in `_enriched.xlsx` are not taken as input):
+
+1. **Reads the country and dataset from the file name.**
+2. **Chooses the scripts of the dataset.** These are the entries of `FACILITY_SCRIPT_MAP` for the country and dataset. `normalise_dataset_name()` first maps `combined_maternity_outcomes`, `dhis2_maternal_outcomes` and `maternity_completeness` to `maternal_outcomes`, and `infections` to `neolab`. For a dataset whose name contains `phc`, the scripts of the country whose title contains `PHC` or `primary ... health`, and `admis` or `disch` as appropriate, are added. If no script is chosen, or none of the chosen scripts is found among the files, the workbook is skipped and no output is written for it.
+3. **Reads the fields of those scripts.** For every field on every screen it takes the key, the label, the `optional` flag, the options, and the condition. The condition is the field condition, or the screen condition if the field has none, or `(screen condition) AND (field condition)` if both exist and differ. Keys are put in lower case.
+4. **Summarises each key across the scripts.**
+
+   | Column | Value |
+   |--------|-------|
+   | `display_label` | The most frequent non-empty label. |
+   | `optional` | The flag, if all scripts that state it agree; otherwise empty. |
+   | `skip_condition` | The most frequent non-empty condition; empty if there is none. |
+   | `valuemap_check` | Compares the option codes of the most frequent option list with the `raw_code` values of the variable in `ValueMaps`. `TRUE` if the two sets differ or the variable has no row in `ValueMaps`; `FALSE` if they are the same; empty if the field has no options in the scripts. |
+
+5. **Writes the four columns** into the `Variables` sheet, matching on `question_key`. Existing columns of the sheet are not changed. A variable that is not found in the scripts keeps empty cells in the four columns. If the columns already exist they are refreshed in place; otherwise they are appended after the last column.
+6. **Saves the workbook.**
+
+## Inputs
+
+| File | Description |
+|------|-------------|
+| `dictionaries/dictionary_<country>_<dataset>.xlsx` | Base workbooks from `00_build_dictionary.r` |
+| `neotree_scripts/zim-scripts/*.json`, `neotree_scripts/mwi-scripts/*.json` | Neotree script files |
+
+The script stops if `dictionaries/` or `neotree_scripts/` does not exist, if no script file is found, or if there is no base workbook.
+
+## Outputs
+
+| File | Description |
+|------|-------------|
+| `dictionaries/dictionary_<country>_<dataset>_enriched.xlsx` | Copy of the base workbook with the four columns. An existing file is replaced. |
+
+The columns are described in `dictionaries/README.md`. Progress is printed on the console with the prefix `[00c]`: for each workbook, the number of scripts matched, the number of variables filled, and the number of variables with `valuemap_check` `TRUE`.
+
+## Configuration
+
+Set at the top of the script.
+
+| Setting | Default | Effect |
+|---------|---------|--------|
+| `OVERWRITE_IN_PLACE` | `FALSE` | `FALSE` writes `_enriched.xlsx` copies. `TRUE` writes the columns into the base workbooks. |
+| `NEOTREE_SCRIPTS_BASE` | `neotree_scripts` | Folder holding `zim-scripts/` and `mwi-scripts/`. |
+| `DICT_DIR` | `dictionaries` | Folder of the dictionary workbooks. |
+
+`FACILITY_SCRIPT_MAP` lists the script identifiers per country, dataset and facility. The same kind of map exists in `00d_build_user_dictionary.r` and in `16_na_reason_coding/helpers/03_facility_script_map.r`; each script reads its own.
+
+## How to run it
+
+```r
+source("00_build_dictionary/00c_enrich_dictionary_from_scripts.r")
+```
+
+or `Rscript 00_build_dictionary/00c_enrich_dictionary_from_scripts.r`. Packages used: `jsonlite`, `openxlsx`.
+
+
+================================================================================
+  2.3  Module 00e -- enrich from the public dictionary
+================================================================================
+  Source file: cleaning_pipeline_R/00_build_dictionary/README_enrich_from_public.md
+================================================================================
+
+# `00e_enrich_from_public_dictionary.r`
+
+## Purpose
+
+Adds eight documentation columns to the `Variables` sheet of each dictionary workbook, taken from the public data dictionary in `og_dictionaries/`. It does not change `ValueMaps`, codes, limits or any other existing column.
+
+## When to run it
+
+After `00c_enrich_dictionary_from_scripts.r`. Run it again when the dictionaries are rebuilt, when `00c` is run again, or when the public data dictionary file is replaced.
+
+## What it does
+
+1. **Reads the public data dictionary.** The sheets named in `PUBLIC_SHEETS` are read without a header row. A row with a value in the third column starts a variable; from that row the script takes the variable name (column 3), meaning (4), data type (7), dependency (8), range (9), old variable name (10), timeline of change (11) and reference (13). Rows below it with an empty third column are option rows and are not used. A sheet that cannot be read is skipped.
+2. **Builds one index for all sheets.** Each entry is indexed by its variable name and by its old variable name, in lower case. When a name occurs more than once, the first entry is kept.
+3. **Fills each workbook.** Each output is built from the base workbook in `dictionaries/`. The four columns written by `00c_enrich_dictionary_from_scripts.r` are carried over from an existing `_enriched.xlsx` copy only when that copy is not older than the base workbook and lists the same variables in the same order; otherwise they are left out and a message says so. Each variable is looked up by `question_key` and, if that is not found, by `harmonised_variable_name`.
+
+   | Column | Value |
+   |--------|-------|
+   | `public_meaning` | Meaning |
+   | `public_data_type` | Data type |
+   | `public_dependency` | Dependency |
+   | `public_range` | Range |
+   | `old_variable_name` | Old variable name, if it differs from the current name |
+   | `timeline_of_change` | Timeline of change |
+   | `public_reference` | Reference |
+   | `public_dict_matched` | `TRUE` if an entry was found, `FALSE` otherwise |
+
+   For a variable with no entry, the seven text columns are empty.
+4. **Writes the eight columns** into the `Variables` sheet. If they already exist they are refreshed in place; otherwise they are appended after the last column. A workbook with no `Variables` sheet, or an empty one, is skipped.
+5. **Saves the workbook.**
+
+## Inputs
+
+| File | Description |
+|------|-------------|
+| `og_dictionaries/Public_data_dictionary_2024.xlsx` | Public data dictionary. The script stops if it is missing. |
+| `dictionaries/dictionary_<country>_<dataset>_enriched.xlsx` | Source of the four `00c` columns, where it exists and matches the base workbook |
+| `dictionaries/dictionary_<country>_<dataset>.xlsx` | Source otherwise. The script stops if there is no base workbook. |
+
+## Outputs
+
+| File | Description |
+|------|-------------|
+| `dictionaries/dictionary_<country>_<dataset>_enriched.xlsx` | The base workbook with the `00c` columns carried over and the eight columns. An existing file is replaced. |
+
+The columns are described in `dictionaries/README.md`. For each workbook the console shows the number of variables matched, with the prefix `[00e]`.
+
+## Configuration
+
+Set at the top of the script.
+
+| Setting | Default | Effect |
+|---------|---------|--------|
+| `OVERWRITE_IN_PLACE` | `FALSE` | `FALSE` reads the base workbooks and writes the `_enriched.xlsx` copies. `TRUE` reads the base workbooks and writes the columns into them. |
+| `DICT_DIR` | `dictionaries` | Folder of the dictionary workbooks. |
+| `PUBLIC_DICT` | `og_dictionaries/Public_data_dictionary_2024.xlsx` | Path of the public data dictionary. |
+| `PUBLIC_SHEETS` | seven sheet names | Sheets of the public data dictionary that are read. |
+
+## How to run it
+
+```r
+source("00_build_dictionary/00e_enrich_from_public_dictionary.r")
+```
+
+or `Rscript 00_build_dictionary/00e_enrich_from_public_dictionary.r`. Packages used: `readxl`, `openxlsx`.
+
+
+================================================================================
+  2.4  Module 00d -- build the user dictionary
+================================================================================
+  Source file: cleaning_pipeline_R/00_build_dictionary/README_user_dictionary.md
+================================================================================
+
+# `00d_build_user_dictionary.r`
+
+## Purpose
+
+Builds the user dictionary: one Excel workbook per country that lists, for each dataset, the variables of the cleaned data in the order of the Neotree form, with their description, type, values and missing-value codes. It is a reference for people who use the cleaned data. The cleaning pipeline does not read it.
+
+## When to run it
+
+After `00_build_dictionary.r`, `00c_enrich_dictionary_from_scripts.r` and `00e_enrich_from_public_dictionary.r`. Run it again when the dictionaries are rebuilt or when the files in `neotree_scripts/` change.
+
+## What it does
+
+For each country (`ZIM`, `MWI`) and each dataset in `DATASET_CONFIGS`:
+
+1. **Chooses the scripts of the dataset.** These are the entries of `FACILITY_SCRIPT_MAP` for the country and dataset; `infections` uses the entry for `neolab`. For the two PHC datasets, if the map has no entry, the scripts of the country whose title contains one of the keywords in `PHC_ADMISSION_KW` or `PHC_DISCHARGE_KW` are used. Identifiers with no file in `neotree_scripts/` are dropped. A dataset with no script gets no sheet.
+2. **Reads the fields of those scripts** in screen and field order, with keys in lower case, and keeps one row per key:
+
+   | Item | Taken from |
+   |------|------------|
+   | Section | The most frequent screen title of the key |
+   | Position | The lowest screen number with that title, then the lowest field number |
+   | Label | The first non-empty label |
+   | Skip condition | The first non-empty condition (screen and field conditions joined with `AND` when both exist and differ) |
+   | Options | The longest option list |
+
+3. **Reads the dictionary workbook of the dataset**: the `_enriched.xlsx` copy if it exists and `USE_ENRICHED_DICT` is `TRUE`, otherwise the base workbook. Variables are matched on `question_key`.
+4. **Leaves out** every variable whose `pii_tier` is `1` or whose `use_in_analysis` is `FALSE`. A field that is in the scripts but not in the dictionary is kept, with an empty type.
+5. **Adds the derived variables.** Each key in `DERIVED_KEYS` that is in the dictionary of the dataset, and not left out by step 4, is added in the section `Derived variables (computed by the cleaning pipeline)`.
+6. **Writes one sheet per dataset**, then a `Master` sheet.
+
+### Columns of a dataset sheet
+
+| Column | Content |
+|--------|---------|
+| `Description` | `display_label` of the dictionary; if empty, the label in the scripts; if empty, `variable_label`; if empty, the key. For derived variables, `variable_label`. |
+| `Variable Name` | `harmonised_variable_name`; if empty, the key. |
+| `Type` | `Numeric`, `Boolean`, `Categorical`, `Text` or `Date/time`, from `r_type`. |
+| `Values / Codes` | See below. |
+| `NA Codes` | The missing-value codes that can occur for the variable. See below. |
+| `Available also in` | The other datasets of the same country that contain the variable. |
+
+`Values / Codes` (for a staff field, see `staff_fields.r`, it reads `Not listed (staff identifier)`):
+
+| Type | Content |
+|------|---------|
+| Numeric | `Range: a to b`, `Range: >= a` or `Range: <= b` from the limits in the dictionary; `Numeric value` if there are none. |
+| Date/time | `Date / time value` |
+| Text | `Free text` |
+| Boolean, Categorical, or no type | One line `code = label` per option, from the `ValueMaps` sheet in `option_order`, using `raw_code` and the first label of each code. If the variable has no row there, the options in the scripts. If there are none, `true / false` for a Boolean and empty otherwise. |
+| Derived variables | Empty |
+
+`NA Codes`:
+
+| Code | Listed when |
+|------|-------------|
+| `-9` | Always |
+| `-8` | The type is Numeric, Boolean, Categorical or Date/time |
+| `-7` | The variable has a skip condition (`skip_condition` of the dictionary, or the condition in the scripts) |
+| `-6` | The type is Text and `pii_tier` is set and is not `1` |
+
+### Layout of a dataset sheet
+
+The first row is the header and is frozen. Variables are grouped under section rows:
+
+1. `Administrative / System`: variables with a `record_id_role` or a `linkage_role` in the dictionary.
+2. One section per screen title, in form order.
+3. `Derived variables (computed by the cleaning pipeline)`.
+4. `Other`, for fields whose screen has no title.
+
+### Sheets of the workbook
+
+| Sheet | Content |
+|-------|---------|
+| `About` | Title, date of generation and a short description of the workbook. |
+| `NA Codes` | The four numeric codes `-6` to `-9` with their meaning and priority, a list of text codes entered by data collectors in the raw data, and a note on how the two kinds are used. |
+| One per dataset | As above. The sheet is named with the `sheet` value of the dataset in `DATASET_CONFIGS` if there is one, otherwise with its `label`. |
+| `Master` | Every variable name once, taken from the first dataset sheet in which it occurs, in the same layout. |
+
+## Inputs
+
+| File | Description |
+|------|-------------|
+| `neotree_scripts/<country>-scripts/*.json` | Neotree script files |
+| `dictionaries/dictionary_<country>_<dataset>_enriched.xlsx` | Dictionary workbook, where it exists |
+| `dictionaries/dictionary_<country>_<dataset>.xlsx` | Dictionary workbook otherwise |
+
+## Outputs
+
+| File | Description |
+|------|-------------|
+| `user_dictionaries/neotree_user_dict_zim.xlsx` | User dictionary for Zimbabwe |
+| `user_dictionaries/neotree_user_dict_mwi.xlsx` | User dictionary for Malawi |
+
+The folder is created if it does not exist. Existing files are replaced. For each dataset the console shows the number of rows, sections and scripts.
+
+## Configuration
+
+Set in the script.
+
+| Setting | Default | Effect |
+|---------|---------|--------|
+| `NEOTREE_SCRIPTS_BASE` | `neotree_scripts` | Folder of the script files. Each subfolder named `<country>-scripts` is read. |
+| `DICT_DIR` | `dictionaries` | Folder of the dictionary workbooks. |
+| `OUTPUT_DIR` | `user_dictionaries` | Folder of the output workbooks. |
+| `USE_ENRICHED_DICT` | `TRUE` | Read the `_enriched.xlsx` copies when they exist. |
+| `DERIVED_KEYS` | list of keys | Derived variables to add. A key is added only if it is also in the dictionary, where `DERIVED_VARIABLES` of `00_build_dictionary.r` puts it. |
+| `DATASET_CONFIGS` | per country | Datasets to include, in sheet order, with `key`, `label` and optionally `sheet`. |
+| `FACILITY_SCRIPT_MAP` | per country and dataset | Script identifiers. |
+
+To add a dataset, add it to `DATASET_CONFIGS` and to `FACILITY_SCRIPT_MAP`.
+
+## How to run it
+
+```r
+source("00_build_dictionary/00d_build_user_dictionary.r")
+```
+
+or `Rscript 00_build_dictionary/00d_build_user_dictionary.r`. Packages used: `openxlsx`, `jsonlite`.
+
+
+================================================================================
+  2.5  Dictionaries folder -- contents and conventions
+================================================================================
+  Source file: cleaning_pipeline_R/dictionaries/README.md
+================================================================================
+
+# Data dictionaries
+
+## Purpose
+
+This folder holds the data dictionaries of the cleaning pipeline: one Excel workbook per country and dataset, listing the variables of that dataset, their types, their allowed codes and the rules for removing personal data.
+
+The workbooks are written by the scripts in `00_build_dictionary/`. They are generated files: a rebuild replaces them, so a change made by hand in a workbook is lost. Permanent changes are made in the build script (see `00_build_dictionary/README.md`).
+
+## Files
+
+Each dataset has two workbooks:
+
+| File | Written by | Content |
+|------|------------|---------|
+| `dictionary_<country>_<dataset>.xlsx` | `00_build_dictionary.r` | The base dictionary. |
+| `dictionary_<country>_<dataset>_enriched.xlsx` | `00c_enrich_dictionary_from_scripts.r` and `00e_enrich_from_public_dictionary.r` | A copy of the base dictionary with extra documentation columns in the `Variables` sheet. |
+
+`<country>` is `zim` or `mwi`. The datasets are:
+
+| Dataset | `zim` | `mwi` |
+|---------|:-----:|:-----:|
+| `admissions` | yes | yes |
+| `discharges` | yes | yes |
+| `maternal_outcomes` | yes | yes |
+| `phc_admissions` | yes | yes |
+| `phc_discharges` | yes | yes |
+| `neolab` | yes | yes |
+| `baseline` | yes | |
+| `infections` | yes | |
+| `twenty_8_day_follow_up` | yes | |
+| `combined_maternity_outcomes` | | yes |
+| `dhis2_maternal_outcomes` | | yes |
+| `maternity_completeness` | | yes |
+
+The cleaning pipeline reads the base workbook, `dictionary_<country>_<dataset>.xlsx`, and from it the sheets `Variables`, `ValueMaps` and `PII_Patterns`. If the workbook for a dataset does not exist, `00_setup.r` uses the workbook of the dataset named in `DICT_FALLBACK`, where one is defined. The enriched workbooks are read by `00d_build_user_dictionary.r`.
+
+## Sheets of a base workbook
+
+| Sheet | One row per |
+|-------|-------------|
+| `Variables` | variable |
+| `ValueMaps` | allowed option of a variable |
+| `PII_Patterns` | column-name pattern that marks personal data |
+| `ReviewNeeded` | variable that the build script flags for checking |
+
+### `Variables`
+
+| Column | Meaning |
+|--------|---------|
+| `environment` | Country name. |
+| `dataset` | Country code and dataset, as `<COUNTRY>_<dataset>`. |
+| `question_key` | Name of the variable: the data key name in lower case with everything except letters and digits removed. Unique within the sheet. |
+| `raw_value_column` | Name of the column holding the value in the input data: `question_key` followed by `.value`. Empty for derived variables. |
+| `raw_label_column` | Name of the column holding the label in the input data: `question_key` followed by `.label`. Empty for derived variables. |
+| `variable_label` | Label of the data key. |
+| `raw_data_type` | Data type of the key in the data-key export. `derived` for variables computed by the pipeline. |
+| `r_type` | Type used by the pipeline: `numeric`, `boolean`, `categorical`, `datetime` or `object`. Empty when the data type is not known to the build script. |
+| `section` | Titles of the scripts that use the key, sorted and separated by `; `. For legacy and derived variables, a fixed text naming their origin. |
+| `harmonised_variable_name` | The key name in lower case with underscores between words. |
+| `use_in_analysis` | `FALSE` for free-text keys, summary-table keys and draft keys; `TRUE` otherwise. |
+| `weight_unit` | `grams` for weight variables; otherwise empty. |
+| `confidential` | Confidentiality flag of the key in the data-key export. |
+| `record_id_role` | Role of record-level system keys such as the record identifier, the facility and the timestamps; otherwise empty. |
+| `linkage_role` | `primary_linkage_key` for `uid`, `secondary_linkage_key` for `facility`; otherwise empty. |
+| `suggested_plausible_min` | Lowest accepted value of a numeric variable. Empty for no lower limit. |
+| `suggested_plausible_max` | Highest accepted value of a numeric variable. Empty for no upper limit. |
+| `cleaning_note` | Free-text note. Filled for legacy and derived variables. |
+| `key_unique_key` | Identifier of the data key in the export. Empty for legacy and derived variables. |
+| `pii_tier` | `1` when `confidential` is `TRUE`; `2` when `question_key` matches a pattern of the `PII_Patterns` sheet; `quasi` for a quasi-identifier; otherwise empty. |
+| `pii_category` | Kind of personal data: `direct_identifier` for tier 1, the category of the matching pattern for tier 2. |
+| `pii_matching_pattern` | The pattern that gave tier 2. |
+
+### `ValueMaps`
+
+| Column | Meaning |
+|--------|---------|
+| `question_key` | Variable the option belongs to. Matches `question_key` in `Variables`. |
+| `raw_code` | Code of the option as stored in the data. |
+| `option_label` | Display label of the option. |
+| `option_order` | Position of the option within the variable. Options of the current version of the key come first, followed by options that exist only in other versions of the key, then options added by the build script. |
+| `option_uuid` | Identifier of the option in the data-key export. Empty for options added by the build script. |
+| `canonical_code` | Code that the pipeline writes for this option. Equal to `raw_code` unless the build script sets a different one. |
+
+A variable may have several rows with the same `raw_code` and different labels; each label is kept once per variable.
+
+### `PII_Patterns`
+
+The same table is written to every workbook.
+
+| Column | Meaning |
+|--------|---------|
+| `pattern` | Regular expression tested against column names. |
+| `pattern_type` | How the pattern is meant to match: `suffix_match`, `contains` or `exact_match`. |
+| `pii_category` | Kind of personal data, for example `personal_name`, `phone_number`, `address`, `identifier`, `date_of_birth`. |
+| `reason` | Short description of what the pattern covers. |
+| `countries` | Countries in which such columns occur. |
+| `examples` | Example column names. |
+| `added_date` | Date recorded for the pattern. |
+| `notes` | Free-text note. |
+
+### `ReviewNeeded`
+
+Holds the rows of `Variables` that meet one of the conditions below, with all the columns of `Variables` and one more:
+
+| Column | Meaning |
+|--------|---------|
+| `review_reason` | Why the variable is listed. |
+
+| `review_reason` | Condition |
+|-----------------|-----------|
+| `Categorical with no value map entries` | `r_type` is `categorical` and the variable has no row in `ValueMaps`. |
+| `Numeric without plausible range` | `r_type` is `numeric` and both limits are empty. |
+| `Unknown dataType (not in PIPELINE_TYPE_MAP)` | `r_type` is empty. |
+
+The sheet is a list for checking. The pipeline does not read it.
+
+## Additional columns of an enriched workbook
+
+The enriched workbook has the same sheets. Its `Variables` sheet carries these further columns.
+
+Written by `00c_enrich_dictionary_from_scripts.r`, from the Neotree script files:
+
+| Column | Meaning |
+|--------|---------|
+| `display_label` | Label of the field as shown in the app; the most frequent label across the scripts of the dataset. |
+| `optional` | Whether the field is optional. Empty when the scripts disagree. |
+| `skip_condition` | Condition under which the field is shown; the most frequent across the scripts. Empty when the field is always shown. |
+| `valuemap_check` | `TRUE` when the option codes of the field in the scripts differ from the `raw_code` values in `ValueMaps`; `FALSE` when they are the same set; empty when the field has no options in the scripts. |
+
+The four columns are empty for a variable that is not found in the scripts of its dataset.
+
+Written by `00e_enrich_from_public_dictionary.r`, from the public data dictionary:
+
+| Column | Meaning |
+|--------|---------|
+| `public_meaning` | Meaning of the variable. |
+| `public_data_type` | Data type as documented there. |
+| `public_dependency` | Dependency on other variables, in words. |
+| `public_range` | Documented range. |
+| `old_variable_name` | Earlier name of the variable, if different from the current one. |
+| `timeline_of_change` | Documented change of name or definition. |
+| `public_reference` | Reference cited. |
+| `public_dict_matched` | `TRUE` when an entry was found for the variable. |
+
+These columns are documentation. The cleaning pipeline does not use them.
+
+
+
+################################################################################
+#
+#  PART III -- CLEANING PIPELINE: MODULE REFERENCE (00 - 16)
+#
+################################################################################
+
+
+================================================================================
+  3.1  Module 00 -- setup and shared helpers
+================================================================================
+  Source file: cleaning_pipeline_R/00_setup/README.md
+================================================================================
+
+# Module 00: Setup and Configuration
+
+## Purpose
+
+Loads the libraries, reads the user settings and the data dictionary, defines the helper functions shared by the other modules, and builds the configuration list `cfg`.
+
+## When it runs
+
+First. Every other module sources `00_setup/00_setup.r` at its top, so the settings, helpers and `cfg` are rebuilt each time a module is sourced.
+
+## What it does
+
+1. Applies the default to every user setting that is not already defined in the calling environment.
+2. Creates the output folder and a run folder inside it, named after the input file without its `.csv` extension.
+3. Starts logging to the console and to `<file stem>.log` in the run folder.
+4. Checks `COUNTRY`, `DATASET` and `DATA_SOURCE` and stops if a value is not accepted.
+5. Detects the export style of the input file and logs it.
+6. Resolves the dictionary, output, report and paired-file paths.
+7. Loads the dictionary sheets `Variables` and `ValueMaps`. Stops if the dictionary file does not exist.
+8. Derives the feature lists and lookups from the dictionary and assembles `cfg`.
+9. Compares the header of the input file with the dictionary and reports columns the dictionary does not cover.
+10. Defines the PII patterns, the completion-marker path and the guard `assert_pii_removed()`.
+
+## Configuration
+
+Each setting is assigned only if it does not already exist, so a value set before the file is sourced (for example by `run_all.r`) is kept.
+
+| Setting | Default | Effect |
+|---------|---------|--------|
+| `COUNTRY` | `"ZIM"` | `"ZIM"` or `"MWI"`. Trimmed and converted to upper case. |
+| `DATASET` | `"admissions"` | Dataset type; see *Datasets* below. Trimmed and converted to lower case. |
+| `DATA_SOURCE` | `"auto"` | Accepts `auto`, `database`, `metabase`, `mixed` or `unknown`. It does not change how anything is parsed, and is replaced by the detected export style. |
+| `CSV_FILEPATH` | a file in `input/` | Path to the raw CSV. |
+| `DICT_FILEPATH` | `NULL` | Dictionary path. `NULL` resolves it automatically; see *Path resolution*. |
+| `OUTPUT_CSV`, `OUTPUT_RDS` | `NULL` | Paths of the cleaned outputs. `NULL` gives `<file stem>_cleaned.csv` and `<file stem>_cleaned.rds` in the run folder. |
+| `OUTPUT_DIR` | `"output"` | Base folder for everything the pipeline writes. |
+| `REPORT_DIR` | `NULL` | `NULL` gives `reports/` in the run folder. A path writes the reports there. `FALSE` or `""` suppresses the module reports (`cfg$report_dir` is `NULL`). |
+| `NEOTREE_SCRIPTS_DIR` | `NULL` | Folder of Neotree script metadata used by Module 16. `NULL` gives `neotree_scripts/` in the pipeline folder. |
+| `SAVE_DEIDENTIFIED` | `FALSE` | Module 00a writes `<file stem>_deidentified.csv`. |
+| `SAVE_STAGE1_CHECKPOINT` | `FALSE` | Module 10 writes a checkpoint RDS after its first stage. |
+| `SAVE_HARMONISED` | `FALSE` | Module 00b runs and writes the harmonised CSV and RDS. |
+| `SAVE_NA_CODED` | `TRUE` | Module 16 writes the cleaned data with each `NA` replaced by its reason code. |
+| `SAVE_NA_REASONS_LONG` | `FALSE` | Module 16 writes the long table of `NA` reasons. |
+| `SKIP_DEDUP_STAGE2` | `TRUE` for `infections` and `neolab`, otherwise `FALSE` | Module 10 skips its patient-level stage. |
+| `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Module 14a fills missing `datebct` values from the admissions file. Used only when the dataset is `neolab`. |
+| `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Characters Module 02 treats as a mistyped hyphen in a `uid`. |
+| `RESERVED_COLUMN_RENAMES` | for `phc_discharges`: `facility.value` to `facilityname.value`, `facility.label` to `facilityname.label` | Per dataset, standardised column names that Module 01 renames so that they do not share a name with a key column. |
+
+### Datasets
+
+`admissions`, `discharges`, `maternal_outcomes`, `phc_admissions`, `phc_discharges`, `combined_maternity_outcomes`, `dhis2_maternal_outcomes`, `maternity_completeness`, `joined_admissions_discharges`, `neolab`, `baseline`, `infections`, `twenty_8_day_follow_up`.
+
+## Path resolution
+
+**Dictionary.** With `DICT_FILEPATH` unset, the path is `dictionaries/dictionary_<country>_<dataset>.xlsx`. If that file does not exist and the dataset has a fallback type whose dictionary exists, the fallback dictionary is used.
+
+| Dataset | Fallback type |
+|---------|---------------|
+| `joined_admissions_discharges`, `phc_admissions`, `baseline` | `admissions` |
+| `phc_discharges` | `discharges` |
+| `dhis2_maternal_outcomes` | `combined_maternity_outcomes` |
+| `maternity_completeness` | `maternal_outcomes` |
+
+**Paired file.** `.resolve_paired_csv(csv_filepath, dataset)` looks for the other half of an admissions/discharges pair (`admissions` with `discharges`, `phc_admissions` with `phc_discharges`) in the folder of the input file. It first swaps the dataset token in the input file name. If that file does not exist, it lists files named `<country>_[db_|mb_]<paired dataset>_<stamp>.csv`, where the stamp is 12 digits, 8 digits or `YYYY-MM-DD`, and takes the last one in sorted order. It returns `list(dataset, path)`. Both are `NULL` when the dataset has no pair; `path` is `NULL` when no file is found. Only the path is resolved; the file is not read.
+
+## Format detection
+
+`.detect_data_source(csv_filepath, n_rows = 500)` reads the header and the first rows as text and returns `list(source, reason)`.
+
+| Evidence | Style |
+|----------|-------|
+| Header has `Unique Key`, `Started At`, `Completed At` or `Ingested At` | `metabase` |
+| Header has `unique_key`, `started_at`, `completed_at` or `ingested_at` | `database` |
+| Values include month-name datetimes and no ISO datetimes | `metabase` |
+| Values include ISO datetimes and no month-name datetimes | `database` |
+| Values include both, or ISO datetimes together with thousands-separated numbers | `mixed` |
+
+`source` is the style when header and values agree or only one is recognised, `mixed` when they differ, and `unknown` when neither is recognised or the file cannot be read. `reason` holds the counts. The result is logged and stored in `cfg$data_source`.
+
+## Shared value parsers
+
+### `parse_datetime_by_shape(x)`
+
+Returns a POSIXct (UTC) vector. Each value is trimmed and parsed by the rule for its own shape. Empty values and the text `NA` are `NA`.
+
+| Shape | Examples | Read as |
+|-------|----------|---------|
+| ISO | `2023-10-19`, `2023-10-19 22:00:00`, `2023-10-19T22:00:00Z`, `2023/10/19` | Year, month, day, with an optional time. A trailing `Z` or UTC offset after a time is dropped; the time is kept as written. |
+| Day first | `19/10/2023`, `19-10-2023`, `19.10.2023`, `19/10/23 10:30 PM` | Day, month, year, with an optional 12-hour or 24-hour time. A two-digit year is read as 20yy. A value valid only as month/day/year becomes `NA`. |
+| Month name | `March 2, 2026, 12:33 AM`, `2 March 2026`, `19-Oct-2023` | Month name identified by its first three letters, in any case, with an optional time. |
+| Anything else | free text, digits without separators | `NA` |
+
+The attribute `counts` on the result is a named integer vector: `iso`, `day_first`, `month_name`, `offset_dropped`, `month_first_rejected`, `unparsed`.
+
+### `parse_numeric_by_shape(x)`
+
+Returns `list(value, counts)`. `value` is a numeric vector.
+
+| Value | Read as |
+|-------|---------|
+| `3500`, `3.5`, `-2` | the number |
+| `3,500`, `1,234,567.8` | 3500, 1234567.8 (thousands separators removed) |
+| `3,5`, `36,75` | 3.5, 36.75 (decimal comma, one or two digits after it) |
+| text holding one run of digits, e.g. `ANC4`, `36.5 C` | that number, without a sign |
+| text holding several runs of digits, e.g. a date, `10-12`, `1e5`, `0x1A` | `NA` |
+| text with no digit | `NA` |
+
+`counts` is a named integer vector: `plain`, `thousands`, `decimal_comma`, `fallback`, `multi_number_rejected`, `non_numeric`.
+
+### Boolean tokens
+
+| Object | Values |
+|--------|--------|
+| `NEOTREE_TRUE_TOKENS` | `true`, `yes`, `y`, `1`, `t` |
+| `NEOTREE_FALSE_TOKENS` | `false`, `no`, `n`, `0`, `f` |
+
+## Logging
+
+Messages at level INFO and above go to the console and to `<file stem>.log` in the run folder. Messages are formatted with `sprintf`, so the format string and its arguments are passed to the `log_*` functions separately. The first message of each sourcing records the value of `PIPELINE_VERSION`.
+
+## Dictionary coverage check
+
+`.check_dict_coverage()` reads the header of the input file. Columns ending in `.parentKey` and the system columns (`uid`, `facility`, `uniquekey`, the timestamp columns, `scriptversion`, `scriptid`) are left out. Every other column that is in neither `raw_value_column` nor `raw_label_column` of the dictionary is reported in the log and on the console, and listed in `00c_undocumented_columns.txt`. The names are stored in `cfg$undocumented_cols`.
+
+## PII definitions and guard
+
+| Object | Content |
+|--------|---------|
+| `PII_FALLBACK_PATTERNS_DEFAULT` | Built-in column-name patterns: names ending in `name.value`, `cell.value`, `phone.value`, `address.value`, `uidbid.value`, `uiddc.value` or `drid.value`; names containing `hcwid`, `hospnum`, `neotreeid` or `stuid`; and a mother's date-of-birth column with a `.value` or `.label` suffix. |
+| `PII_SHEET_PATTERNS` | Patterns read by `load_pii_patterns(dict_path)` from the `pattern` column of the dictionary sheet `PII_Patterns`; `NULL` if the sheet cannot be read or is empty. |
+| `PII_TIER2_PATTERNS` | The union of the two lists above. |
+| `PII_VALUE_PATTERNS` | Value patterns; see the table below. |
+| `PII_VALUE_SCAN_EXEMPT` | Key and system columns that are never redacted: `uid`, `facility`, `uniquekey`, `startedat`, `completedat`, `ingestedat`, `startedatdischarge`, `completedatdischarge`, `ingestedatdischarge`, `scriptversion`, `scriptid`. |
+| `PII_MARKER_PATH` | `00a_pii_removal_complete.dcf` in the run folder. |
+
+| Value pattern | Matches |
+|---------------|---------|
+| `phone_international` | A whole value of `263` and 9 digits, or `265` and 7 to 9 digits, with an optional leading `+`. |
+| `phone_local_zw` | A whole value of `0`, then `6` or `7`, then 8 digits. |
+| `phone_local_mwi` | A whole value of `0`, then `8` or `9`, then 8 digits. |
+| `email` | An email address anywhere in the value. |
+| `nhs_number` | A whole value of 3, 3 and 4 digits separated by hyphens or spaces. |
+| `zw_national_id` | Anywhere in the value: 2 digits, 6 or 7 digits, a letter and 2 digits, with or without hyphens or spaces between the parts, not joined to other letters or digits. |
+| `mw_national_id` | Anywhere in the value: 8 letters or digits containing at least two letters and at least two digits, not joined to other letters, digits or hyphens. Case is ignored. |
+
+`pii_value_hits(x, pattern)` trims the values and returns a logical vector marking those that match.
+
+`write_pii_marker(input_path, run_id, n_cols_removed, n_values_redacted)` writes the marker file: completion time, run id, pipeline version, input path, size and modification time, dictionary path and MD5 checksum, number of column-name patterns, and the two counts.
+
+`assert_pii_removed(df, stage, check_run_id = FALSE, value_exempt = character(0))` returns `TRUE` invisibly or stops with an error. It checks, in order:
+
+1. The marker file exists and holds the required fields.
+2. The marker describes the current input: same path, size and modification time; written after the input was last modified; same dictionary checksum.
+3. With `check_run_id = TRUE`, the attribute `neotree_pii_run_id` of `df` equals the run id in the marker.
+4. No column of `df` belongs to a variable flagged confidential in the dictionary, and none matches a pattern in `PII_TIER2_PATTERNS`. Each column is tested under its own name, as `<base>.value`, as `<question_key>.value` when it carries a harmonised name, and with the Module 01 reserved renames undone.
+5. No value matches a pattern in `PII_VALUE_PATTERNS`. Date, date-time, logical and list columns are skipped, as are the columns in `PII_VALUE_SCAN_EXEMPT`, their harmonised names, and those named in `value_exempt`.
+
+Error messages give column names, pattern names and counts of cells, never values.
+
+## Inputs
+
+| Object / file | Description |
+|---------------|-------------|
+| User settings | See *Configuration* |
+| Raw CSV at `CSV_FILEPATH` | The header and first rows are read for format detection and the coverage check |
+| Dictionary workbook | Sheets `Variables`, `ValueMaps` and, if present, `PII_Patterns` |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `cfg` | Configuration list; see below |
+| `dict_variables`, `dict_value_maps` | The two dictionary sheets, with cleaned column names |
+| `<file stem>.log` | Run log, in the run folder |
+| `00c_undocumented_columns.txt` | Written only when undocumented columns are found, in the report folder, or in the run folder when reports are suppressed |
+
+### The `cfg` list
+
+| Element | Content |
+|---------|---------|
+| `country`, `dataset`, `data_source` | Country, dataset and detected export style |
+| `csv_filepath`, `dict_filepath` | Input and dictionary paths |
+| `paired_dataset`, `paired_csv_filepath` | Paired dataset name and file path, or `NULL` |
+| `output_dir`, `run_output_dir`, `file_stem` | Base output folder, run folder, input file name without extension |
+| `output_csv`, `output_rds`, `report_dir` | Output paths and report folder (`NULL` when reports are suppressed) |
+| `num`, `bool`, `cat`, `obj` | `raw_value_column` names of dictionary variables of each `r_type` with `use_in_analysis` true, preceded by the key columns `facility`, `uid`, `uniquekey` |
+| `dt` | Key columns, the system timestamp columns of the dataset, and the datetime variables |
+| `extra_meta_cols` | `scriptversion`, or `scriptversion` and `scriptid`, for datasets that carry them; otherwise empty |
+| `weight_cols` | `question_key` of variables whose `weight_unit` is `grams` |
+| `range_lookup` | Tibble of `question_key`, `min`, `max` for numeric variables with a plausible minimum or maximum |
+| `value_map_list` | Per `question_key`: `allowed_codes`, `canonical_codes`, `label_to_code`, `code_to_canonical` |
+| `value_mappings`, `values_to_delete` | Empty lists, read by Module 13 |
+| `pii_columns` | `raw_value_column` and `raw_label_column` of variables flagged `confidential` |
+| `harmonised_map` | Named vector from `question_key` to `harmonised_variable_name`, for variables with `use_in_analysis` true |
+| `uid_repair_separators`, `reserved_column_renames` | From the settings of the same names; the renames are those for the current dataset, or `NULL` |
+| `neotree_scripts_dir` | Resolved scripts folder |
+| `save_deidentified`, `save_stage1_checkpoint`, `save_harmonised`, `save_na_coded`, `save_na_reasons_long`, `skip_dedup_stage2`, `resolve_neolab_datebct` | From the settings of the same names |
+| `undocumented_cols` | Column names found by the coverage check |
+
+## Functions
+
+| Function | Returns |
+|----------|---------|
+| `.detect_data_source(csv_filepath, n_rows = 500L)` | `list(source, reason)` |
+| `parse_datetime_by_shape(x)` | POSIXct vector with attribute `counts` |
+| `parse_numeric_by_shape(x)` | `list(value, counts)` |
+| `.resolve_paired_csv(csv_filepath, dataset)` | `list(dataset, path)` |
+| `cols_of_type(r_type_filter, include_keys = TRUE)` | Column names of one dictionary type |
+| `.check_dict_coverage()` | Undocumented column names, invisibly |
+| `pii_value_hits(x, pattern)` | Logical vector |
+| `load_pii_patterns(dict_path)` | Character vector of patterns, or `NULL` |
+| `write_pii_marker(input_path, run_id, n_cols_removed, n_values_redacted)` | Marker path, invisibly |
+| `.pii_candidate_names(nm)` | The names under which a column is tested by the guard |
+| `assert_pii_removed(df, stage, check_run_id = FALSE, value_exempt = character(0))` | `TRUE` invisibly, or stops |
+
+
+================================================================================
+  3.2  Module 00a -- PII detection and removal
+================================================================================
+  Source file: cleaning_pipeline_R/00a_pii_detection_removal/README.md
+================================================================================
+
+# Module 00a: PII Detection and Removal
+
+## Purpose
+
+Loads the raw CSV, removes the columns that hold personally identifiable information (PII), blanks individual values that look like PII, and writes an audit report and a completion marker.
+
+## When it runs
+
+After Module 00 and before Module 01. It is the only module that reads the raw CSV in full.
+
+## What it does
+
+The file is read with every column as text. Column names are normalised first: surrounding whitespace is trimmed, spaces around dots are removed, all remaining whitespace and underscores are removed, and the name is converted to lower case. `Unique Key` and `unique_key` both become `uniquekey`.
+
+Any completion marker left by an earlier run is deleted before the file is read.
+
+### Tier 1: columns flagged in the dictionary
+
+Every column named in `cfg$pii_columns` is removed. These are the value and label columns of the variables flagged `confidential` in the dictionary.
+
+### Tier 2: columns matched by name
+
+Every remaining column whose name matches a pattern in `PII_TIER2_PATTERNS` is removed. The list is the union of the patterns in the dictionary sheet `PII_Patterns` and the built-in defaults in `00_setup.r`. Matching ignores case. If the sheet cannot be read, only the built-in defaults apply and a warning is logged.
+
+The built-in defaults cover these kinds of column:
+
+| Kind | Columns matched |
+|------|-----------------|
+| Personal names | names ending in `name.value` |
+| Telephone numbers | names ending in `cell.value` or `phone.value` |
+| Addresses | names ending in `address.value` |
+| Hospital numbers | names containing `hospnum` |
+| Record identifiers | names containing `neotreeid`; names ending in `uidbid.value` or `uiddc.value` |
+| Staff identifiers | names containing `hcwid` or `stuid`; names ending in `drid.value`; `firm` and `concall` (consultant on call), `hcwsigdis` (discharge signature), `dataentryname` and `dataentrynameother` (person entering the data), value and label |
+| Mother's date of birth | `motherdob` and its variants, value and label; the yes/no field `motherdobyn` is kept |
+
+### Quasi-identifiers
+
+Columns whose names match one of the patterns below are listed in the audit report and kept in the data.
+
+`village`, `district`, `province`, `address`, `matagedate` anywhere in the name; `tribe.value`, `ethnicity.value`, `religion.value` at the end of the name.
+
+### Tier 3: values matched by pattern
+
+Each value in the remaining columns is trimmed and tested against every pattern in `PII_VALUE_PATTERNS` (phone numbers, email addresses, a three-part number pattern, and the two national identity number shapes; see the Module 00 README). A matching value is set to `NA`.
+
+### Exempt key and system columns
+
+The columns in `PII_VALUE_SCAN_EXEMPT` are tested in the same way but never changed: `uid`, `facility`, `uniquekey`, `startedat`, `completedat`, `ingestedat`, `startedatdischarge`, `completedatdischarge`, `ingestedatdischarge`, `scriptversion`, `scriptid`. A match in one of them is logged as a warning and counted in the audit report.
+
+### Completion marker and guard
+
+After removal and redaction, the module builds a run id from the clock and the process id, calls `write_pii_marker()` to write `00a_pii_removal_complete.dcf` in the run folder, and attaches the run id to the data frame as the attribute `neotree_pii_run_id`. The marker describes the raw input file, whether or not the de-identified copy is saved.
+
+The guard `assert_pii_removed()` in `00_setup.r` reads the marker back. Module 01 calls it with `check_run_id = TRUE` before using `df_raw`, and the modules that write row-level data call it before writing. It stops the run if the marker is missing or does not describe the current input and dictionary, or if a Tier 1 or Tier 2 column or a Tier 3 value is present.
+
+### Audit report
+
+The report holds column names and counts only; no cell values are written.
+
+- Country, dataset, detected export style and source file.
+- Number of columns removed by the dictionary flag and by name patterns, number flagged, number of values redacted, and number of columns remaining.
+- The names of the removed columns, marked `[dict]` or `[pattern]`.
+- The names of the quasi-identifier columns.
+- For each column with redacted values, the number redacted.
+- The exempt columns present and, for each one with matches, the pattern name and the number of matching values.
+
+## Inputs
+
+| Object / file | Description |
+|---------------|-------------|
+| Raw CSV at `cfg$csv_filepath` | Read with all columns as character |
+| `cfg$pii_columns` | Column names for Tier 1 |
+| `PII_TIER2_PATTERNS`, `PII_VALUE_PATTERNS`, `PII_VALUE_SCAN_EXEMPT` | Defined in `00_setup.r` |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_raw`, `df_raw_deidentified` | De-identified data frame with normalised column names and the attributes `neotree_pii_n_removed`, `neotree_pii_n_redacted` and `neotree_pii_run_id` |
+| `reports/00a_pii_audit_report.txt` | Audit report; not written when reports are suppressed |
+| `00a_pii_removal_complete.dcf` | Completion marker, in the run folder |
+| `<file stem>_deidentified.csv` | Written to the run folder only when `cfg$save_deidentified` is `TRUE`; `cfg$csv_filepath` is then set to this file |
+
+## Functions
+
+`clean_name_simple(name)` returns the normalised column name.
+
+`remove_pii(df, pii_columns = character(0), report_filepath = NULL)` returns the de-identified data frame, with the number of columns removed and values redacted as attributes.
+
+## Configuration
+
+| Setting | Effect |
+|---------|--------|
+| `SAVE_DEIDENTIFIED` | `TRUE` writes the de-identified CSV. PII removal runs in either case. |
+| `REPORT_DIR` | Location of the audit report; no report when reports are suppressed. |
+
+
+================================================================================
+  3.3  Module 00b -- rename harmonised columns
+================================================================================
+  Source file: cleaning_pipeline_R/00b_rename_harmonised_columns/README.md
+================================================================================
+
+# Module 00b: Rename Columns to Harmonised Names
+
+## Purpose
+
+Produces a copy of the cleaned dataset in which each column carries the harmonised variable name given in the data dictionary.
+
+## When it runs
+
+After Module 15, on `df_clean`. It stops if `df_clean` does not exist. It does nothing unless `cfg$save_harmonised` is `TRUE`.
+
+## What it does
+
+For each column, the suffix `.valuedischarge` or `.value` is removed to give the base name.
+
+| Base name | Result |
+|-----------|--------|
+| A `question_key` in `cfg$harmonised_map` | The column is renamed to its harmonised name. |
+| Not in the map | The column keeps its name. |
+
+Columns with any other suffix, such as `.label`, are looked up under their full name.
+
+Before writing, `assert_pii_removed()` checks the renamed data frame. The data frame is then written as CSV, with `NA` as an empty field, and as RDS.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df_clean` | Data frame from Module 15 |
+| `cfg$harmonised_map` | Named vector: `question_key` to harmonised name |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_harmonised` | Data frame with harmonised column names |
+| `<cleaned output name>_harmonised.csv`, `<cleaned output name>_harmonised.rds` | Written beside the cleaned outputs, from `cfg$output_csv` and `cfg$output_rds` |
+| `reports/00b_harmonised_rename_report.txt` | Number of columns renamed and unchanged; each renamed column with its new name; the names of the unchanged columns. Column names only. |
+
+## Function
+
+`rename_harmonised(df, harmonised_map, report_filepath = NULL)` returns the data frame with harmonised column names.
+
+## Configuration
+
+| Setting | Effect |
+|---------|--------|
+| `SAVE_HARMONISED` | `TRUE` runs the module and writes its outputs. `FALSE` skips it; `df_harmonised` is not created. |
+
+
+================================================================================
+  3.4  Module 01 -- standardise column headers
+================================================================================
+  Source file: cleaning_pipeline_R/01_standardise_column_headers/README.md
+================================================================================
+
+# Module 01: Standardise Column Headers
+
+## Purpose
+
+Gives every column a standard lower-case name and drops the `.parentKey` columns.
+
+## When it runs
+
+After Module 00a. It works on `df_raw`, the de-identified data frame, and never reads the raw CSV.
+
+## What it does
+
+The module stops if `df_raw` does not exist. It then calls `assert_pii_removed()` with `check_run_id = TRUE`, which stops the run unless `df_raw` is the object Module 00a produced for the current input.
+
+Each column name is standardised:
+
+1. Leading and trailing whitespace is removed.
+2. Whitespace around dots is removed.
+3. All remaining spaces and underscores are removed.
+4. The name is converted to lower case.
+
+| Raw name | Standardised name |
+|----------|-------------------|
+| `Unique Key`, `unique_key` | `uniquekey` |
+| `BabyCry.value`, `Baby Cry . Value` | `babycry.value` |
+
+Columns listed in `cfg$reserved_column_renames` are then renamed, so that a data field does not share a name with a key column. For example, `facility.value` becomes `facilityname.value` in the dataset for which that rename is configured.
+
+Columns whose names end in `.parentkey` are dropped. No other column is dropped.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df_raw` | De-identified data frame from Module 00a |
+| `cfg$reserved_column_renames` | Named vector: standardised name to new name, or `NULL` |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame with standardised column names |
+| `reports/01_column_standardisation_report.txt` | Number of columns on entry, names standardised, reserved renames, `.parentKey` columns dropped and columns remaining; the names of the dropped columns. |
+
+## Function
+
+`clean_columns(df, report_filepath = NULL)` returns the data frame with standardised column names and without the `.parentKey` columns.
+
+## Configuration
+
+| Setting | Effect |
+|---------|--------|
+| `RESERVED_COLUMN_RENAMES` | Per dataset, the standardised column names to rename and their new names. |
+
+
+================================================================================
+  3.5  Module 02 -- frame shift correction
+================================================================================
+  Source file: cleaning_pipeline_R/02_frame_shift_correction/README.md
+================================================================================
+
+# Module 02: Frame Shift Correction
+
+## Purpose
+
+Repairs `uid` values in which another character was typed in place of the hyphen, and removes rows whose `uid` is empty.
+
+## When it runs
+
+After Module 01.
+
+## What it does
+
+If the data frame has no `uid` column, it is returned unchanged. Otherwise the `uid` values are trimmed and handled in this order.
+
+### 1. Repair of separators
+
+A `uid` made of 3 to 6 letters or digits, one of the characters in `cfg$uid_repair_separators`, and then one or more letters or digits is repaired by replacing that character with a hyphen. With the default separators, `XXXX,0001` and `XXXX/0001` both become `XXXX-0001`.
+
+### 2. Removal of empty UIDs
+
+A row is removed when its `uid` is `NA`, empty, or one of `na`, `null`, `nan`, `none`, `n/a`, `<na>` in any case. No other row is removed.
+
+### 3. Confirmation of repairs
+
+When at least one `uid` was repaired, the `uid` and `facility` columns of the paired admissions or discharges file (`cfg$paired_csv_filepath`) are read, and each repair is given a status. The repair is applied whatever the status.
+
+| Status | Meaning |
+|--------|---------|
+| `confirmed` | The repaired `uid` is in the paired file with the same facility. |
+| `confirmed (other facility)` | The repaired `uid` is in the paired file with a different facility. |
+| `unconfirmed` | The repaired `uid` is not in the paired file. |
+| `unchecked` | There is no paired file, or it could not be read, or it lacks a `uid` or `facility` column. |
+
+A repair is also marked when the repaired `uid` and facility already occur on another row of the same file that was not repaired. The rows are left as they are.
+
+### 4. UIDs without a hyphen
+
+Rows whose `uid` has no hyphen are kept and reported in two groups.
+
+| Group | Rule | Example |
+|-------|------|---------|
+| Standard length | Exactly 8 letters or digits | `XXXX0001` |
+| Other | Any other value without a hyphen | `XX01` |
+
+## Inputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame from Module 01 |
+| `cfg$uid_repair_separators` | Characters treated as a mistyped hyphen |
+| `cfg$paired_csv_filepath` | Paired raw CSV, or `NULL`. Only its `uid` and `facility` columns are read, and only when a repair was made. |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame with repaired `uid` values and without the empty-`uid` rows |
+| `reports/02_frame_shift_report.txt` | Separator set and paired file used; rows on entry, repaired, removed and remaining; number of repairs by status; one line per distinct repair with the original and repaired `uid`, facility, separator, number of rows and status; the `uid` values of the removed rows; the UIDs without a hyphen, by group. |
+| `reports/02_frame_shift_dirty_rows.csv` | The removed rows. Written only when at least one row is removed, after `assert_pii_removed()` has checked them. |
+
+## Functions
+
+`remove_frame_shift(df, separators = NULL, paired_csv_filepath = NULL, report_filepath = NULL, csv_filepath = NULL)` returns the corrected data frame. When `separators` is `NULL`, `cfg$uid_repair_separators` is used, or comma and slash if `cfg` is not available.
+
+`.uid_separator_class(seps)` returns a regular-expression character class built from the separator characters, or `NULL` if there are none, in which case no `uid` is repaired.
+
+`.read_paired_uids(paired_path)` returns a data frame of the trimmed `uid` and `facility` columns of the paired file, or `NULL` if the file is unavailable.
+
+## Configuration
+
+| Setting | Effect |
+|---------|--------|
+| `UID_REPAIR_SEPARATORS` | The characters repaired to a hyphen. Adding a character to the vector makes the module repair it. |
+
+
+================================================================================
+  3.6  Module 03 -- duplicate column merging
+================================================================================
+  Source file: cleaning_pipeline_R/03_duplicate_column_merging/README.md
+================================================================================
+
+# Module 03: Duplicate Column Merging
+
+## Purpose
+
+Merges columns that share the same name into one column per name.
+
+## When it runs
+
+After Module 02.
+
+## What it does
+
+A column whose name appears once is left as it is. For each name that appears more than once:
+
+1. The copy with the most non-missing values is taken as the primary. On a tie, the first copy is taken.
+2. Each row where the primary is `NA` is filled from the other copies, in column order.
+3. The merged column is kept and the other copies are dropped.
+
+Each merged column takes the position of the first column with that name. Column names are kept exactly as they are.
+
+If no name is duplicated, the data frame is returned unchanged.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 02 |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame with one column per name |
+| `reports/03_duplicate_column_report.txt` | Number of columns before and after merging, number of duplicate columns and, for each merged name, the number of copies and the non-missing count of the primary copy. States that no duplicates were found when that is the case. |
+
+## Function
+
+`merge_duplicate_columns(df, report_filepath = NULL)` returns the merged data frame.
+
+
+================================================================================
+  3.7  Module 04 -- dictionary value cleaning
+================================================================================
+  Source file: cleaning_pipeline_R/04_dictionary_value_cleaning/README.md
+================================================================================
+
+# Module 04: Dictionary-Based Value Cleaning
+
+## Purpose
+
+Rewrites categorical values as the canonical codes defined in the data dictionary, wherever a value can be matched to exactly one code. Values that cannot be matched are left as they are.
+
+## When it runs
+
+After Module 03. All columns are character at this point.
+
+## What it does
+
+Four steps run in this order. A column is matched to its dictionary entry by its name with the `.value` or `.valuedischarge` suffix removed.
+
+### 1. Multi-select encoding
+
+Applies to columns with a dictionary entry, and to `resus` and `delivinter`. Only values that start with `[` are examined.
+
+| Value | Result |
+|-------|--------|
+| Quoted list, `["A","B"]` or `["A", "B"]` | `{A,B}` |
+| Unquoted list, `[A, B]`, where every item is a raw or canonical code of the column (in any case) | `{A,B}` |
+| Unquoted list with an item that is not a code of the column, or in a column with no dictionary entry | unchanged |
+| List with an empty item, or any other value starting with `[` | unchanged |
+
+Items are written as they appear in the value, without surrounding spaces.
+
+### 2. Canonical codes
+
+Applies to columns with a dictionary entry. The targets are the entry's canonical codes; if it has none, its raw codes are used instead. Each distinct value of a column is resolved by the first rule that fits:
+
+1. It is a canonical code, exactly as written: kept.
+2. It matches a canonical code when case is ignored: replaced by the canonical spelling.
+3. It matches a raw code when case is ignored: replaced by that code's canonical code.
+4. It matches an option label when case is ignored: replaced by that label's canonical code.
+5. It is `true`, `yes`, `t` or `y`, or `false`, `no`, `f` or `n` (in any case), and every canonical code of the variable is one of `Y`, `N`, `U`: replaced by the variable's yes or no code.
+6. Otherwise: left unchanged and counted as unresolved.
+
+Case-insensitive matching is used only where it is unambiguous. If two codes or labels of a variable differ only by case and lead to different canonical codes, that spelling is not matched without regard to case, and only rule 1 applies to it.
+
+A multi-select value, `{A,B}`, is split on commas and each item is resolved by rules 1 to 5. If every item resolves, the value is rewritten with the canonical codes, as `{A,B}` without spaces. If any item does not resolve, the whole value is left unchanged and counted as unresolved.
+
+Option labels whose dictionary code is empty are not used for matching.
+
+### 3. `modedelivery`
+
+In `modedelivery` and `modedelivery.value`, a value that is exactly one of the text codes named in `MODEDELIVERY_MAP` is replaced by the numeric code given there. Other values are unchanged.
+
+### 4. Thompson score columns
+
+In every column whose name starts with `thomp` (in any case), a value made of a number followed by `=` and a label, such as `2 = Label`, is replaced by the number alone.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 03 |
+| `cfg$value_map_list` | List with one entry per dictionary variable: `allowed_codes` (raw codes), `canonical_codes`, `label_to_code` (option label to canonical code) and `code_to_canonical` (raw code to canonical code). Built in `00_setup.r` from the dictionary value maps. |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame with values rewritten by the four steps |
+| `reports/04_dictionary_cleaning_report.txt` | Results of step 2 only: number of columns checked; totals of replacements, deletions and unresolved values; and, for each column, every replaced value with its replacement and every unresolved value, each with its number of records. |
+
+Steps 1, 3 and 4 write their counts to the pipeline log.
+
+## Functions
+
+| Function | Returns |
+|----------|---------|
+| `normalise_multiselect_encoding(df, value_map_list)` | Data frame after step 1 |
+| `clean_values_using_dict(df, value_map_list, report_filepath = NULL)` | Data frame after step 2 |
+| `harmonise_modedelivery(df)` | Data frame after step 3 |
+| `strip_thompson_labels(df)` | Data frame after step 4 |
+
+
+================================================================================
+  3.8  Module 05 -- forward fill placeholders
+================================================================================
+  Source file: cleaning_pipeline_R/05_forward_fill_placeholders/README.md
+================================================================================
+
+# Module 05: Forward Fill Placeholder Values
+
+## Purpose
+
+Copies a set of fixed placeholder words from a label column into its paired value column where the value is missing.
+
+## When it runs
+
+After Module 04.
+
+## What it does
+
+Columns are paired by name: each `.value` column with the `.label` column of the same variable, and each `.valuedischarge` column with its `.labeldischarge` column. A value column with no label column is skipped.
+
+In each pair, a row is filled when the value is `NA` and the label is exactly one of the placeholders below. The label text is copied into the value column as it is.
+
+| Group | Placeholders |
+|-------|--------------|
+| None / normal | `None`, `Normal`, `Norm`, `none`, `normal`, `norm`, `NONE`, `NORMAL`, `NORM` |
+| True / false | `True`, `False`, `TRUE`, `FALSE` |
+| Yes / no | `Yes`, `No`, `YES`, `NO`, `Y`, `N` |
+
+Matching is case-sensitive. Labels in any other form are not copied. The label columns are kept.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 04 |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame with placeholders copied into the value columns |
+| `reports/05_forward_fill_placeholder_report.txt` | Number of placeholders checked, total number of values filled and, for each pair with a fill, the number of values filled. |
+
+## Function
+
+`forward_fill_placeholders(df, placeholders = PLACEHOLDER_VALUES, report_filepath = NULL)` returns the updated data frame. `placeholders` is the character vector of labels that may be copied.
+
+
+================================================================================
+  3.9  Module 06 -- forward fill numeric and datetime
+================================================================================
+  Source file: cleaning_pipeline_R/06_forward_fill_numeric_datetime/README.md
+================================================================================
+
+# Module 06: Forward Fill Numeric and Datetime Values
+
+## Purpose
+
+Fills missing values from the paired label column where the label is a number or a datetime, then drops the paired label columns.
+
+## When it runs
+
+After Module 05.
+
+## What it does
+
+Columns are paired by name: each `.value` column with the `.label` column of the same variable, and each `.valuedischarge` column with its `.labeldischarge` column. Every pair is processed, whatever the variable's dictionary type.
+
+In each pair, the rows where the value is `NA` and the label is not are examined in two passes.
+
+### Numbers
+
+A label is read as a number when it holds only digits, `.`, `,`, `+`, `-` and spaces, and `parse_numeric_by_shape()` in `00_setup.r` returns a number for it.
+
+| Label | Written to the value column |
+|-------|-----------------------------|
+| `3500`, `3.5`, `-2` | the number |
+| `3,500`, `1,234,567.8` | 3500, 1234567.8 (thousands separators removed) |
+| `3,5` | 3.5 (decimal comma) |
+
+A label holding any letter or other character is not filled in this pass. The number is written as text, using `as.character()`.
+
+### Datetimes
+
+Rows still `NA` after the first pass are read by `parse_datetime_by_shape()` in `00_setup.r`, which accepts ISO, day-first and month-name values and reads them as described for Module 09. A label that parses is written to the value column as text, using `as.character()` on the parsed date-time. A label that fits no shape is not used, and the value stays `NA`.
+
+### Label columns
+
+The label column of every pair is dropped, whether or not anything was filled. Label columns with no paired value column are left in place.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 05 |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame with values filled and paired label columns removed |
+| `reports/06_forward_fill_numeric_datetime_report.txt` | Number of value columns with a fill, total number of values filled and the number filled in each of those columns. |
+
+## Function
+
+`forward_fill_numeric_datetime(df, report_filepath = NULL)` returns the updated data frame.
+
+
+================================================================================
+  3.10  Module 07 -- drop label columns
+================================================================================
+  Source file: cleaning_pipeline_R/07_drop_label_columns/README.md
+================================================================================
+
+# Module 07: Drop Label Columns
+
+## Purpose
+
+Drops the remaining label columns and keeps one column for each variable prefix.
+
+## When it runs
+
+After Module 06.
+
+## What it does
+
+1. Every column whose name contains `label` is dropped.
+2. The remaining columns are grouped by prefix, the part of the name before the first `.`. One column is kept in each group and the others are dropped.
+
+| Columns in the group | Column kept |
+|----------------------|-------------|
+| Both the bare column (`x`) and `x.value` | The one with more non-missing values; the bare column on a tie |
+| `x.value` but no bare column | `x.value` |
+| The bare column but no `x.value` | The bare column |
+| Neither | The first column of the group |
+
+A group holds every column with the same prefix, so a column with another suffix, such as `x.valuedischarge`, is dropped when `x` or `x.value` is kept.
+
+The kept columns stay in their original order.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 06 |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame with no label columns and one column per prefix |
+| `reports/07_drop_columns_report.txt` | For each prefix with a dropped column in step 2, the column kept and the columns dropped. Columns dropped in step 1 are not listed. |
+
+## Function
+
+`drop_unwanted_columns(df, report_filepath = NULL)` returns the reduced data frame.
+
+
+================================================================================
+  3.11  Module 08 -- drop autopopulated columns
+================================================================================
+  Source file: cleaning_pipeline_R/08_drop_autopopulated_columns/README.md
+================================================================================
+
+# Module 08: Drop Auto-Populated Columns
+
+## Purpose
+
+Passes the data frame through unchanged and writes a report saying so. No column is dropped.
+
+## When it runs
+
+After Module 07 and before Module 09.
+
+## What it does
+
+The data frame is not modified. Columns with the `dc` suffix, which hold values entered on the discharge form, are kept alongside the admission-form columns of the same variable.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 07 |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame, unchanged |
+| `reports/08_autopopulated_columns_report.txt` | Number of columns, and a statement that no column was dropped. |
+
+## Function
+
+The module defines no function. The script writes the report and logs the dimensions of `df`.
+
+
+================================================================================
+  3.12  Module 09 -- data type assignment
+================================================================================
+  Source file: cleaning_pipeline_R/09_data_type_assignment/README.md
+================================================================================
+
+# Module 09: Data Type Assignment
+
+## Purpose
+
+Converts every column from text to its R type, using the type each variable has in the data dictionary.
+
+## When it runs
+
+After Module 08. All columns are still character at this point.
+
+## What it does
+
+Each column is matched to a dictionary type by its name, with or without the `.value` suffix.
+
+| Dictionary type | Result |
+|-----------------|--------|
+| numeric | Number. See *Numbers* below. |
+| boolean | `TRUE`/`FALSE`. Accepts `true`, `yes`, `y`, `1`, `t` and `false`, `no`, `n`, `0`, `f`, in any case. Anything else becomes `NA`. |
+| categorical | Factor. |
+| object | Character. |
+| datetime | Date-time (POSIXct, UTC). See *Datetimes* below. |
+
+Columns with no dictionary type stay as character. The key columns `facility`, `uid` and `uniquekey` are never converted.
+
+### Numbers
+
+Values are read one by one, by `parse_numeric_by_shape()` in `00_setup.r`.
+
+| Value | Read as |
+|-------|---------|
+| `3500`, `3.5`, `-2` | the number |
+| `3,500`, `1,234,567.8` | 3500, 1234567.8 (thousands separators removed) |
+| `3,5` | 3.5 (decimal comma) |
+| text holding one number, e.g. `ANC4`, `36.5 C` | that number |
+| text holding several numbers, e.g. a date or `10-12` | `NA` |
+| text with no number | `NA` |
+
+Exponent and hexadecimal notation (`1e5`, `0x1A`) is not read as a number.
+
+### Datetimes
+
+Values are read one by one, by `parse_datetime_by_shape()` in `00_setup.r`. Each value is parsed by the rule for its own shape.
+
+| Shape | Examples | Read as |
+|-------|----------|---------|
+| ISO | `2023-10-19 22:00:00`, `2023-10-19T22:00:00Z`, `2023-10-19` | Year, month, day. A trailing `Z` or UTC offset is dropped; the time is kept as written. |
+| Day first | `19/10/2023`, `19-10-2023`, `19.10.2023` | Day, month, year. A two-digit year is read as 20yy. A value that is only valid as month/day/year becomes `NA`. |
+| Month name | `March 2, 2026, 12:33 AM`, `2 March 2026`, `19-Oct-2023` | Full or abbreviated English month names; 12-hour or 24-hour time. |
+| Anything else | free text, digits without separators | `NA` |
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 08 |
+| `cfg` | Configuration list with the type lists `$num`, `$bool`, `$cat`, `$obj`, `$dt` |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Data frame with typed columns |
+| `reports/09_data_type_assignment_report.txt` | Number of columns per type; number of values read by each numeric and datetime rule; the columns holding values other than plain numbers or ISO datetimes. Counts and column names only. |
+
+## Function
+
+`assign_data_types(df, cfg, report_filepath = NULL)` returns the typed data frame.
+
+
+================================================================================
+  3.13  Module 10 -- remove duplicate rows
+================================================================================
+  Source file: cleaning_pipeline_R/10_remove_duplicate_rows/README.md
+================================================================================
+
+# Module 10: Remove Duplicate Rows
+
+## Purpose
+
+Removes duplicate rows in two stages, keeping the most complete record each time, and optionally saves a checkpoint of the result.
+
+## When it runs
+
+After Module 09. Modules 11 to 14 each read the data frame produced here.
+
+## What it does
+
+### Stage 1: one row per visit
+
+Rows are grouped by `uid`, `facility` and whichever of these visit-date columns are present: `startedat`, `startedatdischarge`, `datetimeadmission.value`, `dateadmission.value`, `datebct.value`, `completedat`, `completedatdischarge`.
+
+Within each group the row with the fewest missing values in the remaining columns is kept. When rows are equally complete, a row whose `uniquekey` is not in timestamp form (`YYYY-MM-DDT...`) is kept ahead of one whose `uniquekey` is; otherwise the first row in the data frame is kept.
+
+### Stage 2: one row per patient
+
+Rows are grouped by `uid` and `facility`. Within each group the row with the fewest missing values in all other columns is kept. When rows are equally complete, the row with the highest `uniquekey` (text order) is kept.
+
+Stage 2 is skipped when `skip_stage2` is `TRUE`. Stage 1 still runs.
+
+When Stage 2 is skipped, the module counts the rows that share `uid`, `facility` and `uniquekey` with another row. Modules 11 to 15 keep one row per such key, so these rows would be merged. The count is written to the report, and a warning is logged when it is above zero or when there is no `uniquekey` column.
+
+### Checkpoint
+
+When `cfg$save_stage1_checkpoint` is `TRUE`, the deduplicated data frame is checked by `assert_pii_removed()` (`00_setup.r`) and then saved as an RDS file. A failed check stops the run. A failure to write the file is logged as a warning and the run continues.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 09 |
+| `cfg` | Configuration list; see *Configuration* |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df` | Deduplicated data frame |
+| `<file_stem>_cleaned_stage1.rds` | Checkpoint, written beside the cleaned RDS output. Only when `SAVE_STAGE1_CHECKPOINT` is `TRUE`. |
+| `reports/10_duplicate_row_removal_report.txt` | Rows before and after, rows removed at each stage, retention rate, the visit-date columns used, whether Stage 2 ran and, when it did not, the number of rows sharing `uid`, `facility` and `uniquekey`. Counts and column names only. |
+
+## Function
+
+`remove_duplicate_rows(df, skip_stage2 = FALSE, report_filepath = NULL)` returns the deduplicated data frame.
+
+## Configuration
+
+| Setting | Effect |
+|---------|--------|
+| `SKIP_DEDUP_STAGE2` (`cfg$skip_dedup_stage2`) | `TRUE` skips Stage 2. Unless set by the user, it is `TRUE` for the `infections` and `neolab` datasets, which hold several rows per patient, and `FALSE` for all others. |
+| `SAVE_STAGE1_CHECKPOINT` (`cfg$save_stage1_checkpoint`) | `TRUE` writes the checkpoint RDS. Default `FALSE`. |
+
+
+================================================================================
+  3.14  Module 11 -- numeric validation
+================================================================================
+  Source file: cleaning_pipeline_R/11_numeric_validation/README.md
+================================================================================
+
+# Module 11: Numeric Validation
+
+## Purpose
+
+Checks every numeric column: removes values that are not numbers, puts weights in grams and maternal age in years, and sets values outside the dictionary range to `NA`. Produces the numeric sub-frame used in the final merge.
+
+## When it runs
+
+After Module 10. Modules 11 to 14 each read the same data frame from Module 10 and each produce one sub-frame for Module 15.
+
+## What it does
+
+The sub-frame holds the key columns `facility`, `uid` and `uniquekey` and the columns of `cfg$num` present in `df`. Each numeric column goes through the steps below, in this order. A column is matched to the dictionary by its name without the `.value` or `.valuedischarge` suffix.
+
+| Step | Applies to | Rule |
+|------|-----------|------|
+| 1. Non-numeric values | every numeric column | A value that `as.numeric()` cannot read becomes `NA`. |
+| 2. Kilograms to grams | columns listed in `cfg$weight_cols` | A value of 20 or less is multiplied by 1000, e.g. `3.5` becomes `3500`. |
+| 3. Hours to years | `matageyrs` | A value above 200 is divided by 8766 (hours in a year of 365.25 days) and rounded to one decimal place. |
+| 4. Dictionary range | columns with an entry in `cfg$range_lookup` | A value below the minimum or above the maximum becomes `NA`. A missing minimum or maximum is not checked. |
+
+After step 2, weight values below 100 g or above 5000 g are counted and reported as a warning. They are not changed.
+
+### Derived column `mat_age_date_years`
+
+`matagedate` holds maternal age in hours. When `matagedate.value` or `matagedate` is among the numeric columns, a new column is added:
+
+`mat_age_date_years` = `matagedate` / 8766, rounded to a whole number of years.
+
+Derived values below 9 or above 60 become `NA`. The `matagedate` column is not changed by this step.
+
+### Duplicate keys
+
+The first row for each key is kept. The key is `uid` and `facility`; for datasets that keep every visit (`cfg$skip_dedup_stage2` is `TRUE`) it is `uid`, `facility` and `uniquekey`.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 10 |
+| `cfg$num` | Names of the numeric columns |
+| `cfg$weight_cols` | Dictionary variables whose `weight_unit` is grams |
+| `cfg$range_lookup` | Table of `question_key`, `min`, `max`, taken from `suggested_plausible_min` and `suggested_plausible_max` of the numeric dictionary variables |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_numeric` | Key columns and validated numeric columns, plus `mat_age_date_years` where `matagedate` is present |
+| `reports/11_numeric_validation_report.txt` | Number of values changed at each step, out-of-range counts per column with the range applied, the weight columns, the maternal-age conversions, and the weight warning. Counts and column names only. |
+
+## Function
+
+`validate_numeric(df, cfg, report_filepath = NULL)` returns the numeric sub-frame.
+
+
+================================================================================
+  3.15  Module 12 -- boolean validation
+================================================================================
+  Source file: cleaning_pipeline_R/12_boolean_validation/README.md
+================================================================================
+
+# Module 12: Boolean Validation
+
+## Purpose
+
+Sets every boolean column to `TRUE`, `FALSE` or `NA`. Produces the boolean sub-frame used in the final merge.
+
+## When it runs
+
+After Module 10. Modules 11 to 14 each read the same data frame from Module 10 and each produce one sub-frame for Module 15.
+
+## What it does
+
+The sub-frame holds the key columns `facility`, `uid` and `uniquekey` and the columns of `cfg$bool` present in `df`.
+
+Each value is trimmed, put in lower case and compared with two lists defined in `00_setup.r` and shared with Module 09.
+
+| List | Values | Result |
+|------|--------|--------|
+| `NEOTREE_TRUE_TOKENS` | `true`, `yes`, `y`, `1`, `t` | `TRUE` |
+| `NEOTREE_FALSE_TOKENS` | `false`, `no`, `n`, `0`, `f` | `FALSE` |
+| neither | anything else | `NA` |
+
+The number of values set to `NA` is logged per column, as a count only.
+
+The first row for each key is then kept. The key is `uid` and `facility`; for datasets that keep every visit (`cfg$skip_dedup_stage2` is `TRUE`) it is `uid`, `facility` and `uniquekey`.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 10 |
+| `cfg$bool` | Names of the boolean columns |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_boolean` | Key columns and validated boolean columns |
+| `reports/12_boolean_validation_report.txt` | Number of values set to `TRUE` or `FALSE`, number set to `NA`, duplicate rows removed, final row count |
+
+## Function
+
+`validate_boolean(df, cfg, report_filepath = NULL)` returns the boolean sub-frame.
+
+
+================================================================================
+  3.16  Module 13 -- categorical and object validation
+================================================================================
+  Source file: cleaning_pipeline_R/13_categorical_object_validation/README.md
+================================================================================
+
+# Module 13: Categorical and Object Validation
+
+## Purpose
+
+Cleans the categorical and free-text columns: applies configured value replacements and deletions, removes values that look like column headers or datetimes, and turns text that stands for "missing" into `NA`. Produces the categorical sub-frame used in the final merge.
+
+## When it runs
+
+After Module 10. Modules 11 to 14 each read the same data frame from Module 10 and each produce one sub-frame for Module 15.
+
+## What it does
+
+The sub-frame holds the key columns `facility`, `uid` and `uniquekey` and the columns of `cfg$cat` and `cfg$obj` present in `df`. The steps run in this order.
+
+| Step | Applies to | Rule |
+|------|-----------|------|
+| 1. Value replacement | categorical and object columns with an entry in `cfg$value_mappings` | Each listed alias is replaced by its canonical value. The column is matched by its name without the `.value` or `.valuedischarge` suffix. |
+| 2. Value deletion | columns named in `cfg$values_to_delete`, as written or with `.value` added | Each listed value becomes `NA`. |
+| 3. Headers and datetimes | categorical columns | A value becomes `NA` if it is three or more capitalised words (optionally ending in `?`), starts like an ISO datetime (`YYYY-MM-DD` followed by a time), or starts with a full English month name. |
+| 4. Missing-value text | categorical and object columns | A value that, once trimmed, equals one of `nan`, `NaN`, `none`, `None`, `na`, `NA`, `n/a`, `N/A`, `null`, `NULL` or the empty string becomes `NA`. |
+| 5. Factors | categorical columns | Each column is converted to a factor. |
+| 6. Duplicates | whole sub-frame | Rows identical in every column are reduced to one. |
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 10 |
+| `cfg$cat` | Names of the categorical columns |
+| `cfg$obj` | Names of the object (free-text) columns |
+| `cfg$value_mappings`, `cfg$values_to_delete` | See *Configuration* |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_categorical` | Key columns and validated categorical and object columns |
+| `reports/13_categorical_validation_report.txt` | Number of values replaced, number removed in steps 2 and 3, number of missing-value texts set to `NA`, duplicate rows removed, final row count |
+
+## Function
+
+`validate_categorical(df, cfg, report_filepath = NULL)` returns the categorical sub-frame.
+
+## Configuration
+
+Both settings are entries of the `cfg` list built in `00_setup.r`. Both are empty lists by default, in which case steps 1 and 2 change nothing.
+
+| Setting | Format | Effect |
+|---------|--------|--------|
+| `cfg$value_mappings` | `list(column = list(canonical = c("alias1", "alias2")))` | Step 1 replaces each alias with the canonical value in that column. |
+| `cfg$values_to_delete` | `list(column = c("value1", "value2"))` | Step 2 sets each listed value to `NA` in that column. |
+
+
+================================================================================
+  3.17  Module 14 -- datetime validation
+================================================================================
+  Source file: cleaning_pipeline_R/14_datetime_validation/README.md
+================================================================================
+
+# Module 14: Datetime Validation
+
+## Purpose
+
+Reads every datetime column as a date-time, sets values that are not a recognised datetime to `NA`, and derives `hepbdate_date`. Produces the datetime sub-frame used in the final merge.
+
+## When it runs
+
+After Module 10. Modules 11 to 14 each read the same data frame from Module 10 and each produce one sub-frame for Module 15. Module 14a runs next and adds columns to the sub-frame produced here.
+
+## What it does
+
+The sub-frame holds the key columns `facility`, `uid` and `uniquekey` and the columns of `cfg$dt` present in `df`.
+
+Each value is read by `parse_datetime_by_shape()` in `00_setup.r`, the parser also used by Module 09. Each value is parsed by the rule for its own shape, and the result is POSIXct in UTC.
+
+| Shape | Examples | Read as |
+|-------|----------|---------|
+| ISO | `2023-10-19 22:00:00`, `2023-10-19T22:00:00Z`, `2023-10-19` | Year, month, day. A trailing `Z` or UTC offset is dropped; the time is kept as written. |
+| Day first | `19/10/2023`, `19-10-2023`, `19.10.2023` | Day, month, year. A two-digit year is read as 20yy. A value that is only valid as month/day/year becomes `NA`. |
+| Month name | `March 2, 2026, 12:33 AM`, `2 March 2026`, `19-Oct-2023` | Full or abbreviated English month names; 12-hour or 24-hour time. |
+| Anything else | free text, digits without separators | `NA` |
+
+The number of values set to `NA` is logged per column, as a count only.
+
+### Derived column `hepbdate_date`
+
+The `hepbdate` column can hold yes/no answers and dates in the same column. When `hepbdate.value` or `hepbdate` is present in `df` and is not itself a datetime column, a new datetime column `hepbdate_date` is added. It holds the values of `hepbdate` that the parser reads as dates; every other value, including the yes/no answers, is `NA`. The `hepbdate` column is not changed here.
+
+### Duplicate keys
+
+The first row for each key is kept. The key is `uid` and `facility`; for datasets that keep every visit (`cfg$skip_dedup_stage2` is `TRUE`) it is `uid`, `facility` and `uniquekey`.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df` | Data frame from Module 10 |
+| `cfg$dt` | Names of the datetime columns |
+| `cfg$data_source` | Written to the report; does not affect parsing |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_datetime` | Key columns and validated datetime columns, plus `hepbdate_date` where a `hepbdate` column is present |
+| `reports/14_datetime_validation_report.txt` | Number of columns checked, values parsed, values set to `NA`, duplicate rows removed, final row count, and the number of dates placed in `hepbdate_date`. Counts only. |
+
+## Function
+
+`validate_datetime(df, cfg, report_filepath = NULL)` returns the datetime sub-frame.
+
+
+================================================================================
+  3.18  Module 14a -- resolve NeoLab DateBCT
+================================================================================
+  Source file: cleaning_pipeline_R/14a_resolve_neolab_datebct/README.md
+================================================================================
+
+# Module 14a: Resolve Missing Neolab `datebct` from Admissions
+
+## Purpose
+
+For the `neolab` dataset, fills missing blood-culture dates with the admission date-time of the same patient, in a new column. The original `datebct.value` column is not changed.
+
+## When it runs
+
+After Module 14 and before Module 15. It adds columns to `df_datetime`, which Module 15 then merges. For any dataset other than `neolab`, or when `cfg$resolve_neolab_datebct` is not `TRUE`, it returns `df_datetime` unchanged.
+
+## What it does
+
+Two columns are added to `df_datetime`.
+
+| Column | Type | Content |
+|--------|------|---------|
+| `datebct_resolved` | POSIXct | `datebct.value` where present; otherwise the admission date-time; otherwise `NA` |
+| `datebct_source` | character | `"original"`, `"from_admission"`, or `NA` when no date is available |
+
+The steps are:
+
+1. If no `datebct.value` is missing, `datebct_resolved` is a copy of `datebct.value` and `datebct_source` is `"original"` on every row. The admissions file is not read.
+2. Otherwise the path of the admissions file is taken from `cfg$csv_filepath` by replacing `neolab` with `admissions` in the file name, e.g. `xxx_neolab_YYYYMMDD.csv` gives `xxx_admissions_YYYYMMDD.csv`.
+3. Three columns are read from that file: `uid`, `facility` and `datetimeadmission.value` (or `datetimeadmission`). Column names are matched in lower case with spaces removed.
+4. The admission date-time is parsed with `parse_datetime_by_shape()` (`00_setup.r`), as in Modules 09 and 14.
+5. One row is kept per `uid` and `facility`: the one with the earliest admission date-time.
+6. The result is joined to `df_datetime` on `uid` and `facility`, and the two columns are filled.
+
+### When the lookup is not possible
+
+| Situation | Result |
+|-----------|--------|
+| `datebct.value` is not in `df_datetime` | Both columns are added and are `NA` on every row. A warning is logged. |
+| Admissions file not found or not readable, or it lacks `uid`, `facility` or the admission date-time column | `datebct_resolved` is a copy of `datebct.value`; `datebct_source` is `"original"` where a date is present and `NA` elsewhere. A warning is logged. |
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df_datetime` | Datetime sub-frame from Module 14 |
+| `cfg$dataset` | The module acts only when this is `"neolab"` |
+| `cfg$resolve_neolab_datebct` | See *Configuration* |
+| `cfg$csv_filepath` | Path of the neolab input file, from which the admissions path is taken |
+| Admissions input file | Read for the three columns named above |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_datetime` | The same sub-frame with `datebct_resolved` and `datebct_source` added |
+| `reports/14a_resolve_neolab_datebct_report.txt` | Paths of the two input files, rows in the sub-frame, number of missing `datebct.value`, and the number of rows per `datebct_source`. Written when no value is missing, when the admissions file is not found, and when the lookup completes. |
+
+## Function
+
+`resolve_neolab_datebct(df_datetime, cfg, report_filepath = NULL)` returns `df_datetime`, with the two columns added when the module acts.
+
+## Configuration
+
+| Setting | Effect |
+|---------|--------|
+| `RESOLVE_NEOLAB_DATEBCT` (`cfg$resolve_neolab_datebct`) | `TRUE` (default) runs the module for the `neolab` dataset. `FALSE` skips it; no columns are added. |
+
+
+================================================================================
+  3.19  Module 15 -- final merge and output
+================================================================================
+  Source file: cleaning_pipeline_R/15_final_merge_output/README.md
+================================================================================
+
+# Module 15: Final Merge and Output
+
+## Purpose
+
+Joins the validated sub-frames into one dataset, strips the column-name suffixes, derives the combined weight and maternal-age columns, checks that no personal information is present, and writes the cleaned CSV and RDS files.
+
+## When it runs
+
+After Modules 11 to 14 and 14a.
+
+## What it does
+
+### 1. Pass-through sub-frame
+
+Columns of `df` that are in none of the type lists (`cfg$num`, `cfg$bool`, `cfg$cat`, `cfg$obj`, `cfg$dt`) are collected into `df_non_validated` and converted to character. A column counts as listed when its name, its name without the `.value` or `.valuedischarge` suffix, or that base name with `.value` added appears in a type list. The key columns are always included.
+
+### 2. Deduplication
+
+Each sub-frame is reduced to one row per key, keeping the row with the fewest missing values. The same rule is applied again to the merged result.
+
+| `cfg$skip_dedup_stage2` | Key |
+|-------------------------|-----|
+| `FALSE` | `uid`, `facility` |
+| `TRUE` | `uid`, `facility`, `uniquekey` |
+
+### 3. Merge
+
+Starting from `df_numeric`, the other sub-frames are left-joined on `facility`, `uid` and `uniquekey` in this order: boolean, categorical, datetime, pass-through. At each join only columns not already present are added.
+
+### 4. Column names
+
+The suffixes `.value` and `.valuedischarge` are removed from all column names.
+
+### 5. Derived weight columns
+
+Source columns are not changed. In the derived columns a value above 0 and up to 20 is multiplied by 1000, so that the result is in grams.
+
+| Column | Content | Added |
+|--------|---------|-------|
+| `birthweight_g` | First non-missing of `birthweight`, `bwt`, `bwtdis`, in that order | Always; `NA` when none of the three is present |
+| `admission_weight_g` | `admissionweight` | When `admissionweight` is present |
+| `discharge_weight_g` | `dischweight` | When `dischweight` is present |
+
+When two birth-weight sources are present on the same row and differ by more than 1 g, the number of such rows is logged as a warning.
+
+### 6. Derived maternal-age columns
+
+Added when `matageyrs` or `mat_age_date_years` (from Module 11) is present. Source columns are not changed.
+
+| Column | Content |
+|--------|---------|
+| `mat_age_years_combined` | `matageyrs` where present; otherwise `mat_age_date_years` |
+| `mat_age_source` | `"matageyrs"`, `"matagedate_derived"` or `"none"` |
+
+When both sources are present on the same row and differ by more than 1 year, `matageyrs` is used and the number of such rows is logged and reported.
+
+### 7. Output
+
+For the CSV, date-time columns are written as `YYYY-MM-DD HH:MM:SS` (UTC), a trailing `.000` is removed from text values, and `NA` is written as an empty field. The RDS keeps the typed columns.
+
+Before anything is written, `assert_pii_removed()` (`00_setup.r`) checks the data frame prepared for the CSV. It stops the run if the completion marker of Module 00a is missing or does not match the current input file and dictionary, if a column name matches a variable flagged confidential in the dictionary or a personal-information name pattern, or if a value matches a personal-information value pattern. A failure to write the CSV or the RDS is logged as a warning.
+
+## Inputs
+
+| Object | Description |
+|--------|-------------|
+| `df_numeric`, `df_boolean`, `df_categorical`, `df_datetime` | Sub-frames from Modules 11 to 14 and 14a |
+| `df` | Data frame from Module 10, used for the pass-through sub-frame |
+| `cfg` | Configuration list: type lists, `$skip_dedup_stage2`, `$output_csv`, `$output_rds`, `$report_dir` |
+
+## Outputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_clean` | Merged data frame |
+| `cfg$output_csv` | Cleaned CSV; by default `<file_stem>_cleaned.csv` in the run output folder |
+| `cfg$output_rds` | Cleaned RDS; by default `<file_stem>_cleaned.rds` in the run output folder |
+| `reports/15_final_merge_summary.txt` | Input and output paths, final numbers of rows and columns, number of pass-through columns |
+| `reports/15b_maternal_age_summary.txt` | Written when the maternal-age columns are derived: rows per `mat_age_source`, rows with both sources, rows that disagree. Counts only. |
+
+## Functions
+
+| Function | Returns |
+|----------|---------|
+| `merge_and_output(df_numeric, df_boolean, df_categorical, df_datetime, df_full, cfg)` | The merged data frame, after writing the output files |
+| `dedup_keep_most_complete(df, key_cols)` | `df` with one row per key, the most complete |
+| `build_non_validated(df_full, cfg)` | The pass-through sub-frame, or `NULL` when there are no such columns |
+| `derive_weight_columns(df, cfg)` | `df` with the derived weight columns |
+| `derive_maternal_age_columns(df, cfg)` | `df` with the derived maternal-age columns |
+| `format_datetimes_for_csv(df)` | `df` with date-time columns as text |
+
+
+================================================================================
+  3.20  Module 16 -- NA reason coding
+================================================================================
+  Source file: cleaning_pipeline_R/16_na_reason_coding/README.md
+================================================================================
+
+# Module 16: NA Reason Coding
+
+## Purpose
+
+Gives every empty cell of the cleaned dataset a code that states why it is empty. The codes are written to companion files; the cleaned dataset itself is not changed.
+
+## When it runs
+
+After Module 15, on `df_clean`. `run_pipeline.r` runs the module only when the folder in `cfg$neotree_scripts_dir` exists; otherwise it logs a warning and continues without it.
+
+## What it does
+
+### The four codes
+
+| Code | Name | Assigned when |
+|------|------|---------------|
+| `-6` | Redacted | The raw value matches a PII value pattern. |
+| `-7` | Not applicable | The skip condition of the field in the Neotree script evaluates to false for that record, so the field was not shown. |
+| `-8` | Invalid / removed | The raw cell held a value, the value is not PII, and the cleaned cell is empty. |
+| `-9` | Unknown | Every other empty cell: the raw cell was empty, held a missing-value placeholder, or has no raw counterpart. |
+
+The key columns `uid`, `facility` and `uniquekey` are not coded.
+
+### Order of the rules
+
+For each empty cell of the cleaned dataset:
+
+1. If the raw value matches a PII pattern, the code is `-6`. Nothing overrides it.
+2. Otherwise, if a skip condition is found for the field and evaluates to false, the code is `-7`. This applies whether the raw cell was empty or not.
+3. Otherwise, if the raw cell held a value, the code is `-8`.
+4. Otherwise the code is `-9`.
+
+### Raw values
+
+The module reads the input CSV (`cfg$csv_filepath`) again, with every column as text.
+
+- Each row of the cleaned dataset is paired with the first raw row that has the same `uid`.
+- Each cleaned column is paired with the raw column of the same name, compared in lower case and without punctuation, with the suffix `.value` or `.valuedischarge` or with no suffix. A cleaned column with no such raw column has no raw value.
+
+A raw value counts as empty when, after trimming spaces, it is blank or one of `nan`, `none`, `na`, `n/a`, `null`, `NaN`, `None`, `NA`, `N/A`, `NULL`.
+
+### PII value patterns
+
+A raw value is treated as PII when it matches one of the patterns in `PII_PATTERNS_16`:
+
+| Pattern | Shape |
+|---------|-------|
+| `phone_international` | Whole value is a Zimbabwe or Malawi country prefix followed by the subscriber digits, with or without a leading `+` |
+| `phone_local_zw`, `phone_local_mwi` | Whole value is a ten-digit local mobile number |
+| `email` | Value contains an e-mail address |
+| `nhs_number` | Whole value is three, three and four digits separated by hyphens or spaces |
+
+### Skip logic
+
+`load_all_scripts()` reads every file whose name ends in `metadata.json` in the `zim-scripts/` and `mwi-scripts/` subfolders of `cfg$neotree_scripts_dir`. For every field on every screen it stores one condition:
+
+- the screen condition, if the field has none of its own;
+- the field condition, if the screen has none;
+- `(screen condition) and (field condition)`, if both exist.
+
+A field with no condition is always shown and never receives `-7`.
+
+Each record is assigned a script by `resolve_script_id()`, in this order:
+
+1. the value of the raw `scriptid` (or `script_id`) column, if it is listed in `EXACT_MATCH_SCRIPT_IDS`;
+2. for Malawi maternal datasets, a fixed script if the raw value is listed in `MWI_MATERNAL_FIREBASE_IDS`;
+3. the entry of `FACILITY_SCRIPT_MAP` for the country, the dataset and the record's `facility`.
+
+Before the look-up, `normalise_dataset_name()` maps `combined_maternity_outcomes`, `dhis2_maternal_outcomes` and `maternity_completeness` to `maternal_outcomes`, and `infections` to `neolab`. Other dataset names are used unchanged. A record with no matching script is not evaluated for skip logic.
+
+The condition for a field is found by the cleaned column name, in lower case and without punctuation. `translate_condition()` turns it into an R expression:
+
+| In the script | Read as |
+|---------------|---------|
+| `$FieldKey` | the raw value of that field for the record, as text |
+| `=` | equal to |
+| `!=`, `>`, `<`, `>=`, `<=` | unchanged |
+| `'text'` | the text |
+| `true`, `false` | `TRUE`, `FALSE` |
+| `and`, `or` | both, either |
+| `( )` | grouping |
+
+The value of `$FieldKey` is taken from the raw column that corresponds to a column of the cleaned dataset. A field with no such column, or with an empty raw value, is read as missing.
+
+The cell receives `-7` only when the expression returns `FALSE`. If the expression returns `TRUE`, returns a missing result, cannot be parsed or raises an error, the cell keeps the code from rule 3 or 4.
+
+## Inputs
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_clean` | Cleaned data frame from Module 15 |
+| `cfg$csv_filepath` | The input CSV, read again as text |
+| `cfg$neotree_scripts_dir` | Folder holding `zim-scripts/` and `mwi-scripts/` with the Neotree script JSON files |
+| `cfg$country`, `cfg$dataset` | Used to choose the script for each record |
+| `cfg$output_csv` | Path of the cleaned CSV; the output file names are built from it |
+| `cfg$report_dir` | Folder for the module report |
+
+## Outputs
+
+`<cleaned>` stands for the path in `cfg$output_csv` without `.csv`.
+
+| Object / file | Description |
+|---------------|-------------|
+| `df_na_reasons` | Data frame with the rows and columns of `df_clean`. Key columns are copied; every other cell holds the code where the cleaned cell is empty and is empty otherwise. |
+| `na_reasons_long` | Data frame with one row per coded cell: `uid`, `facility`, `variable`, `na_reason`, `raw_value`. |
+| `<cleaned>_na_reasons.csv.gz` | `df_na_reasons`. Always written. |
+| `<cleaned>_na_reasons_long.csv.gz` | `na_reasons_long`. Written when `cfg$save_na_reasons_long` is `TRUE`. |
+| `<cleaned>_na_reasons_summary.csv` | One row per variable, sorted by number of empty cells, largest first. Always written. Columns below. |
+| `<cleaned>_na_coded.csv` | The cleaned dataset with every column as text and every empty cell replaced by its code. Written when `cfg$save_na_coded` is `TRUE`. |
+| `16_na_reason_coding_summary.txt` in `cfg$report_dir` | Country, dataset, input file, scripts folder, number of scripts loaded, number of cells per code, the twenty variables with most empty cells, and the paths of the output files. Counts and column names only. |
+
+Columns of the summary file:
+
+| Column | Meaning |
+|--------|---------|
+| `variable` | Column name in the cleaned dataset |
+| `n_total` | Number of rows |
+| `n_present` | Rows with a value |
+| `n_missing` | Rows without a value |
+| `pct_missing` | `n_missing` as a percentage of `n_total`, one decimal |
+| `n_not_applicable` | Cells coded `-7` |
+| `n_invalid` | Cells coded `-8` |
+| `n_unknown` | Cells coded `-9` |
+| `n_redacted` | Cells coded `-6` |
+
+`assert_pii_removed()` from `00_setup.r` is called on each table before it is written, and stops the run if the check fails. The long table holds raw values, so the check applies to those values. In the summary table the `variable` column is left out of the value scan, after the module has confirmed that it holds only column names of the cleaned dataset.
+
+## Functions
+
+| Function | File | Arguments | Returns |
+|----------|------|-----------|---------|
+| `classify_na_reasons()` | `16_na_reason_coding.r` | `df_clean`, `df_raw`, `script_conditions`, `cfg` | List with `$wide`, `$long` and `$counts` |
+| `build_variable_summary()` | `16_na_reason_coding.r` | `na_long`, `n_rows`, `data_cols` | Per-variable summary data frame |
+| `build_clean_coded()` | `16_na_reason_coding.r` | `df_clean`, `df_na_reasons` | Text data frame with codes in the empty cells |
+| `load_all_scripts()` | `helpers/01_load_scripts.r` | `scripts_dir` | List with `$conditions` (one row per field) and `$index` (one row per script) |
+| `translate_condition()` | `helpers/02_condition_evaluator.r` | `condition_str` | R expression as text, or `NA` |
+| `resolve_script_id()` | `helpers/03_facility_script_map.r` | `scriptid_raw`, `facility`, `country`, `dataset` | Script identifier, or `NA` |
+
+## Configuration
+
+| Setting in `00_setup.r` | Default | Effect |
+|-------------------------|---------|--------|
+| `NEOTREE_SCRIPTS_DIR` | `neotree_scripts` in the pipeline folder | Folder of script JSON files. The module stops if it does not exist. |
+| `SAVE_NA_CODED` | `TRUE` | Writes `<cleaned>_na_coded.csv`. |
+| `SAVE_NA_REASONS_LONG` | `FALSE` | Writes `<cleaned>_na_reasons_long.csv.gz`. |
+
+`FACILITY_SCRIPT_MAP`, `EXACT_MATCH_SCRIPT_IDS` and `MWI_MATERNAL_FIREBASE_IDS` in `helpers/03_facility_script_map.r` hold the script identifiers. A new facility or script is added there.
+
+## Other files in this folder
+
+`skip_logic_reference.*` are reference listings of the fields that carry a skip condition. The module does not read them.
+
+
+================================================================================
+  END OF MANUAL
+================================================================================

@@ -1,0 +1,54 @@
+# =============================================================================
+# Neotree Data Pipeline -- .gitignore
+# =============================================================================
+# This repository contains CODE, REFERENCE DICTIONARIES and DOCUMENTATION only.
+# Patient-level data and credentials must NEVER be committed.
+# =============================================================================
+
+# --- Operating system junk ---------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# --- R session / project files -----------------------------------------------
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+*.Rproj
+.Rproj.user/
+.Renviron
+
+# --- Pipeline run artifacts (regenerated on every run) -----------------------
+cleaning_pipeline_R/output/
+*.log
+
+# --- Raw and processed patient data (NEVER COMMIT) ---------------------------
+# Ignore EVERYTHING dropped into the pipeline input folder, whatever the file
+# type, keeping only the placeholder that preserves the directory in git.
+cleaning_pipeline_R/input/*
+!cleaning_pipeline_R/input/.gitkeep
+
+# NA-coded data extracts
+*_na_coded.csv
+*_na_coded.xlsx
+
+# --- Data-key exports and script metadata (NEVER COMMIT) ---------------------
+# Downloaded from the Neotree web editors; they contain the names of health
+# workers.  Only the README of each folder is kept.
+cleaning_pipeline_R/neotree_data_keys/*
+!cleaning_pipeline_R/neotree_data_keys/README.md
+cleaning_pipeline_R/neotree_scripts/*
+!cleaning_pipeline_R/neotree_scripts/README.md
+cleaning_pipeline_R/00_build_dictionary/private/
+
+# --- Credentials / secrets (NEVER COMMIT) ------------------------------------
+# A mirror address and token belong in a local copy of
+# install_packages_mirror.r only -- the committed copy must keep the
+# YOUR_MIRROR_ADDRESS_HERE and YOUR_TOKEN_HERE placeholders.
+.env
+*.pem
+*.key
+secrets.*

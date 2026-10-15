@@ -1,0 +1,28 @@
+Neotree Cleaning Pipeline -- Required R Packages
+=================================================
+
+The pipeline and the dictionary build scripts use 13 CRAN packages.
+
+  Package       Version   Purpose
+  ----------    -------   -------
+  jsonlite      >= 1.8    Read JSON data-key and script files
+  readr         >= 2.1    Read and write CSV files
+  readxl        >= 1.4    Read Excel dictionary files (.xlsx)
+  writexl       >= 1.4    Write Excel dictionary files (.xlsx)
+  dplyr         >= 1.1    Data manipulation
+  tidyr         >= 1.3    Reshaping helpers
+  stringr       >= 1.5    String operations
+  lubridate     >= 1.9    Datetime handling
+  purrr         >= 1.0    Functional helpers
+  logger        >= 0.3    Pipeline logging
+  janitor       >= 2.2    Column name cleaning
+  tibble        >= 3.2    Tibble utilities
+  openxlsx      >= 4.2    Read and write .xlsx (dictionary build and validation)
+
+Install them with:
+
+  Rscript install_packages.r          (from CRAN)
+  Rscript install_packages_mirror.r   (from an internal package mirror; set the
+                                       repository address and token in the file)
+
+See how_to_run.md for how to run the pipeline.
