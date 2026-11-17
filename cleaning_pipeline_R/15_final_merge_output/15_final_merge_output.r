@@ -479,7 +479,7 @@ merge_and_output <- function(df_numeric, df_boolean, df_categorical,
   # uniquekey), so that each distinct visit record is preserved while rows with
   # the same uid/facility/uniquekey are still collapsed.
   # Otherwise the (uid, facility) patient-level key applies.
-  dedup_keys <- if (isTRUE(cfg$skip_dedup_stage2))
+  dedup_keys <- if (isTRUE(cfg$skip_dedup_stage2) || isTRUE(cfg$dedup_episode))
     c("uid", "facility", "uniquekey")
   else
     c("uid", "facility")

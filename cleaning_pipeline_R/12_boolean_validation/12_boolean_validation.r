@@ -82,9 +82,10 @@ validate_boolean <- function(df, cfg, report_filepath = NULL) {
 
   # Deduplication
   n_before  <- nrow(df_bool)
-  # Row key: datasets that keep every visit (cfg$skip_dedup_stage2 = TRUE) are
+  # Row key: datasets that keep every visit (cfg$skip_dedup_stage2 = TRUE), and
+  # admissions and discharges in episode mode (cfg$dedup_episode = TRUE), are
   # keyed on uid + facility + uniquekey, the others on uid + facility.
-  dedup_keys <- intersect(if (isTRUE(cfg$skip_dedup_stage2)) c("uid", "facility", "uniquekey") else c("uid", "facility"),
+  dedup_keys <- intersect(if (isTRUE(cfg$skip_dedup_stage2) || isTRUE(cfg$dedup_episode)) c("uid", "facility", "uniquekey") else c("uid", "facility"),
                           names(df_bool))
   df_bool   <- dplyr::distinct(df_bool, dplyr::across(dplyr::all_of(dedup_keys)), .keep_all = TRUE)
   n_dedup   <- n_before - nrow(df_bool)

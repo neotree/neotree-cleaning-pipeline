@@ -12,6 +12,13 @@
 #   run_pipeline.r inside tryCatch, records success or the error message, and
 #   removes the pipeline's globals before the next file.
 #
+#   RUN_ALL_DEDUP_MODE sets DEDUP_MODE for every file. With "episode",
+#   Module 10 uses episode mode for admissions and discharges, main and PHC,
+#   and for ZIM maternal_outcomes and MWI combined_maternity_outcomes (see
+#   10_remove_duplicate_rows/README.md). Files run in name order, so
+#   each admissions file runs before its discharges file, as episode mode
+#   requires.
+#
 #   Accepted filename forms:
 #     {country}_{dataset}_{date}.csv
 #     {country}_{source}_{dataset}_{date}.csv
@@ -29,7 +36,8 @@
 #   KNOWN_DATASETS, is listed as skipped.
 #
 # INPUTS:
-#   CSV files in input/. RUN_ALL_FILTER and RUN_ALL_SKIP, set below.
+#   CSV files in input/. RUN_ALL_FILTER, RUN_ALL_SKIP and RUN_ALL_DEDUP_MODE,
+#   set below.
 #
 # OUTPUTS:
 #   The outputs of run_pipeline.r for each file, and a console listing of the
@@ -74,6 +82,11 @@ RUN_ALL_FILTER <- NULL
 # Character vector of exact filenames (basename) to skip.
 # Example: c("mwi_combined_maternity_outcomes_2000-01-31.csv")
 RUN_ALL_SKIP <- character(0)
+
+# Module 10 Stage 2 mode for admissions, discharges and maternal files:
+# "current" or "episode" (see 00_setup.r, DEDUP_MODE).  In episode mode each
+# admissions file is run before its discharges file.
+RUN_ALL_DEDUP_MODE <- "episode"
 
 # =============================================================================
 # INTERNAL SETUP
@@ -256,11 +269,11 @@ PIPELINE_GLOBALS <- c(
   "LABEL_VALUE_RULES",
   # Output flags
   "SAVE_DEIDENTIFIED", "SAVE_STAGE1_CHECKPOINT", "SAVE_HARMONISED",
-  "SAVE_NA_CODED", "SAVE_NA_REASONS_LONG", "SKIP_DEDUP_STAGE2",
+  "SAVE_NA_CODED", "SAVE_NA_REASONS_LONG", "SKIP_DEDUP_STAGE2", "DEDUP_MODE",
   # Per-run output subdirectory helpers
   "file_stem", "RUN_OUTPUT_DIR",
   # Config object and dictionary tables
-  "cfg", "dict_variables", "dict_value_maps",
+  "cfg", "dict_variables", "dict_value_maps", "DICT_MD5", "RUN_DICT_MD5",
   # Feature lists
   "numeric_features", "bool_features", "cat_features",
   "obj_features", "dt_features",
@@ -312,6 +325,7 @@ for (i in seq_along(run_plan)) {
   REPORT_DIR       <<- NULL
   OUTPUT_DIR       <<- "output"
   NEOTREE_SCRIPTS_DIR <<- NULL
+  DEDUP_MODE       <<- RUN_ALL_DEDUP_MODE
 
   # -- Run the pipeline --------------------------------------------------------
   # The error message is stored as well as printed, so that the batch summary

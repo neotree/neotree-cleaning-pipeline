@@ -113,7 +113,7 @@ CSV_FILEPATH <- "input/zim_admissions_2026-01-31.csv"
 source("run_pipeline.r")
 ```
 
-A setting defined in the session keeps its value for later runs in that session. This includes the paths that `00_setup.r` resolves when they are `NULL`. Before running a second file in the same session, set `DICT_FILEPATH`, `OUTPUT_CSV`, `OUTPUT_RDS`, `REPORT_DIR` and `NEOTREE_SCRIPTS_DIR` back to `NULL` and remove `SKIP_DEDUP_STAGE2`, as `run_all.r` does, or start a new session.
+A setting defined in the session keeps its value for later runs in that session. This includes the paths that `00_setup.r` resolves when they are `NULL`. Before running a second file in the same session, set `DICT_FILEPATH`, `OUTPUT_CSV`, `OUTPUT_RDS`, `REPORT_DIR` and `NEOTREE_SCRIPTS_DIR` back to `NULL` and remove `SKIP_DEDUP_STAGE2` and `DEDUP_MODE`, as `run_all.r` does, or start a new session.
 
 When it finishes, `run_pipeline.r` prints the time taken, the paths of the cleaned CSV and RDS, the number of rows and columns, and the report folder.
 
@@ -150,6 +150,7 @@ All settings below are in the user configuration block of `00_setup/00_setup.r`.
 | Setting | Default | Effect |
 |---------|---------|--------|
 | `SKIP_DEDUP_STAGE2` | `TRUE` when the dataset is `infections` or `neolab`, otherwise `FALSE` | `TRUE` makes Module 10 skip its patient-level stage, so several rows per patient are kept. Module 15 then keeps one row per `uid`, `facility` and `uniquekey` instead of one per `uid` and `facility`. |
+| `DEDUP_MODE` | `"episode"` | Stage 2 of Module 10 for `admissions`, `discharges`, `phc_admissions`, `phc_discharges`, Zimbabwe `maternal_outcomes` and Malawi `combined_maternity_outcomes`. `"current"` keeps one row per `uid` and `facility`. `"episode"` collapses rows only when they are the same record sent more than once, keeps every other row and adds `baby_id`, `stay_no` (not in the maternal files) and flag columns (see the [Module 10 README](10_remove_duplicate_rows/README.md)); Modules 11 to 16 then key rows on `uid`, `facility` and `uniquekey`. In episode mode each admissions file must be run before its discharges file (`phc_admissions` before `phc_discharges`). Other datasets are not affected. |
 | `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Module 14a adds `datebct_resolved` and `datebct_source`. Used only when the dataset is `neolab`. `FALSE` adds no columns. |
 | `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Characters Module 02 treats as a mistyped hyphen in a `uid`. |
 | `RESERVED_COLUMN_RENAMES` | for `phc_discharges`: `facility.value` to `facilityname.value`, `facility.label` to `facilityname.label` | Per dataset, standardised column names that Module 01 renames so that they do not share a name with a key column. |
@@ -164,7 +165,7 @@ Two further settings are entries of the `cfg` list, set where `cfg` is built in 
 
 ### Settings in a batch
 
-`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS`, `RESERVED_COLUMN_RENAMES` and `LABEL_VALUE_RULES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`.
+`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS`, `RESERVED_COLUMN_RENAMES` and `LABEL_VALUE_RULES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`. The exception is `DEDUP_MODE`, which `run_all.r` sets for every file from `RUN_ALL_DEDUP_MODE`, near the top of the script (default `"episode"`). Files run in name order, so an admissions file runs before the discharges file of the same country and source.
 
 ## Outputs
 
@@ -192,7 +193,7 @@ output/zim_admissions_2026-01-31/
 | `.log` | Run log, at level INFO and above. Messages are appended to an existing log. |
 | `00a_pii_removal_complete.dcf` | Completion marker of Module 00a, read by the personal-data guard. |
 
-The optional files (`_deidentified.csv`, `_cleaned_stage1.rds`, `_cleaned_harmonised.csv` and `.rds`, `_cleaned_na_reasons_long.csv.gz`) are written to the same folder when their flags are `TRUE`.
+The optional files (`_deidentified.csv`, `_cleaned_stage1.rds`, `_cleaned_harmonised.csv` and `.rds`, `_cleaned_na_reasons_long.csv.gz`) are written to the same folder when their flags are `TRUE`. An admissions run with `DEDUP_MODE` set to `"episode"` also writes `_episode_keys.rds`, which the discharges run reads; it holds `uid` values.
 
 ### Reports
 
@@ -284,6 +285,7 @@ Both generate synthetic input from the dictionaries (column names and value-map 
 | Script | Covers |
 |--------|--------|
 | `test_input_naming.r` | File-name parsing in `run_all.r`; detection of the export style; resolution of the paired admissions/discharges file; a batch run on synthetic files in database, Metabase and mixed style; the datetime and number parsers and the boolean tokens of `00_setup.r`; the list encoding of Module 04; the derived column `hepbdate_date` of Module 14. |
+| `test_dedup_episode.r` | Episode mode of Module 10 on made-up admissions, discharges and births: collapsing only true repeats, baby and stay assignment, discharge linking, flags, known totals, the admissions key file and the datasets covered. |
 | `test_label_value_recovery.r` | The antenatal care parser of Module 05; a run on a synthetic Malawi admissions file with an empty value and a filled label, checking `antenatalcare`, `antenatalcare_source` and `antenatalcare_category` row by row; the same labels in a Zimbabwe file, where no rule applies. |
 | `test_pii_guard.r` | The column-name and value patterns; a full run with the expected removals and redactions; the guard stopping when Module 00a is skipped, when the marker does not match the input file or dictionary, and when a personal-data column or value is added before the Module 15 write; the same checks through `run_all.r`. |
 

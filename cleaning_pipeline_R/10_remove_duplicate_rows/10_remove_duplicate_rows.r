@@ -18,6 +18,13 @@
 #     Stage 2 is skipped when cfg$skip_dedup_stage2 is TRUE (datasets with
 #     several rows per patient by design).
 #
+#   Stage 2 - episode mode (cfg$dedup_mode = "episode"; admissions,
+#   discharges, phc_admissions, phc_discharges, ZIM maternal_outcomes and
+#   MWI combined_maternity_outcomes only): rows are collapsed only when they are the same event,
+#   and every row gets baby_id and stay_no.  See episode_ids.r.  The
+#   admissions run writes <stem>_episode_keys.rds to its output folder; the
+#   discharges run reads the one written for the paired admissions file.
+#
 #   Visit-date columns used (whichever are present in df):
 #     startedat, startedatdischarge,
 #     datetimeadmission.value, dateadmission.value, datebct.value,
@@ -37,6 +44,7 @@
 # =============================================================================
 
 source("00_setup/00_setup.r")
+source("10_remove_duplicate_rows/episode_ids.r")
 
 #' Remove Duplicate Rows (Two-Stage, Most-Complete-Record Strategy)
 #'
@@ -54,7 +62,8 @@ source("00_setup/00_setup.r")
 #'                        skipped. Default FALSE. Set via cfg$skip_dedup_stage2.
 #' @param report_filepath Optional path for a text report.
 #' @return                Deduplicated data.frame.
-remove_duplicate_rows <- function(df, skip_stage2 = FALSE, report_filepath = NULL) {
+remove_duplicate_rows <- function(df, skip_stage2 = FALSE, report_filepath = NULL,
+                                  episode_dataset = NULL, adm_keys = NULL) {
 
   n_start <- nrow(df)
 
@@ -86,7 +95,11 @@ remove_duplicate_rows <- function(df, skip_stage2 = FALSE, report_filepath = NUL
   non_key_cols <- setdiff(names(df), stage1_keys)
   df$.miss      <- rowSums(is.na(df[, non_key_cols, drop = FALSE]))
 
-  df_s1 <- df %>%
+  # In episode mode Stage 1 is not applied: rows with identical visit dates
+  # can belong to different babies, so they are left to the episode rule,
+  # which checks identity before collapsing.
+  episode_on <- !isTRUE(skip_stage2) && !is.null(episode_dataset)
+  df_s1 <- if (episode_on) df %>% dplyr::select(-.miss) else df %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(stage1_keys))) %>%
     dplyr::slice_min(.miss, n = 1, with_ties = FALSE) %>%
     dplyr::ungroup() %>%
@@ -107,7 +120,25 @@ remove_duplicate_rows <- function(df, skip_stage2 = FALSE, report_filepath = NUL
   # With skip_stage2 = TRUE the Stage 1 result is returned unchanged, for
   # datasets with one row per review visit or per blood culture event.
   n_shared_key <- NA_integer_
-  if (isTRUE(skip_stage2)) {
+  ep <- NULL
+  if (episode_on) {
+    ep           <- ep_dedup(df_s1, episode_dataset, adm_keys)
+    df_s2        <- ep$df
+    n_after_s2   <- nrow(df_s2)
+    n_removed_s2 <- n_after_s1 - n_after_s2
+    n_removed_total <- n_start - n_after_s2
+    if (ep$summary[["rows_sharing_uid_facility_uniquekey"]] > 0)
+      stop(sprintf(paste("Module 10 (episode mode): %d kept row(s) share uid + facility + uniquekey",
+                         "with another row; later modules would merge them. Stopped."),
+                   ep$summary[["rows_sharing_uid_facility_uniquekey"]]))
+    log_info(
+      paste("remove_duplicate_rows: Stage 1 (visit-level) removed %d row(s);",
+            "Stage 2 (episode mode) removed %d row(s). Rows remaining: %d;",
+            "babies %d; stays %d; flagged rows %d."),
+      n_removed_s1, n_removed_s2, n_after_s2, ep$summary[["distinct_babies"]],
+      ep$summary[["distinct_stays"]], ep$summary[["rows_flagged"]]
+    )
+  } else if (isTRUE(skip_stage2)) {
     df_s2        <- df_s1
     n_after_s2   <- n_after_s1
     n_removed_s2 <- 0L
@@ -163,7 +194,9 @@ remove_duplicate_rows <- function(df, skip_stage2 = FALSE, report_filepath = NUL
 
   if (!is.null(report_filepath) && nzchar(report_filepath)) {
     tryCatch({
-      stage2_line <- if (isTRUE(skip_stage2))
+      stage2_line <- if (!is.null(ep))
+        sprintf("  Stage 2 (episode mode) removed : %d", n_removed_s2)
+      else if (isTRUE(skip_stage2))
         "  Stage 2 (patient-level)       : SKIPPED (longitudinal dataset -- multiple rows per patient by design)"
       else
         sprintf("  Stage 2 (patient-level) removed: %d", n_removed_s2)
@@ -176,7 +209,8 @@ remove_duplicate_rows <- function(df, skip_stage2 = FALSE, report_filepath = NUL
         sprintf("Dataset                     : %s", cfg$dataset),
         "",
         sprintf("Rows before deduplication   : %d", n_start),
-        sprintf("  Stage 1 (visit-level) removed  : %d", n_removed_s1),
+        if (episode_on) "  Stage 1 (visit-level)          : not applied (episode mode)"
+        else sprintf("  Stage 1 (visit-level) removed  : %d", n_removed_s1),
         stage2_line,
         sprintf("Total duplicate rows removed: %d", n_removed_total),
         sprintf("Rows after deduplication    : %d", n_after_s2),
@@ -196,15 +230,26 @@ remove_duplicate_rows <- function(df, skip_stage2 = FALSE, report_filepath = NUL
             sprintf("Rows sharing uid + facility + uniquekey : %d%s", n_shared_key,
                     if (n_shared_key > 0) "  (later modules keep one row per key)" else "")
         },
-        if (isTRUE(skip_stage2))
+        if (!is.null(ep))
+          "Stage 2 strategy : episode mode (same event only; baby_id and stay_no added)"
+        else if (isTRUE(skip_stage2))
           "Stage 2 strategy : SKIPPED (cfg$skip_dedup_stage2 = TRUE)"
         else
           "Stage 2 strategy : most complete record (fewest NAs); tie-break = latest uniquekey"
       )
+      if (!is.null(ep)) {
+        tab_lines <- function(title, tb)
+          c("", title, sprintf("  %-62s %8d", names(tb), as.integer(tb)))
+        lines <- c(lines, "", "Episode mode counts:",
+                   sprintf("  %-62s %8d", names(ep$summary), as.integer(ep$summary)),
+                   tab_lines("Rows by basis of baby_id / stay_no:", ep$basis_counts),
+                   tab_lines("Rows by flag (a row can carry several):", ep$flag_counts))
+      }
       writeLines(lines, report_filepath)
     }, error = function(e) log_warn("Could not write Module 10 report: %s", e$message))
   }
 
+  attr(df_s2, "episode") <- ep
   return(df_s2)
 }
 
@@ -212,9 +257,39 @@ remove_duplicate_rows <- function(df, skip_stage2 = FALSE, report_filepath = NUL
 report_path <- if (!is.null(cfg$report_dir))
   file.path(cfg$report_dir, "10_duplicate_row_removal_report.txt") else NULL
 
+episode_dataset <- if (isTRUE(cfg$dedup_episode)) ep_role(cfg$dataset, cfg$country) else NULL
+adm_keys        <- NULL
+if (identical(episode_dataset, "discharges")) {
+  if (is.null(cfg$paired_csv_filepath))
+    stop("Module 10 (episode mode): no admissions file found for this discharges file.")
+  adm_stem <- sub("\\.csv$", "", basename(cfg$paired_csv_filepath))
+  adm_keys_path <- file.path(dirname(cfg$run_output_dir), adm_stem,
+                             paste0(adm_stem, "_episode_keys.rds"))
+  adm_keys <- ep_read_keys(adm_keys_path, cfg$paired_csv_filepath)
+  log_info("Module 10 (episode mode): admission keys read from %s", adm_keys_path)
+}
+
 df <- remove_duplicate_rows(df,
                             skip_stage2     = isTRUE(cfg$skip_dedup_stage2),
-                            report_filepath = report_path)
+                            report_filepath = report_path,
+                            episode_dataset = episode_dataset,
+                            adm_keys        = adm_keys)
+
+ep_result <- attr(df, "episode")
+attr(df, "episode") <- NULL
+keys_path <- file.path(cfg$run_output_dir,
+                       paste0(sub("\\.csv$", "", basename(cfg$csv_filepath)), "_episode_keys.rds"))
+if (identical(episode_dataset, "admissions")) {
+  dir.create(cfg$run_output_dir, recursive = TRUE, showWarnings = FALSE)
+  ep_write_keys(ep_result$keys, keys_path, cfg$csv_filepath,
+                dict_file = cfg$dict_filepath,
+                dict_md5  = if (exists("RUN_DICT_MD5")) RUN_DICT_MD5 else cfg$dict_md5)
+  log_info("Module 10 (episode mode): admission keys written to %s", keys_path)
+} else if (identical(ep_role(cfg$dataset), "admissions") && file.exists(keys_path)) {
+  file.remove(keys_path)
+  log_info("Module 10: old episode key file removed (this run is not in episode mode): %s", keys_path)
+}
+rm(ep_result, adm_keys, episode_dataset)
 
 # -- Checkpoint: save first-stage cleaned data (optional) ---------------------
 if (isTRUE(cfg$save_stage1_checkpoint)) {

@@ -135,6 +135,18 @@ if (!exists("SKIP_DEDUP_STAGE2")) {
   SKIP_DEDUP_STAGE2 <- DATASET %in% c("infections", "neolab")
 }
 
+# Stage 2 mode in Module 10, for admissions and discharges (main and PHC) and
+# the maternal files (ZIM maternal_outcomes, MWI combined_maternity_outcomes).
+#   "episode" -- default.  Rows are collapsed only when they are the same
+#                event; every row gets baby_id and stay_no (see
+#                10_remove_duplicate_rows/episode_ids.r).  The discharges run
+#                reads the key file written by the admissions run, so
+#                admissions must be run first.
+#   "current" -- one row per uid + facility (most complete record).
+if (!exists("DEDUP_MODE")) DEDUP_MODE <- "episode"
+if (!DEDUP_MODE %in% c("current", "episode"))
+  stop(sprintf("DEDUP_MODE must be \"current\" or \"episode\", not \"%s\".", DEDUP_MODE))
+
 # Resolve missing neolab datebct from admissions (Module 14a).
 #   TRUE  -- Module 14a fills NA datebct.value entries by joining to the raw
 #            admissions file on uid + facility and using datetimeadmission.
@@ -215,7 +227,7 @@ NEOTREE_SCRIPTS_DIR <- normalizePath(NEOTREE_SCRIPTS_DIR, mustWork = FALSE)
 
 # -- Pipeline version ----------------------------------------------------------
 # Written to the run log and to the Module 00a completion marker.
-PIPELINE_VERSION <- "2.0.1"
+PIPELINE_VERSION <- "2.0.2"
 
 # -- Logging -------------------------------------------------------------------
 log_appender(appender_tee(file = file.path(RUN_OUTPUT_DIR, paste0(file_stem, ".log"))))
@@ -651,6 +663,8 @@ if (!file.exists(DICT_FILEPATH)) {
   ))
 }
 
+# Checksum of the dictionary as read, recorded in the episode-mode key file.
+DICT_MD5 <- unname(tools::md5sum(DICT_FILEPATH))
 dict_variables <- readxl::read_excel(DICT_FILEPATH, sheet = "Variables") %>%
   janitor::clean_names()
 dict_value_maps <- readxl::read_excel(DICT_FILEPATH, sheet = "ValueMaps") %>%
@@ -889,6 +903,7 @@ cfg <- list(
   # File paths
   csv_filepath   = CSV_FILEPATH,
   dict_filepath  = DICT_FILEPATH,
+  dict_md5       = DICT_MD5,
 
   # Paired admissions/discharges raw CSV for cross-file checks (Module 02).
   # Both are NULL when the dataset has no pair or the file is absent.
@@ -957,6 +972,19 @@ cfg <- list(
 
   # Module 10: TRUE skips Stage 2 (patient-level) deduplication.
   skip_dedup_stage2 = SKIP_DEDUP_STAGE2,
+
+  # Module 10: Stage 2 mode, and whether episode mode applies to this run
+  # (admissions or discharges, main or PHC, ZIM maternal_outcomes or MWI
+  # combined_maternity_outcomes, with Stage 2 not skipped).
+  # When it applies, Modules 11, 12, 14 and 15 keep one row per
+  # uid + facility + uniquekey.
+  dedup_mode    = DEDUP_MODE,
+  dedup_episode = DEDUP_MODE == "episode" &&
+                  (DATASET %in% c("admissions", "discharges",
+                                  "phc_admissions", "phc_discharges") ||
+                   (DATASET == "maternal_outcomes" && toupper(COUNTRY) == "ZIM") ||
+                   (DATASET == "combined_maternity_outcomes" && toupper(COUNTRY) == "MWI")) &&
+                  !isTRUE(SKIP_DEDUP_STAGE2),
 
   # Module 14a: TRUE fills missing neolab datebct from the raw admissions file
   # (see RESOLVE_NEOLAB_DATEBCT).
@@ -1157,7 +1185,7 @@ PII_VALUE_PATTERNS <- list(
 # -- Columns exempt from the value-level patterns ------------------------------
 # Normalised names.  These are the structural columns the pipeline keys on.
 PII_VALUE_SCAN_EXEMPT <- c(
-  "uid", "facility", "uniquekey",
+  "uid", "facility", "uniquekey", "baby_id",
   "startedat", "completedat", "ingestedat",
   "startedatdischarge", "completedatdischarge", "ingestedatdischarge",
   "scriptversion", "scriptid"

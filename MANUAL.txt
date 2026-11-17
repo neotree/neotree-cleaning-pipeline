@@ -5,7 +5,7 @@
   A single-file compilation of every documentation file shipped with the
   Neotree data cleaning pipeline.
 
-  Version   : 2.0.1  (see CHANGELOG.md)
+  Version   : 2.0.2  (see CHANGELOG.md)
   Source    : the README and documentation files in cleaning_pipeline_R/,
               reproduced here in full.
 
@@ -164,7 +164,7 @@ cleaning_pipeline_R/
 | 07 | [`07_drop_label_columns`](07_drop_label_columns/README.md) | Drops the remaining label columns and keeps one column per variable prefix. |
 | 08 | [`08_drop_autopopulated_columns`](08_drop_autopopulated_columns/README.md) | Passes the data through unchanged and writes a report. |
 | 09 | [`09_data_type_assignment`](09_data_type_assignment/README.md) | Converts every column from text to the type given in the dictionary. |
-| 10 | [`10_remove_duplicate_rows`](10_remove_duplicate_rows/README.md) | Removes duplicate rows, first per visit and then per patient, keeping the most complete row. |
+| 10 | [`10_remove_duplicate_rows`](10_remove_duplicate_rows/README.md) | Removes duplicate rows, first per visit and then per patient, keeping the most complete row. With `DEDUP_MODE` set to `"episode"`, admissions and discharges (main and PHC) and the maternal files (Zimbabwe `maternal_outcomes`, Malawi `combined_maternity_outcomes`) keep every row that is not the same record sent again, and gain `baby_id` (and, except the maternal files, `stay_no`). |
 | 11 | [`11_numeric_validation`](11_numeric_validation/README.md) | Validates numeric columns, converts weights to grams and applies the dictionary ranges. |
 | 12 | [`12_boolean_validation`](12_boolean_validation/README.md) | Sets every boolean column to `TRUE`, `FALSE` or `NA`. |
 | 13 | [`13_categorical_object_validation`](13_categorical_object_validation/README.md) | Cleans categorical and free-text columns and turns missing-value text into `NA`. |
@@ -212,6 +212,7 @@ Everything written for one input file goes to `output/<file stem>/`, where `<fil
 | `<file stem>_cleaned_na_reasons_long.csv.gz` | One row per coded cell, with the raw value. | When `SAVE_NA_REASONS_LONG` is `TRUE` |
 | `<file stem>_cleaned_harmonised.csv`, `.rds` | Cleaned dataset with harmonised column names. | When `SAVE_HARMONISED` is `TRUE` |
 | `<file stem>_cleaned_stage1.rds` | Data frame after duplicate-row removal. | When `SAVE_STAGE1_CHECKPOINT` is `TRUE` |
+| `<file stem>_episode_keys.rds` | Admission records with their `baby_id` and `stay_no`, read by the discharges run. Holds `uid` values. | Admissions, when `DEDUP_MODE` is `"episode"` |
 | `<file stem>_deidentified.csv` | Raw data after removal of personal data, before any cleaning. | When `SAVE_DEIDENTIFIED` is `TRUE` |
 | `<file stem>.log` | Run log. Messages are appended. | Always |
 | `00a_pii_removal_complete.dcf` | Completion marker of Module 00a. | Always |
@@ -422,7 +423,7 @@ CSV_FILEPATH <- "input/zim_admissions_2026-01-31.csv"
 source("run_pipeline.r")
 ```
 
-A setting defined in the session keeps its value for later runs in that session. This includes the paths that `00_setup.r` resolves when they are `NULL`. Before running a second file in the same session, set `DICT_FILEPATH`, `OUTPUT_CSV`, `OUTPUT_RDS`, `REPORT_DIR` and `NEOTREE_SCRIPTS_DIR` back to `NULL` and remove `SKIP_DEDUP_STAGE2`, as `run_all.r` does, or start a new session.
+A setting defined in the session keeps its value for later runs in that session. This includes the paths that `00_setup.r` resolves when they are `NULL`. Before running a second file in the same session, set `DICT_FILEPATH`, `OUTPUT_CSV`, `OUTPUT_RDS`, `REPORT_DIR` and `NEOTREE_SCRIPTS_DIR` back to `NULL` and remove `SKIP_DEDUP_STAGE2` and `DEDUP_MODE`, as `run_all.r` does, or start a new session.
 
 When it finishes, `run_pipeline.r` prints the time taken, the paths of the cleaned CSV and RDS, the number of rows and columns, and the report folder.
 
@@ -459,6 +460,7 @@ All settings below are in the user configuration block of `00_setup/00_setup.r`.
 | Setting | Default | Effect |
 |---------|---------|--------|
 | `SKIP_DEDUP_STAGE2` | `TRUE` when the dataset is `infections` or `neolab`, otherwise `FALSE` | `TRUE` makes Module 10 skip its patient-level stage, so several rows per patient are kept. Module 15 then keeps one row per `uid`, `facility` and `uniquekey` instead of one per `uid` and `facility`. |
+| `DEDUP_MODE` | `"episode"` | Stage 2 of Module 10 for `admissions`, `discharges`, `phc_admissions`, `phc_discharges`, Zimbabwe `maternal_outcomes` and Malawi `combined_maternity_outcomes`. `"current"` keeps one row per `uid` and `facility`. `"episode"` collapses rows only when they are the same record sent more than once, keeps every other row and adds `baby_id`, `stay_no` (not in the maternal files) and flag columns (see the [Module 10 README](10_remove_duplicate_rows/README.md)); Modules 11 to 16 then key rows on `uid`, `facility` and `uniquekey`. In episode mode each admissions file must be run before its discharges file (`phc_admissions` before `phc_discharges`). Other datasets are not affected. |
 | `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Module 14a adds `datebct_resolved` and `datebct_source`. Used only when the dataset is `neolab`. `FALSE` adds no columns. |
 | `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Characters Module 02 treats as a mistyped hyphen in a `uid`. |
 | `RESERVED_COLUMN_RENAMES` | for `phc_discharges`: `facility.value` to `facilityname.value`, `facility.label` to `facilityname.label` | Per dataset, standardised column names that Module 01 renames so that they do not share a name with a key column. |
@@ -473,7 +475,7 @@ Two further settings are entries of the `cfg` list, set where `cfg` is built in 
 
 ### Settings in a batch
 
-`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS`, `RESERVED_COLUMN_RENAMES` and `LABEL_VALUE_RULES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`.
+`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS`, `RESERVED_COLUMN_RENAMES` and `LABEL_VALUE_RULES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`. The exception is `DEDUP_MODE`, which `run_all.r` sets for every file from `RUN_ALL_DEDUP_MODE`, near the top of the script (default `"episode"`). Files run in name order, so an admissions file runs before the discharges file of the same country and source.
 
 ## Outputs
 
@@ -501,7 +503,7 @@ output/zim_admissions_2026-01-31/
 | `.log` | Run log, at level INFO and above. Messages are appended to an existing log. |
 | `00a_pii_removal_complete.dcf` | Completion marker of Module 00a, read by the personal-data guard. |
 
-The optional files (`_deidentified.csv`, `_cleaned_stage1.rds`, `_cleaned_harmonised.csv` and `.rds`, `_cleaned_na_reasons_long.csv.gz`) are written to the same folder when their flags are `TRUE`.
+The optional files (`_deidentified.csv`, `_cleaned_stage1.rds`, `_cleaned_harmonised.csv` and `.rds`, `_cleaned_na_reasons_long.csv.gz`) are written to the same folder when their flags are `TRUE`. An admissions run with `DEDUP_MODE` set to `"episode"` also writes `_episode_keys.rds`, which the discharges run reads; it holds `uid` values.
 
 ### Reports
 
@@ -593,6 +595,7 @@ Both generate synthetic input from the dictionaries (column names and value-map 
 | Script | Covers |
 |--------|--------|
 | `test_input_naming.r` | File-name parsing in `run_all.r`; detection of the export style; resolution of the paired admissions/discharges file; a batch run on synthetic files in database, Metabase and mixed style; the datetime and number parsers and the boolean tokens of `00_setup.r`; the list encoding of Module 04; the derived column `hepbdate_date` of Module 14. |
+| `test_dedup_episode.r` | Episode mode of Module 10 on made-up admissions, discharges and births: collapsing only true repeats, baby and stay assignment, discharge linking, flags, known totals, the admissions key file and the datasets covered. |
 | `test_label_value_recovery.r` | The antenatal care parser of Module 05; a run on a synthetic Malawi admissions file with an empty value and a filled label, checking `antenatalcare`, `antenatalcare_source` and `antenatalcare_category` row by row; the same labels in a Zimbabwe file, where no rule applies. |
 | `test_pii_guard.r` | The column-name and value patterns; a full run with the expected removals and redactions; the guard stopping when Module 00a is skipped, when the marker does not match the input file or dictionary, and when a personal-data column or value is added before the Module 15 write; the same checks through `run_all.r`. |
 
@@ -2269,6 +2272,23 @@ Stage 2 is skipped when `skip_stage2` is `TRUE`. Stage 1 still runs.
 
 When Stage 2 is skipped, the module counts the rows that share `uid`, `facility` and `uniquekey` with another row. Modules 11 to 15 keep one row per such key, so these rows would be merged. The count is written to the report, and a warning is logged when it is above zero or when there is no `uniquekey` column.
 
+### Stage 2, episode mode (admissions and discharges, main and PHC; maternal files)
+
+When `DEDUP_MODE` is `"episode"` (the default), admissions and discharges (`admissions` and `discharges`, and the PHC files `phc_admissions` and `phc_discharges`) use episode mode instead of Stages 1 and 2 (`episode_ids.r`). Stage 1 is not applied, because rows with identical visit dates can belong to different babies.
+
+1. **Same event.** Rows sharing `uid` and `facility` are collapsed only when their event times are within 1 hour, sex, birth weight (more than 100 g apart) and gestation (more than 1 week apart) do not disagree, and their readmission flags do not differ. A row joins a collapsed record only when it meets these conditions against every row already in it. The event time is the admission date-time (else the form start time) for admissions, and the form start time (else the discharge date-time) for discharges. The most complete row is kept.
+2. **Baby.** Admission records sharing a `uid` are taken in date order; each joins the first baby under that `uid` it belongs to: identity differs means another baby; a readmission flag, or the same `uid` at another facility with two or more identity fields agreeing, means the same baby; otherwise Apgar at 5 minutes, mode of delivery, birth facility and maternal age decide (`probable`); with nothing to compare the record gets its own letter (`unresolved`).
+3. **Stay.** The admission records of one baby are numbered 1, 2, 3 in date order.
+4. **Discharges** take the baby and stay of the admission they fit under the same `uid` and `facility`: first the admission date-time carried on the discharge (within 1 hour, or exactly 2 hours), then the identity fields (two or more disagreeing means no fit), then the order of dates. If two admissions fit equally, the earlier is used (`ambiguous_link`). A discharge that fits no admission gets a stay of its own (`no_admission`). All discharge forms of one stay are kept; the form started last is marked `stay_form_primary`.
+
+**Maternal files (births).** For Zimbabwe `maternal_outcomes` and Malawi `combined_maternity_outcomes`, one row is one baby at birth and `uid` is the baby's Neotree ID. Rows are collapsed by the rule in step 1, with birth outcome (live birth, stillbirth, miscarriage) and birth order (`typebirth`: Tw1, Tw2, Tr1 ...) added to the baby details and the maternal admission date-time as the clock. A birth happens once, so every record left is a baby of its own and gets its own letter under its `uid`; there is no `stay_no` and no key file. A record within 24 hours of an earlier one under the same `uid` is flagged `same_day_pair` when the baby details differ and `unresolved` when nothing differs; a later record in which nothing differs is also `unresolved`. The Malawi component files (`maternal_outcomes`, `dhis2_maternal_outcomes`, `maternity_completeness`) keep the current rule.
+
+Columns added: `baby_id` (`uid`, a full stop and a letter), `stay_no`, `dedup_rows_merged`, `dedup_basis`, `dedup_flag` (`none`, or one or more of `unresolved`, `probable`, `ambiguous_link`, `link_doubt`, `no_admission`, `outcome_conflict`, `same_day_pair`, `collapsed_no_identity` (rows collapsed although no identity field could be compared), `no_uid`, separated by `;`), and on discharges `stay_form_primary`. The maternal files get the same columns without `stay_no`. The original `uid` is not changed. Rows without a `uid` are kept with `dedup_flag` `no_uid`.
+
+The admissions run writes `<file_stem>_episode_keys.rds` to its output folder, with the name and md5 checksum of its input file and md5 checksums of every `.r` file in `00_setup`, `00_build_dictionary`, `00a_pii_detection_removal` and Modules 01 to 10, of every `.xlsx` file directly in `dictionaries/`, and of the dictionary file the admissions run read (its path, and its checksum taken when the setup read it; the key file is not written if the dictionary has changed since), and the rule's settings. The discharges run reads the key file of the paired admissions file and stops if it is missing or if any of these differ, so admissions must run first, and again after any change to that code or to the dictionaries. An admissions run in current mode removes an old key file.
+
+In episode mode `uid` + `facility` is not unique, so Modules 11, 12, 14 and 15 keep one row per `uid` + `facility` + `uniquekey`, and Module 16 matches clean to raw rows on the same key. The run stops if two kept rows share `uid`, `facility` and `uniquekey`.
+
 ### Checkpoint
 
 When `cfg$save_stage1_checkpoint` is `TRUE`, the deduplicated data frame is checked by `assert_pii_removed()` (`00_setup.r`) and then saved as an RDS file. A failed check stops the run. A failure to write the file is logged as a warning and the run continues.
@@ -2286,17 +2306,19 @@ When `cfg$save_stage1_checkpoint` is `TRUE`, the deduplicated data frame is chec
 |---------------|-------------|
 | `df` | Deduplicated data frame |
 | `<file_stem>_cleaned_stage1.rds` | Checkpoint, written beside the cleaned RDS output. Only when `SAVE_STAGE1_CHECKPOINT` is `TRUE`. |
-| `reports/10_duplicate_row_removal_report.txt` | Rows before and after, rows removed at each stage, retention rate, the visit-date columns used, whether Stage 2 ran and, when it did not, the number of rows sharing `uid`, `facility` and `uniquekey`. Counts and column names only. |
+| `reports/10_duplicate_row_removal_report.txt` | Rows before and after, rows removed at each stage, retention rate, the visit-date columns used, whether Stage 2 ran and, when it did not, the number of rows sharing `uid`, `facility` and `uniquekey`. In episode mode also babies, stays, and rows by basis and by flag. Counts and column names only. |
+| `<file_stem>_episode_keys.rds` | Admissions in episode mode only: the admission records with their baby and stay, read by the discharges run. Holds `uid` values. |
 
 ## Function
 
-`remove_duplicate_rows(df, skip_stage2 = FALSE, report_filepath = NULL)` returns the deduplicated data frame.
+`remove_duplicate_rows(df, skip_stage2 = FALSE, report_filepath = NULL, episode_dataset = NULL, adm_keys = NULL)` returns the deduplicated data frame. `episode_dataset` (`"admissions"` or `"discharges"`) turns on episode mode; `adm_keys` is the admissions key table for discharges.
 
 ## Configuration
 
 | Setting | Effect |
 |---------|--------|
 | `SKIP_DEDUP_STAGE2` (`cfg$skip_dedup_stage2`) | `TRUE` skips Stage 2. Unless set by the user, it is `TRUE` for the `infections` and `neolab` datasets, which hold several rows per patient, and `FALSE` for all others. |
+| `DEDUP_MODE` (`cfg$dedup_mode`) | `"episode"` (default) or `"current"`. Episode mode applies to the main and PHC admissions and discharges, Zimbabwe `maternal_outcomes` and Malawi `combined_maternity_outcomes`; `cfg$dedup_episode` is `TRUE` when it applies to the current run. In `run_all.r`, set `RUN_ALL_DEDUP_MODE`. |
 | `SAVE_STAGE1_CHECKPOINT` (`cfg$save_stage1_checkpoint`) | `TRUE` writes the checkpoint RDS. Default `FALSE`. |
 
 

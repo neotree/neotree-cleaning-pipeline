@@ -161,8 +161,13 @@ classify_na_reasons <- function(df_clean, df_raw, script_conditions, cfg) {
     tolower(df_raw[[scriptid_col]]) else rep(NA_character_, nrow(df_raw))
 
   # Join scriptid to clean data via uid
+  # In episode mode several clean rows can share a uid, so rows are matched
+  # on uid + facility + uniquekey first.
+  row_index <- clean_to_raw_index(df_clean, raw_keys,
+                                  by_row_key = isTRUE(cfg$dedup_episode))
+
   script_lookup <- resolve_row_scripts(
-    df_clean, raw_keys, raw_scriptids, country, dataset
+    df_clean, raw_keys, raw_scriptids, country, dataset, row_index
   )
 
   # ------------------------------------------------------------------
@@ -174,7 +179,7 @@ classify_na_reasons <- function(df_clean, df_raw, script_conditions, cfg) {
   # 4. Build raw value matrix aligned to clean data
   # ------------------------------------------------------------------
   log_info("Aligning raw values to clean dataset columns...")
-  raw_aligned <- align_raw_to_clean(df_clean, df_raw, raw_keys, raw_col_map)
+  raw_aligned <- align_raw_to_clean(df_clean, df_raw, raw_keys, raw_col_map, row_index)
 
   # ------------------------------------------------------------------
   # 5. Classify each NA cell
@@ -379,14 +384,33 @@ normalise_raw_keys <- function(df_raw) {
   )
 }
 
+#' Map clean rows to raw rows
+#'
+#' by_row_key = FALSE: on uid alone (first raw row with that uid).
+#' by_row_key = TRUE : on uid + facility + uniquekey, then uid + facility,
+#'                    then uid, for rows not yet matched.
+clean_to_raw_index <- function(df_clean, raw_keys, by_row_key = FALSE) {
+  u_c <- as.character(df_clean$uid); u_r <- as.character(raw_keys$uid)
+  idx <- match(u_c, u_r)
+  if (!isTRUE(by_row_key)) return(idx)
+  f_c <- as.character(df_clean$facility); f_r <- as.character(raw_keys$facility)
+  k_c <- if ("uniquekey" %in% names(df_clean)) as.character(df_clean$uniquekey) else rep(NA_character_, length(u_c))
+  k_r <- as.character(raw_keys$uniquekey)
+  i3  <- match(paste(u_c, f_c, k_c, sep = "\r"), paste(u_r, f_r, k_r, sep = "\r"))
+  i2  <- match(paste(u_c, f_c, sep = "\r"), paste(u_r, f_r, sep = "\r"))
+  out <- ifelse(!is.na(k_c) & !is.na(i3), i3, ifelse(!is.na(i2), i2, idx))
+  as.integer(out)
+}
+
 #' Resolve the Script ID for Every Row in df_clean
 #'
 #' One match() call maps clean uids to raw rows; resolve_script_id() is then
 #' applied to each row via mapply.
 resolve_row_scripts <- function(df_clean, raw_keys, raw_scriptids,
-                                country, dataset) {
+                                country, dataset, row_index = NULL) {
   # Single vectorised uid join
-  raw_idx  <- match(as.character(df_clean$uid), as.character(raw_keys$uid))
+  raw_idx  <- if (is.null(row_index))
+    match(as.character(df_clean$uid), as.character(raw_keys$uid)) else row_index
   raw_sids <- ifelse(!is.na(raw_idx), raw_scriptids[raw_idx], NA_character_)
 
   mapply(
@@ -434,7 +458,7 @@ get_condition <- function(cond_lookup, script_id, field_key_lower) {
 #'
 #' One match() call maps all clean rows to raw rows; the loop runs once per
 #' column, not once per cell.
-align_raw_to_clean <- function(df_clean, df_raw, raw_keys, raw_col_map) {
+align_raw_to_clean <- function(df_clean, df_raw, raw_keys, raw_col_map, row_index = NULL) {
   n_rows    <- nrow(df_clean)
   data_cols <- setdiff(names(df_clean), c("uid", "facility", "uniquekey"))
 
@@ -442,7 +466,8 @@ align_raw_to_clean <- function(df_clean, df_raw, raw_keys, raw_col_map) {
   colnames(mat) <- data_cols
 
   # Single vectorised join: clean row i -> raw row uid_to_raw[i] (NA if no match)
-  uid_to_raw <- match(as.character(df_clean$uid), as.character(raw_keys$uid))
+  uid_to_raw <- if (is.null(row_index))
+    match(as.character(df_clean$uid), as.character(raw_keys$uid)) else row_index
   valid      <- which(!is.na(uid_to_raw))   # clean rows that have a raw counterpart
 
   if (length(valid) == 0L) return(as.data.frame(mat, stringsAsFactors = FALSE))

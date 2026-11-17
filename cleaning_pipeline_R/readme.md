@@ -50,7 +50,7 @@ cleaning_pipeline_R/
 | 07 | [`07_drop_label_columns`](07_drop_label_columns/README.md) | Drops the remaining label columns and keeps one column per variable prefix. |
 | 08 | [`08_drop_autopopulated_columns`](08_drop_autopopulated_columns/README.md) | Passes the data through unchanged and writes a report. |
 | 09 | [`09_data_type_assignment`](09_data_type_assignment/README.md) | Converts every column from text to the type given in the dictionary. |
-| 10 | [`10_remove_duplicate_rows`](10_remove_duplicate_rows/README.md) | Removes duplicate rows, first per visit and then per patient, keeping the most complete row. |
+| 10 | [`10_remove_duplicate_rows`](10_remove_duplicate_rows/README.md) | Removes duplicate rows, first per visit and then per patient, keeping the most complete row. With `DEDUP_MODE` set to `"episode"`, admissions and discharges (main and PHC) and the maternal files (Zimbabwe `maternal_outcomes`, Malawi `combined_maternity_outcomes`) keep every row that is not the same record sent again, and gain `baby_id` (and, except the maternal files, `stay_no`). |
 | 11 | [`11_numeric_validation`](11_numeric_validation/README.md) | Validates numeric columns, converts weights to grams and applies the dictionary ranges. |
 | 12 | [`12_boolean_validation`](12_boolean_validation/README.md) | Sets every boolean column to `TRUE`, `FALSE` or `NA`. |
 | 13 | [`13_categorical_object_validation`](13_categorical_object_validation/README.md) | Cleans categorical and free-text columns and turns missing-value text into `NA`. |
@@ -98,6 +98,7 @@ Everything written for one input file goes to `output/<file stem>/`, where `<fil
 | `<file stem>_cleaned_na_reasons_long.csv.gz` | One row per coded cell, with the raw value. | When `SAVE_NA_REASONS_LONG` is `TRUE` |
 | `<file stem>_cleaned_harmonised.csv`, `.rds` | Cleaned dataset with harmonised column names. | When `SAVE_HARMONISED` is `TRUE` |
 | `<file stem>_cleaned_stage1.rds` | Data frame after duplicate-row removal. | When `SAVE_STAGE1_CHECKPOINT` is `TRUE` |
+| `<file stem>_episode_keys.rds` | Admission records with their `baby_id` and `stay_no`, read by the discharges run. Holds `uid` values. | Admissions, when `DEDUP_MODE` is `"episode"` |
 | `<file stem>_deidentified.csv` | Raw data after removal of personal data, before any cleaning. | When `SAVE_DEIDENTIFIED` is `TRUE` |
 | `<file stem>.log` | Run log. Messages are appended. | Always |
 | `00a_pii_removal_complete.dcf` | Completion marker of Module 00a. | Always |

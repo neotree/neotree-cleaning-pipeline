@@ -70,6 +70,9 @@ cat(sprintf("\n[%s] Neotree Cleaning Pipeline started.\n\n",
 # -- 00  Setup -----------------------------------------------------------------
 cat("[ 00 ]  Setup & configuration\n")
 source("00_setup/00_setup.r")
+# Checksum of the dictionary at the start of the run; Module 10 compares the
+# dictionary against it before writing an episode-mode key file.
+RUN_DICT_MD5 <- DICT_MD5
 
 # -- 00a  PII removal (on the raw data) ----------------------------------------
 cat("[ 00a]  PII detection and removal\n")
