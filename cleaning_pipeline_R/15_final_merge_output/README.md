@@ -54,6 +54,16 @@ Added when `matageyrs` or `mat_age_date_years` (from Module 11) is present. Sour
 
 When both sources are present on the same row and differ by more than 1 year, `matageyrs` is used and the number of such rows is logged and reported.
 
+### 7. Derived antenatal care category
+
+Added when Module 05 has written `antenatalcare_source` (Malawi admissions).
+
+| Column | Content |
+|--------|---------|
+| `antenatalcare_category` | `"none"` for 0 visits, `"1_3"` for 1 to 3 visits, `"ge4"` for 4 or more, from the final `antenatalcare` count. A row with no count whose `antenatalcare_source` is `"raw_range_label"` is `"ge4"`. `NA` where the answer is unknown. |
+
+The visit count is not imputed from the category.
+
 ### 7. Output
 
 For the CSV, date-time columns are written as `YYYY-MM-DD HH:MM:SS` (UTC), a trailing `.000` is removed from text values, and `NA` is written as an empty field. The RDS keeps the typed columns.

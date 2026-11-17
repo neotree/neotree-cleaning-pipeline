@@ -45,7 +45,7 @@ cleaning_pipeline_R/
 | 02 | [`02_frame_shift_correction`](02_frame_shift_correction/README.md) | Repairs `uid` values in which another character replaces the hyphen and removes rows with an empty `uid`. |
 | 03 | [`03_duplicate_column_merging`](03_duplicate_column_merging/README.md) | Merges columns that share a name into one column. |
 | 04 | [`04_dictionary_value_cleaning`](04_dictionary_value_cleaning/README.md) | Rewrites categorical values as the canonical codes of the dictionary where a value matches exactly one code. |
-| 05 | [`05_forward_fill_placeholders`](05_forward_fill_placeholders/README.md) | Copies fixed placeholder words from a label column into its empty value column. |
+| 05 | [`05_forward_fill_placeholders`](05_forward_fill_placeholders/README.md) | Reads configured fields from their label column into the empty value column (antenatal care visits in Malawi admissions), then copies fixed placeholder words from a label column into its empty value column. |
 | 06 | [`06_forward_fill_numeric_datetime`](06_forward_fill_numeric_datetime/README.md) | Fills empty values from the paired label column where the label is a number or a datetime, then drops the paired label columns. |
 | 07 | [`07_drop_label_columns`](07_drop_label_columns/README.md) | Drops the remaining label columns and keeps one column per variable prefix. |
 | 08 | [`08_drop_autopopulated_columns`](08_drop_autopopulated_columns/README.md) | Passes the data through unchanged and writes a report. |
@@ -116,7 +116,7 @@ Module 16 runs when the folder `neotree_scripts/` exists. Otherwise a warning is
 
 ## Data keys and script metadata
 
-The dictionary build reads the data-key exports in `neotree_data_keys/`, and the build and Module 16 read the script metadata in `neotree_scripts/`. Both are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-dev-webeditor.neotree.org/, with a Neotree account. They contain the names of health workers and are not part of the published repository. The README file in each folder lists the files and where they go.
+The dictionary build reads the data-key exports in `neotree_data_keys/`, and the build and Module 16 read the script metadata in `neotree_scripts/`. Both are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-webeditor.neotree.org:10243/, with a Neotree account. They contain the names of health workers and are not part of the published repository. The README file in each folder lists the files and where they go.
 
 ## Dictionaries
 
@@ -172,6 +172,8 @@ The pipeline adds these columns to the cleaned dataset. The columns they are der
 | `discharge_weight_g` | Module 15 | `dischweight` in grams. Added when `dischweight` is present. |
 | `mat_age_years_combined` | Module 15 | `matageyrs` where present, otherwise `mat_age_date_years`. Added when either is present. |
 | `mat_age_source` | Module 15 | `"matageyrs"`, `"matagedate_derived"` or `"none"`. |
+| `antenatalcare_source` | Module 05 | `"raw_numeric_value"`, `"raw_exact_label"`, `"raw_range_label"` or `"unresolved"`. Malawi `admissions` only. |
+| `antenatalcare_category` | Module 15 | `"none"`, `"1_3"`, `"ge4"` or `NA`. Malawi `admissions` only. |
 
 In the cleaned dataset the suffixes `.value` and `.valuedischarge` are removed from all column names.
 

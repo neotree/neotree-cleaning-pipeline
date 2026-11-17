@@ -153,6 +153,7 @@ All settings below are in the user configuration block of `00_setup/00_setup.r`.
 | `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Module 14a adds `datebct_resolved` and `datebct_source`. Used only when the dataset is `neolab`. `FALSE` adds no columns. |
 | `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Characters Module 02 treats as a mistyped hyphen in a `uid`. |
 | `RESERVED_COLUMN_RENAMES` | for `phc_discharges`: `facility.value` to `facilityname.value`, `facility.label` to `facilityname.label` | Per dataset, standardised column names that Module 01 renames so that they do not share a name with a key column. |
+| `LABEL_VALUE_RULES` | for Malawi `admissions`: `antenatalcare` with the parser `anc_visit_count` | Per country and dataset, fields whose answer Module 05 reads from the `.label` column when the `.value` column holds no valid value. |
 
 Two further settings are entries of the `cfg` list, set where `cfg` is built in `00_setup/00_setup.r`. Both are empty lists by default.
 
@@ -163,7 +164,7 @@ Two further settings are entries of the `cfg` list, set where `cfg` is built in 
 
 ### Settings in a batch
 
-`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS` and `RESERVED_COLUMN_RENAMES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`.
+`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS`, `RESERVED_COLUMN_RENAMES` and `LABEL_VALUE_RULES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`.
 
 ## Outputs
 
@@ -207,7 +208,7 @@ The reports are text files in `reports/`. They hold counts and column names; the
 | `02_frame_shift_dirty_rows.csv` | Module 02 | The rows removed for an empty `uid`. Written only when a row is removed. |
 | `03_duplicate_column_report.txt` | Module 03 | Duplicate column names merged. |
 | `04_dictionary_cleaning_report.txt` | Module 04 | Per column, each replaced value with its replacement and each unresolved value, with the number of records. |
-| `05_forward_fill_placeholder_report.txt` | Module 05 | Values filled per column pair. |
+| `05_forward_fill_placeholder_report.txt` | Module 05 | Values filled per column pair; for each label-to-value rule, the number of rows in each class (valid value, count read from the label, unresolved and why). |
 | `06_forward_fill_numeric_datetime_report.txt` | Module 06 | Values filled per column. |
 | `07_drop_columns_report.txt` | Module 07 | Per prefix, the column kept and the columns dropped. |
 | `08_autopopulated_columns_report.txt` | Module 08 | Number of columns. |
@@ -275,6 +276,7 @@ Two test scripts are in `tests/`. They are run with `Rscript` from the pipeline 
 ```
 Rscript tests/test_input_naming.r
 Rscript tests/test_pii_guard.r
+Rscript tests/test_label_value_recovery.r
 ```
 
 Both generate synthetic input from the dictionaries (column names and value-map codes) and run in a temporary copy of the pipeline under `tempdir()`. They do not read or write `input/` or `output/`. Both need `readr` and `readxl`, and both start full pipeline runs in separate R processes.
@@ -282,6 +284,7 @@ Both generate synthetic input from the dictionaries (column names and value-map 
 | Script | Covers |
 |--------|--------|
 | `test_input_naming.r` | File-name parsing in `run_all.r`; detection of the export style; resolution of the paired admissions/discharges file; a batch run on synthetic files in database, Metabase and mixed style; the datetime and number parsers and the boolean tokens of `00_setup.r`; the list encoding of Module 04; the derived column `hepbdate_date` of Module 14. |
+| `test_label_value_recovery.r` | The antenatal care parser of Module 05; a run on a synthetic Malawi admissions file with an empty value and a filled label, checking `antenatalcare`, `antenatalcare_source` and `antenatalcare_category` row by row; the same labels in a Zimbabwe file, where no rule applies. |
 | `test_pii_guard.r` | The column-name and value patterns; a full run with the expected removals and redactions; the guard stopping when Module 00a is skipped, when the marker does not match the input file or dictionary, and when a personal-data column or value is added before the Module 15 write; the same checks through `run_all.r`. |
 
 Each script prints `[PASS]` or `[FAIL]` for every check and a summary line. The exit status is 0 when every check passes and 1 otherwise. After a failure the script prints the folder that holds the logs of the test runs.

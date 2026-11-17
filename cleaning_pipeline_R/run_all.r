@@ -252,6 +252,8 @@ PIPELINE_GLOBALS <- c(
   "UID_REPAIR_SEPARATORS", "PAIRED_DATASET", "paired_info",
   # Module 01: reserved-system-column-name collision renames
   "RESERVED_COLUMN_RENAMES",
+  # Module 05: label-to-value rules
+  "LABEL_VALUE_RULES",
   # Output flags
   "SAVE_DEIDENTIFIED", "SAVE_STAGE1_CHECKPOINT", "SAVE_HARMONISED",
   "SAVE_NA_CODED", "SAVE_NA_REASONS_LONG", "SKIP_DEDUP_STAGE2",

@@ -6,14 +6,14 @@ This folder holds the data-key exports of the Neotree web editors. The dictionar
 
 ## Getting the files
 
-The exports are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-dev-webeditor.neotree.org/, with a Neotree account. Each country has its own folder:
+The exports are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-webeditor.neotree.org:10243/, with a Neotree account. Each country has its own folder:
 
 | Folder | Files read by the build |
 |--------|-------------------------|
 | `downloaded/neotree_data_keys_zimbabwe/` | `data-keys-metadata.json`, `data-keys-usage.xlsx` |
 | `downloaded/neotree_data_keys_malawi/` | `data-keys-metadata.json`, `data-keys-usage.xlsx` |
 
-`data-keys-metadata.xlsx`, also part of the export, is not read. The folder names are set in `DOWNLOADED_KEYS_BASE` and `COUNTRY_FOLDERS` in `00_build_dictionary/00_build_dictionary.r`.
+A file name may start with a prefix such as `zim-` or `mwi-` (for example `mwi-data-keys-usage.xlsx`); each folder must hold one file of each kind. `data-keys-metadata.xlsx`, also part of the export, is not read. The folder names are set in `DOWNLOADED_KEYS_BASE` and `COUNTRY_FOLDERS` in `00_build_dictionary/00_build_dictionary.r`.
 
 ## Not in the repository
 

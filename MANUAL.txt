@@ -5,7 +5,7 @@
   A single-file compilation of every documentation file shipped with the
   Neotree data cleaning pipeline.
 
-  Version   : 2.0.0  (see CHANGELOG.md)
+  Version   : 2.0.1  (see CHANGELOG.md)
   Source    : the README and documentation files in cleaning_pipeline_R/,
               reproduced here in full.
 
@@ -159,7 +159,7 @@ cleaning_pipeline_R/
 | 02 | [`02_frame_shift_correction`](02_frame_shift_correction/README.md) | Repairs `uid` values in which another character replaces the hyphen and removes rows with an empty `uid`. |
 | 03 | [`03_duplicate_column_merging`](03_duplicate_column_merging/README.md) | Merges columns that share a name into one column. |
 | 04 | [`04_dictionary_value_cleaning`](04_dictionary_value_cleaning/README.md) | Rewrites categorical values as the canonical codes of the dictionary where a value matches exactly one code. |
-| 05 | [`05_forward_fill_placeholders`](05_forward_fill_placeholders/README.md) | Copies fixed placeholder words from a label column into its empty value column. |
+| 05 | [`05_forward_fill_placeholders`](05_forward_fill_placeholders/README.md) | Reads configured fields from their label column into the empty value column (antenatal care visits in Malawi admissions), then copies fixed placeholder words from a label column into its empty value column. |
 | 06 | [`06_forward_fill_numeric_datetime`](06_forward_fill_numeric_datetime/README.md) | Fills empty values from the paired label column where the label is a number or a datetime, then drops the paired label columns. |
 | 07 | [`07_drop_label_columns`](07_drop_label_columns/README.md) | Drops the remaining label columns and keeps one column per variable prefix. |
 | 08 | [`08_drop_autopopulated_columns`](08_drop_autopopulated_columns/README.md) | Passes the data through unchanged and writes a report. |
@@ -230,7 +230,7 @@ Module 16 runs when the folder `neotree_scripts/` exists. Otherwise a warning is
 
 ## Data keys and script metadata
 
-The dictionary build reads the data-key exports in `neotree_data_keys/`, and the build and Module 16 read the script metadata in `neotree_scripts/`. Both are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-dev-webeditor.neotree.org/, with a Neotree account. They contain the names of health workers and are not part of the published repository. The README file in each folder lists the files and where they go.
+The dictionary build reads the data-key exports in `neotree_data_keys/`, and the build and Module 16 read the script metadata in `neotree_scripts/`. Both are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-webeditor.neotree.org:10243/, with a Neotree account. They contain the names of health workers and are not part of the published repository. The README file in each folder lists the files and where they go.
 
 ## Dictionaries
 
@@ -286,6 +286,8 @@ The pipeline adds these columns to the cleaned dataset. The columns they are der
 | `discharge_weight_g` | Module 15 | `dischweight` in grams. Added when `dischweight` is present. |
 | `mat_age_years_combined` | Module 15 | `matageyrs` where present, otherwise `mat_age_date_years`. Added when either is present. |
 | `mat_age_source` | Module 15 | `"matageyrs"`, `"matagedate_derived"` or `"none"`. |
+| `antenatalcare_source` | Module 05 | `"raw_numeric_value"`, `"raw_exact_label"`, `"raw_range_label"` or `"unresolved"`. Malawi `admissions` only. |
+| `antenatalcare_category` | Module 15 | `"none"`, `"1_3"`, `"ge4"` or `NA`. Malawi `admissions` only. |
 
 In the cleaned dataset the suffixes `.value` and `.valuedischarge` are removed from all column names.
 
@@ -460,6 +462,7 @@ All settings below are in the user configuration block of `00_setup/00_setup.r`.
 | `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Module 14a adds `datebct_resolved` and `datebct_source`. Used only when the dataset is `neolab`. `FALSE` adds no columns. |
 | `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Characters Module 02 treats as a mistyped hyphen in a `uid`. |
 | `RESERVED_COLUMN_RENAMES` | for `phc_discharges`: `facility.value` to `facilityname.value`, `facility.label` to `facilityname.label` | Per dataset, standardised column names that Module 01 renames so that they do not share a name with a key column. |
+| `LABEL_VALUE_RULES` | for Malawi `admissions`: `antenatalcare` with the parser `anc_visit_count` | Per country and dataset, fields whose answer Module 05 reads from the `.label` column when the `.value` column holds no valid value. |
 
 Two further settings are entries of the `cfg` list, set where `cfg` is built in `00_setup/00_setup.r`. Both are empty lists by default.
 
@@ -470,7 +473,7 @@ Two further settings are entries of the `cfg` list, set where `cfg` is built in 
 
 ### Settings in a batch
 
-`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS` and `RESERVED_COLUMN_RENAMES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`.
+`run_all.r` sets the identity and path settings for each file as described above. It removes the output flags, `SKIP_DEDUP_STAGE2`, `UID_REPAIR_SEPARATORS`, `RESERVED_COLUMN_RENAMES` and `LABEL_VALUE_RULES` from the global environment after each file, so for a batch these are changed by editing their defaults in `00_setup/00_setup.r`.
 
 ## Outputs
 
@@ -514,7 +517,7 @@ The reports are text files in `reports/`. They hold counts and column names; the
 | `02_frame_shift_dirty_rows.csv` | Module 02 | The rows removed for an empty `uid`. Written only when a row is removed. |
 | `03_duplicate_column_report.txt` | Module 03 | Duplicate column names merged. |
 | `04_dictionary_cleaning_report.txt` | Module 04 | Per column, each replaced value with its replacement and each unresolved value, with the number of records. |
-| `05_forward_fill_placeholder_report.txt` | Module 05 | Values filled per column pair. |
+| `05_forward_fill_placeholder_report.txt` | Module 05 | Values filled per column pair; for each label-to-value rule, the number of rows in each class (valid value, count read from the label, unresolved and why). |
 | `06_forward_fill_numeric_datetime_report.txt` | Module 06 | Values filled per column. |
 | `07_drop_columns_report.txt` | Module 07 | Per prefix, the column kept and the columns dropped. |
 | `08_autopopulated_columns_report.txt` | Module 08 | Number of columns. |
@@ -582,6 +585,7 @@ Two test scripts are in `tests/`. They are run with `Rscript` from the pipeline 
 ```
 Rscript tests/test_input_naming.r
 Rscript tests/test_pii_guard.r
+Rscript tests/test_label_value_recovery.r
 ```
 
 Both generate synthetic input from the dictionaries (column names and value-map codes) and run in a temporary copy of the pipeline under `tempdir()`. They do not read or write `input/` or `output/`. Both need `readr` and `readxl`, and both start full pipeline runs in separate R processes.
@@ -589,6 +593,7 @@ Both generate synthetic input from the dictionaries (column names and value-map 
 | Script | Covers |
 |--------|--------|
 | `test_input_naming.r` | File-name parsing in `run_all.r`; detection of the export style; resolution of the paired admissions/discharges file; a batch run on synthetic files in database, Metabase and mixed style; the datetime and number parsers and the boolean tokens of `00_setup.r`; the list encoding of Module 04; the derived column `hepbdate_date` of Module 14. |
+| `test_label_value_recovery.r` | The antenatal care parser of Module 05; a run on a synthetic Malawi admissions file with an empty value and a filled label, checking `antenatalcare`, `antenatalcare_source` and `antenatalcare_category` row by row; the same labels in a Zimbabwe file, where no rule applies. |
 | `test_pii_guard.r` | The column-name and value patterns; a full run with the expected removals and redactions; the guard stopping when Module 00a is skipped, when the marker does not match the input file or dictionary, and when a personal-data column or value is added before the Module 15 write; the same checks through `run_all.r`. |
 
 Each script prints `[PASS]` or `[FAIL]` for every check and a summary line. The exit status is 0 when every check passes and 1 otherwise. After a failure the script prints the folder that holds the logs of the test runs.
@@ -763,7 +768,7 @@ The first row of a sheet is skipped and the second row is the header. The column
 | `00_build_dictionary/private/script_title_replacements.tsv` | Script titles to replace (optional, not published) |
 | `00_build_dictionary/staff_fields.r` | Keys of the staff fields |
 
-The folder names are set in `DOWNLOADED_KEYS_BASE` and `COUNTRY_FOLDERS`.
+The file names may start with a prefix such as `zim-` or `mwi-` (for example `mwi-data-keys-usage.xlsx`); each folder must hold one file of each kind, otherwise the build stops. The folder names are set in `DOWNLOADED_KEYS_BASE` and `COUNTRY_FOLDERS`.
 
 ### Outputs
 
@@ -1338,6 +1343,7 @@ Each setting is assigned only if it does not already exist, so a value set befor
 | `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Module 14a fills missing `datebct` values from the admissions file. Used only when the dataset is `neolab`. |
 | `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Characters Module 02 treats as a mistyped hyphen in a `uid`. |
 | `RESERVED_COLUMN_RENAMES` | for `phc_discharges`: `facility.value` to `facilityname.value`, `facility.label` to `facilityname.label` | Per dataset, standardised column names that Module 01 renames so that they do not share a name with a key column. |
+| `LABEL_VALUE_RULES` | for Malawi `admissions`: `antenatalcare` with the parser `anc_visit_count` | Per country and dataset, fields whose answer Module 05 reads from the `.label` column when the `.value` column holds no valid value. |
 
 ### Datasets
 
@@ -1486,6 +1492,7 @@ Error messages give column names, pattern names and counts of cells, never value
 | `pii_columns` | `raw_value_column` and `raw_label_column` of variables flagged `confidential` |
 | `harmonised_map` | Named vector from `question_key` to `harmonised_variable_name`, for variables with `use_in_analysis` true |
 | `uid_repair_separators`, `reserved_column_renames` | From the settings of the same names; the renames are those for the current dataset, or `NULL` |
+| `label_value_rules` | From `LABEL_VALUE_RULES`: the rules for the current country and dataset, or `NULL` |
 | `neotree_scripts_dir` | Resolved scripts folder |
 | `save_deidentified`, `save_stage1_checkpoint`, `save_harmonised`, `save_na_coded`, `save_na_reasons_long`, `skip_dedup_stage2`, `resolve_neolab_datebct` | From the settings of the same names |
 | `undocumented_cols` | Column names found by the coverage check |
@@ -1944,17 +1951,37 @@ Steps 1, 3 and 4 write their counts to the pipeline log.
   Source file: cleaning_pipeline_R/05_forward_fill_placeholders/README.md
 ================================================================================
 
-# Module 05: Forward Fill Placeholder Values
+# Module 05: Forward Fill Placeholder Values and Label-to-Value Rules
 
 ## Purpose
 
-Copies a set of fixed placeholder words from a label column into its paired value column where the value is missing.
+Recovers answers that are stored only in a label column. Configured fields are read from their label by a field-specific parser; a set of fixed placeholder words is copied from a label column into its paired value column where the value is missing.
 
 ## When it runs
 
 After Module 04.
 
 ## What it does
+
+### 1. Label-to-value rules
+
+`cfg$label_value_rules` (from `LABEL_VALUE_RULES` in `00_setup/00_setup.r`) lists, for the current country and dataset, fields and the parser that reads each one. For each field the parser reads the `.value` and `.label` columns and fills `.value` where it holds no valid value and the label gives one. A valid `.value` is never changed. The pairs handled here are skipped by step 2.
+
+The parser `anc_visit_count` (antenatal care visits, Malawi `admissions`) works as follows.
+
+| `.value` | `.label` | Result in `.value` | `<field>_source` |
+|----------|----------|--------------------|------------------|
+| whole number, 0 or more | any | unchanged | `raw_numeric_value` |
+| empty or not a whole number | `N ANC visit` or `N ANC visits` (any case, extra spaces allowed), or a plain whole number | `N` | `raw_exact_label` |
+| empty or not a whole number | `None` | `0` | `raw_exact_label` |
+| empty or not a whole number | `More than 4 ANC visits`, `More than 8 ANC visits` | empty | `raw_range_label` |
+| empty or not a whole number | anything else, such as `Not sure`, `ANC visits` with no number, or question text | empty | `unresolved` |
+
+A `.value` that is not a whole number of 0 or more and has no label count is set to `NA`, and the number of such rows is reported. When a valid `.value` and a label count disagree, the `.value` is kept and the number of such rows is reported and logged as a warning. The parser adds the bare column `<field>_source` to the data frame. Module 15 derives `antenatalcare_category` from the final count and this column.
+
+The rule is configured for Malawi `admissions` only.
+
+### 2. Placeholder words
 
 Columns are paired by name: each `.value` column with the `.label` column of the same variable, and each `.valuedischarge` column with its `.labeldischarge` column. A value column with no label column is skipped.
 
@@ -1973,17 +2000,18 @@ Matching is case-sensitive. Labels in any other form are not copied. The label c
 | Object | Description |
 |--------|-------------|
 | `df` | Data frame from Module 04 |
+| `cfg$label_value_rules` | Label-to-value rules for the current country and dataset, or `NULL` |
 
 ## Outputs
 
 | Object / file | Description |
 |---------------|-------------|
-| `df` | Data frame with placeholders copied into the value columns |
-| `reports/05_forward_fill_placeholder_report.txt` | Number of placeholders checked, total number of values filled and, for each pair with a fill, the number of values filled. |
+| `df` | Data frame with values read from labels and placeholders copied into the value columns, plus `<field>_source` for each rule |
+| `reports/05_forward_fill_placeholder_report.txt` | Number of placeholders checked, total number of values filled and, for each pair with a fill, the number of values filled. For each label-to-value rule, the number of rows in each class: valid value, count read from the label, `None` read as 0, `More than N` label, and the unresolved classes (`Not sure`, no number, question text, no answer, other), the number of rows where the value and the label disagree, and the number of invalid values set to missing. |
 
 ## Function
 
-`forward_fill_placeholders(df, placeholders = PLACEHOLDER_VALUES, report_filepath = NULL)` returns the updated data frame. `placeholders` is the character vector of labels that may be copied.
+`apply_label_value_rules(df, rules)` returns a list with the updated data frame, the value columns handled and the report lines. `forward_fill_placeholders(df, placeholders = PLACEHOLDER_VALUES, report_filepath = NULL, skip_value_cols = character(0), rule_report = character(0))` returns the updated data frame. `placeholders` is the character vector of labels that may be copied; `skip_value_cols` are the value columns handled by a rule.
 
 
 ================================================================================
@@ -2026,7 +2054,7 @@ Rows still `NA` after the first pass are read by `parse_datetime_by_shape()` in 
 
 ### Label columns
 
-The label column of every pair is dropped, whether or not anything was filled. Label columns with no paired value column are left in place.
+A pair whose field is listed in `cfg$label_value_rules` is not examined in either pass, because Module 05 has already read it. The label column of every pair is dropped, whether or not anything was filled. Label columns with no paired value column are left in place.
 
 ## Inputs
 
@@ -2633,6 +2661,16 @@ Added when `matageyrs` or `mat_age_date_years` (from Module 11) is present. Sour
 | `mat_age_source` | `"matageyrs"`, `"matagedate_derived"` or `"none"` |
 
 When both sources are present on the same row and differ by more than 1 year, `matageyrs` is used and the number of such rows is logged and reported.
+
+### 7. Derived antenatal care category
+
+Added when Module 05 has written `antenatalcare_source` (Malawi admissions).
+
+| Column | Content |
+|--------|---------|
+| `antenatalcare_category` | `"none"` for 0 visits, `"1_3"` for 1 to 3 visits, `"ge4"` for 4 or more, from the final `antenatalcare` count. A row with no count whose `antenatalcare_source` is `"raw_range_label"` is `"ge4"`. `NA` where the answer is unknown. |
+
+The visit count is not imputed from the category.
 
 ### 7. Output
 

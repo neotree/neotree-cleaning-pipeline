@@ -153,7 +153,7 @@ The first row of a sheet is skipped and the second row is the header. The column
 | `00_build_dictionary/private/script_title_replacements.tsv` | Script titles to replace (optional, not published) |
 | `00_build_dictionary/staff_fields.r` | Keys of the staff fields |
 
-The folder names are set in `DOWNLOADED_KEYS_BASE` and `COUNTRY_FOLDERS`.
+The file names may start with a prefix such as `zim-` or `mwi-` (for example `mwi-data-keys-usage.xlsx`); each folder must hold one file of each kind, otherwise the build stops. The folder names are set in `DOWNLOADED_KEYS_BASE` and `COUNTRY_FOLDERS`.
 
 ### Outputs
 

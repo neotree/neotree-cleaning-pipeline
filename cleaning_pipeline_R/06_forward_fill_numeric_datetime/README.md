@@ -32,7 +32,7 @@ Rows still `NA` after the first pass are read by `parse_datetime_by_shape()` in 
 
 ### Label columns
 
-The label column of every pair is dropped, whether or not anything was filled. Label columns with no paired value column are left in place.
+A pair whose field is listed in `cfg$label_value_rules` is not examined in either pass, because Module 05 has already read it. The label column of every pair is dropped, whether or not anything was filled. Label columns with no paired value column are left in place.
 
 ## Inputs
 

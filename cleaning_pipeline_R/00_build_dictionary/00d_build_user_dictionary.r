@@ -90,7 +90,8 @@ USE_ENRICHED_DICT    <- TRUE
 # use_in_analysis = TRUE to appear in the user dictionary.
 DERIVED_KEYS <- c("birthweight_g", "admission_weight_g", "discharge_weight_g",
                   "mat_age_years_combined", "mat_age_source",
-                  "mat_age_date_years", "hepbdate_date")
+                  "mat_age_date_years", "hepbdate_date",
+                  "antenatalcare_source", "antenatalcare_category")
 
 # =============================================================================
 # SECTION 1 -- PACKAGES & NULL-COALESCING OPERATOR

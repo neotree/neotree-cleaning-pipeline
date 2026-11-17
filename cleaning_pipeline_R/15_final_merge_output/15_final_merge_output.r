@@ -38,6 +38,13 @@
 #     mat_age_source         <- "matageyrs" | "matagedate_derived" | "none"
 #     See derive_maternal_age_columns().
 #
+#   Derived antenatal care category (only when Module 05 wrote
+#   antenatalcare_source):
+#     antenatalcare_category <- "none" (0 visits) | "1_3" | "ge4" (4 or more)
+#     from the final antenatalcare count; a row with no count and source
+#     raw_range_label ("More than 4/8 ANC visits") is "ge4".
+#     See derive_antenatalcare_columns().
+#
 #   Datetime format:
 #     POSIXct columns are formatted as "YYYY-MM-DD HH:MM:SS" in the CSV.
 #
@@ -415,6 +422,41 @@ derive_maternal_age_columns <- function(df, cfg) {
   return(df)
 }
 
+# -- Function: derive antenatal care category ---------------------------------
+
+#' Derive the antenatal care visit category
+#'
+#' antenatalcare_category is "none" for 0 visits, "1_3" for 1 to 3 and "ge4"
+#' for 4 or more, taken from the final antenatalcare count.  Where the count
+#' is missing and antenatalcare_source is "raw_range_label", the category is
+#' "ge4".  The count itself is never imputed.
+#'
+#' @param df   Final merged data.frame (bare column names).
+#' @param cfg  Config list (unused; kept for interface consistency).
+#' @return     df with antenatalcare_category appended, or df unchanged when
+#'             antenatalcare or antenatalcare_source is absent.
+derive_antenatalcare_columns <- function(df, cfg) {
+  if (!all(c("antenatalcare", "antenatalcare_source") %in% names(df))) {
+    return(df)
+  }
+  n <- suppressWarnings(as.numeric(df$antenatalcare))
+  n[!is.finite(n) | n < 0 | n != floor(n)] <- NA_real_
+  category <- ifelse(is.na(n), NA_character_,
+              ifelse(n == 0, "none", ifelse(n <= 3, "1_3", "ge4")))
+  range_only <- is.na(n) & !is.na(df$antenatalcare_source) &
+                df$antenatalcare_source == "raw_range_label"
+  category[range_only] <- "ge4"
+  df$antenatalcare_category <- category
+
+  log_info(
+    paste0("derive_antenatalcare_columns: category none=%d, 1_3=%d, ge4=%d ",
+           "(of which from a range label=%d), missing=%d."),
+    sum(category == "none", na.rm = TRUE), sum(category == "1_3", na.rm = TRUE),
+    sum(category == "ge4",  na.rm = TRUE), sum(range_only), sum(is.na(category))
+  )
+  df
+}
+
 # -- Function: merge validated sub-frames -------------------------------------
 
 #' Merge Validated Sub-Frames into Final Clean Dataset
@@ -529,6 +571,9 @@ merge_and_output <- function(df_numeric, df_boolean, df_categorical,
   # and NA-reason-coded by Module 16.  Does nothing when no source column is
   # present.
   df_clean <- derive_maternal_age_columns(df_clean, cfg)
+
+  # -- Derive antenatal care category (needs antenatalcare_source from Module 05)
+  df_clean <- derive_antenatalcare_columns(df_clean, cfg)
 
   log_info(
     "Final merged dataset: %d rows x %d columns.", nrow(df_clean), ncol(df_clean)

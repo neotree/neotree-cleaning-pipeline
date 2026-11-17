@@ -164,6 +164,22 @@ if (!exists("RESERVED_COLUMN_RENAMES")) {
   )
 }
 
+# Fields whose answer is stored only in the .label column while the paired
+# .value column is empty, and whose label text can be read as a value.
+# Module 05 fills .value from the label before the generic recovery steps run.
+#   Format: country -> dataset -> named character vector (field -> parser)
+#   Parsers (defined in Module 05):
+#     "anc_visit_count" -- number of antenatal care visits from labels such as
+#                          "3 ANC visits" and "None".  Also writes
+#                          <field>_source; Module 15 derives <field>_category.
+if (!exists("LABEL_VALUE_RULES")) {
+  LABEL_VALUE_RULES <- list(
+    MWI = list(
+      admissions = c(antenatalcare = "anc_visit_count")
+    )
+  )
+}
+
 # Harmonised (snake_case) CSV + RDS written by Module 00b.
 if (!exists("SAVE_HARMONISED"))        SAVE_HARMONISED        <- FALSE
 
@@ -199,7 +215,7 @@ NEOTREE_SCRIPTS_DIR <- normalizePath(NEOTREE_SCRIPTS_DIR, mustWork = FALSE)
 
 # -- Pipeline version ----------------------------------------------------------
 # Written to the run log and to the Module 00a completion marker.
-PIPELINE_VERSION <- "2.0.0"
+PIPELINE_VERSION <- "2.0.1"
 
 # -- Logging -------------------------------------------------------------------
 log_appender(appender_tee(file = file.path(RUN_OUTPUT_DIR, paste0(file_stem, ".log"))))
@@ -924,6 +940,10 @@ cfg <- list(
   # system key column (facility/uid/uniquekey).
   # NULL when the current dataset has no entry in RESERVED_COLUMN_RENAMES.
   reserved_column_renames = RESERVED_COLUMN_RENAMES[[DATASET]],
+
+  # Module 05: label-to-value rules for the current country and dataset.
+  # NULL when none is configured.
+  label_value_rules = LABEL_VALUE_RULES[[COUNTRY]][[DATASET]],
 
   # Module 16: NA Reason Coding
   neotree_scripts_dir = NEOTREE_SCRIPTS_DIR, # path to neotree_scripts/

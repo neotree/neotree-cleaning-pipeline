@@ -13,6 +13,8 @@
 #     2. For values still NA, parse the label with parse_datetime_by_shape().
 #        If it parses, fill .value with the datetime string.
 #     3. Drop the .label column of every pair.
+#   Fields listed in cfg$label_value_rules are handled by Module 05 and are
+#   skipped in steps 1 and 2; their .label column is dropped as in step 3.
 #
 # INPUTS:
 #   df  - data.frame after Module 05
@@ -54,8 +56,16 @@ forward_fill_numeric_datetime <- function(df, report_filepath = NULL) {
 
   cols_to_drop <- character(0)
 
+  # Value columns handled by a Module 05 label-to-value rule.
+  rule_cols <- if (exists("cfg") && length(cfg$label_value_rules) > 0)
+    paste0(names(cfg$label_value_rules), ".value") else character(0)
+
   for (vc in names(pairs)) {
     lc   <- pairs[[vc]]
+    if (vc %in% rule_cols) {
+      cols_to_drop <- c(cols_to_drop, lc)
+      next
+    }
     mask <- is.na(df[[vc]]) & !is.na(df[[lc]])
 
     if (!any(mask)) {

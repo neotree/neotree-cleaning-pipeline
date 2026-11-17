@@ -64,7 +64,7 @@ cleaning_pipeline_R/
 
 The repository contains code, dictionaries and documentation. It contains no study data. `cleaning_pipeline_R/input/` and `cleaning_pipeline_R/output/` are excluded from version control by `.gitignore`.
 
-The data-key exports (`cleaning_pipeline_R/neotree_data_keys/`) and the script metadata (`cleaning_pipeline_R/neotree_scripts/`) are not included either, because they contain the names of health workers. They are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-dev-webeditor.neotree.org/, with a Neotree account. They are needed to rebuild the dictionaries and for Module 16 (the NA-reason codes); the README file in each folder says which files to place there. The dictionaries in the repository are already built and contain no staff names, so the pipeline runs without them, apart from Module 16.
+The data-key exports (`cleaning_pipeline_R/neotree_data_keys/`) and the script metadata (`cleaning_pipeline_R/neotree_scripts/`) are not included either, because they contain the names of health workers. They are downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-webeditor.neotree.org:10243/, with a Neotree account. They are needed to rebuild the dictionaries and for Module 16 (the NA-reason codes); the README file in each folder says which files to place there. The dictionaries in the repository are already built and contain no staff names, so the pipeline runs without them, apart from Module 16.
 
 The pipeline removes personal data as its first step and stops before writing any output if that step has not run for the input file.
 

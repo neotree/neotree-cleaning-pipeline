@@ -14,7 +14,7 @@ Module 16 runs only when this folder exists. Without it the cleaned dataset is s
 
 ## Getting the files
 
-The script metadata is downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-dev-webeditor.neotree.org/, with a Neotree account, and saved as `<script title> - metadata.json` in the folder of its country.
+The script metadata is downloaded from the Neotree web editors, https://webeditor.neotree.org/ and https://zim-webeditor.neotree.org:10243/, with a Neotree account, and saved as `<script title> - metadata.json` in the folder of its country.
 
 ## Not in the repository
 

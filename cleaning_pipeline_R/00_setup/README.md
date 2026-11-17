@@ -45,6 +45,7 @@ Each setting is assigned only if it does not already exist, so a value set befor
 | `RESOLVE_NEOLAB_DATEBCT` | `TRUE` | Module 14a fills missing `datebct` values from the admissions file. Used only when the dataset is `neolab`. |
 | `UID_REPAIR_SEPARATORS` | `c(",", "/")` | Characters Module 02 treats as a mistyped hyphen in a `uid`. |
 | `RESERVED_COLUMN_RENAMES` | for `phc_discharges`: `facility.value` to `facilityname.value`, `facility.label` to `facilityname.label` | Per dataset, standardised column names that Module 01 renames so that they do not share a name with a key column. |
+| `LABEL_VALUE_RULES` | for Malawi `admissions`: `antenatalcare` with the parser `anc_visit_count` | Per country and dataset, fields whose answer Module 05 reads from the `.label` column when the `.value` column holds no valid value. |
 
 ### Datasets
 
@@ -193,6 +194,7 @@ Error messages give column names, pattern names and counts of cells, never value
 | `pii_columns` | `raw_value_column` and `raw_label_column` of variables flagged `confidential` |
 | `harmonised_map` | Named vector from `question_key` to `harmonised_variable_name`, for variables with `use_in_analysis` true |
 | `uid_repair_separators`, `reserved_column_renames` | From the settings of the same names; the renames are those for the current dataset, or `NULL` |
+| `label_value_rules` | From `LABEL_VALUE_RULES`: the rules for the current country and dataset, or `NULL` |
 | `neotree_scripts_dir` | Resolved scripts folder |
 | `save_deidentified`, `save_stage1_checkpoint`, `save_harmonised`, `save_na_coded`, `save_na_reasons_long`, `skip_dedup_stage2`, `resolve_neolab_datebct` | From the settings of the same names |
 | `undocumented_cols` | Column names found by the coverage check |

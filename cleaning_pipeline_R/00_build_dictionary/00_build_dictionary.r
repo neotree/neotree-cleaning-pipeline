@@ -59,11 +59,13 @@
 #   neotree_data_keys/downloaded/neotree_data_keys_zimbabwe/data-keys-usage.xlsx
 #   neotree_data_keys/downloaded/neotree_data_keys_malawi/data-keys-metadata.json
 #   neotree_data_keys/downloaded/neotree_data_keys_malawi/data-keys-usage.xlsx
+#   Each file name may carry a prefix ending in "-" or "_", for example
+#   mwi-data-keys-usage.xlsx; a folder must hold one file of each kind.
 #   00_build_dictionary/user_ranges.xlsx (optional)
 #   neotree_scripts/zim-scripts/*.json, neotree_scripts/mwi-scripts/*.json
 #   00_build_dictionary/private/script_title_replacements.tsv (optional)
 #   The data keys and the scripts are downloaded from the Neotree web editors
-#   (https://webeditor.neotree.org/ and https://zim-dev-webeditor.neotree.org/)
+#   (https://webeditor.neotree.org/ and https://zim-webeditor.neotree.org:10243/)
 #   with a Neotree account.  They contain the names of health workers and are
 #   not part of the published repository.
 #
@@ -599,6 +601,41 @@ DERIVED_VARIABLES <- list(
       "'none' otherwise, because matagedate is a Malawi maternity-form field; the ",
       "'matagedate_derived' level exists for schema parity with MWI. Not a raw ",
       "field; no .value column.")
+  ),
+
+  # antenatalcare_source / antenatalcare_category -- ANC recovered from labels
+  list(
+    country = "MWI",
+    datasets = c("admissions"),
+    question_key = "antenatalcare_source",
+    label = "Antenatal care visits -- source of the value (provenance)",
+    r_type = "categorical", weight_unit = NA_character_, use_in_analysis = TRUE,
+    plausible_min = NA, plausible_max = NA,
+    note = paste0(
+      "Written by **Module 05** (not Module 15). In some form versions the ",
+      "answer to the antenatal care question is stored only in the label ",
+      "column and the value column is empty. Module 05 reads the number of ",
+      "visits from the label (label-to-value rule in 00_setup.r). One of: ",
+      "'raw_numeric_value' (a valid whole number in the value column), ",
+      "'raw_exact_label' (a count read from a label such as '3 ANC visits', or ",
+      "'None' read as 0), 'raw_range_label' ('More than 4 ANC visits' or 'More ",
+      "than 8 ANC visits': no count, category only) or 'unresolved' (no usable ",
+      "answer: 'Not sure', 'ANC visits' with no number, question text or ",
+      "empty). Not a raw field; no .value column.")
+  ),
+  list(
+    country = "MWI",
+    datasets = c("admissions"),
+    question_key = "antenatalcare_category",
+    label = "Antenatal care visits -- category (derived)",
+    r_type = "categorical", weight_unit = NA_character_, use_in_analysis = TRUE,
+    plausible_min = NA, plausible_max = NA,
+    note = paste0(
+      "Derived by Module 15 from the final antenatalcare count: 'none' (0 ",
+      "visits), '1_3' (1 to 3 visits) or 'ge4' (4 or more visits). A row with ",
+      "no count whose antenatalcare_source is 'raw_range_label' is 'ge4'. The ",
+      "visit count is never imputed from the category. Missing where the ",
+      "answer is unknown. Not a raw field; no .value column.")
   ),
 
   # hepbdate_date -- Hepatitis B test date split out of the mixed column hepbdate
@@ -1208,6 +1245,21 @@ to_harmonised <- function(x) {
   gsub("(^_|_$)", "", x)
 }
 
+# Path of one data-key export file in a country folder.  The name may carry a
+# prefix ending in "-" or "_" (for example mwi-data-keys-usage.xlsx).  Returns NA
+# when the folder has no such file and stops when it has more than one.
+find_key_file <- function(folder, name) {
+  dir  <- file.path(DOWNLOADED_KEYS_BASE, folder)
+  hits <- list.files(dir, full.names = TRUE)
+  b    <- basename(hits)
+  hits <- hits[b == name | endsWith(b, paste0("-", name)) | endsWith(b, paste0("_", name))]
+  if (length(hits) > 1L)
+    stop(sprintf("More than one %s in %s:\n  %s", name, dir,
+                 paste(basename(hits), collapse = "\n  ")))
+  if (!length(hits)) return(NA_character_)
+  hits
+}
+
 # Script titles to replace (TITLE_REPLACEMENTS_FILE), longest first.
 read_title_replacements <- function() {
   if (!file.exists(TITLE_REPLACEMENTS_FILE)) return(data.frame(original_title = character(0),
@@ -1232,13 +1284,15 @@ load_country_keys <- function(country) {
   if (is.null(folder))
     stop(sprintf("Unknown country '%s'. Add it to COUNTRY_FOLDERS.", country))
 
-  md_path <- file.path(DOWNLOADED_KEYS_BASE, folder, "data-keys-metadata.json")
-  us_path <- file.path(DOWNLOADED_KEYS_BASE, folder, "data-keys-usage.xlsx")
+  md_path <- find_key_file(folder, "data-keys-metadata.json")
+  us_path <- find_key_file(folder, "data-keys-usage.xlsx")
 
-  if (!file.exists(md_path))
-    stop(sprintf("Metadata JSON not found:\n  %s", md_path))
-  if (!file.exists(us_path))
-    stop(sprintf("Usage XLSX not found:\n  %s", us_path))
+  if (is.na(md_path))
+    stop(sprintf("data-keys-metadata.json (with or without a prefix) not found in:\n  %s",
+                 file.path(DOWNLOADED_KEYS_BASE, folder)))
+  if (is.na(us_path))
+    stop(sprintf("data-keys-usage.xlsx (with or without a prefix) not found in:\n  %s",
+                 file.path(DOWNLOADED_KEYS_BASE, folder)))
 
   # -- Metadata ----------------------------------------------------------------
   # fromJSON returns a data.frame with options as a list-column of character vectors
@@ -1983,8 +2037,8 @@ collect_staff_strings <- function() {
     grepl(STAFF_KEY_PATTERN, k, ignore.case = TRUE)   # raw keys only
 
   for (folder in unlist(COUNTRY_FOLDERS)) {
-    md_path <- file.path(DOWNLOADED_KEYS_BASE, folder, "data-keys-metadata.json")
-    if (!file.exists(md_path)) next
+    md_path <- find_key_file(folder, "data-keys-metadata.json")
+    if (is.na(md_path)) next
     md <- jsonlite::fromJSON(md_path, simplifyVector = FALSE)
     ids <- vapply(md, function(e) as.character(e$uuid %||% e$uniqueKey %||% NA), character(1))
     names(md) <- ids
