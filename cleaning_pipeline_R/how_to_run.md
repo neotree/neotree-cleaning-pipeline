@@ -272,21 +272,24 @@ The first script writes the workbooks the cleaning modules read. The next three 
 
 ## Tests
 
-Two test scripts are in `tests/`. They are run with `Rscript` from the pipeline folder:
+Five test scripts are in `tests/`. They are run with `Rscript` from the pipeline folder:
 
 ```
 Rscript tests/test_input_naming.r
 Rscript tests/test_pii_guard.r
 Rscript tests/test_label_value_recovery.r
+Rscript tests/test_dedup_episode.r
+Rscript tests/test_hiv_fields_kept.r
 ```
 
-Both generate synthetic input from the dictionaries (column names and value-map codes) and run in a temporary copy of the pipeline under `tempdir()`. They do not read or write `input/` or `output/`. Both need `readr` and `readxl`, and both start full pipeline runs in separate R processes.
+The scripts that run the pipeline generate synthetic input from the dictionaries (column names and value-map codes) and run in a temporary copy of the pipeline under `tempdir()`; they start full pipeline runs in separate R processes. No script reads or writes `input/` or `output/`. They need `readr` and `readxl`.
 
 | Script | Covers |
 |--------|--------|
 | `test_input_naming.r` | File-name parsing in `run_all.r`; detection of the export style; resolution of the paired admissions/discharges file; a batch run on synthetic files in database, Metabase and mixed style; the datetime and number parsers and the boolean tokens of `00_setup.r`; the list encoding of Module 04; the derived column `hepbdate_date` of Module 14. |
 | `test_dedup_episode.r` | Episode mode of Module 10 on made-up admissions, discharges and births: collapsing only true repeats, baby and stay assignment, discharge linking, flags, known totals, the admissions key file and the datasets covered. |
 | `test_label_value_recovery.r` | The antenatal care parser of Module 05; a run on a synthetic Malawi admissions file with an empty value and a filled label, checking `antenatalcare`, `antenatalcare_source` and `antenatalcare_category` row by row; the same labels in a Zimbabwe file, where no rule applies. |
+| `test_hiv_fields_kept.r` | The built dictionaries: the HIV and syphilis clinical fields and Zimbabwe `ethnicity2` are not flagged confidential in admissions, discharges and PHC files of both countries; no field whose name looks HIV- or syphilis-related is flagged in any dictionary; names, contact details and dates of birth still are. |
 | `test_pii_guard.r` | The column-name and value patterns; a full run with the expected removals and redactions; the guard stopping when Module 00a is skipped, when the marker does not match the input file or dictionary, and when a personal-data column or value is added before the Module 15 write; the same checks through `run_all.r`. |
 
 Each script prints `[PASS]` or `[FAIL]` for every check and a summary line. The exit status is 0 when every check passes and 1 otherwise. After a failure the script prints the folder that holds the logs of the test runs.

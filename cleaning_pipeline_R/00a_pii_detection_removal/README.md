@@ -16,7 +16,7 @@ Any completion marker left by an earlier run is deleted before the file is read.
 
 ### Tier 1: columns flagged in the dictionary
 
-Every column named in `cfg$pii_columns` is removed. These are the value and label columns of the variables flagged `confidential` in the dictionary.
+Every column named in `cfg$pii_columns` is removed. These are the value and label columns of the variables flagged `confidential` in the dictionary. The HIV and syphilis clinical fields and Zimbabwe `ethnicity2` are not flagged (see `HIV_CLINICAL_KEYS` and `OTHER_KEPT_KEYS` in `00_build_dictionary/00_build_dictionary.r`), so they are kept.
 
 ### Tier 2: columns matched by name
 

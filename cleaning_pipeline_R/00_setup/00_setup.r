@@ -227,7 +227,7 @@ NEOTREE_SCRIPTS_DIR <- normalizePath(NEOTREE_SCRIPTS_DIR, mustWork = FALSE)
 
 # -- Pipeline version ----------------------------------------------------------
 # Written to the run log and to the Module 00a completion marker.
-PIPELINE_VERSION <- "2.0.2"
+PIPELINE_VERSION <- "2.0.3"
 
 # -- Logging -------------------------------------------------------------------
 log_appender(appender_tee(file = file.path(RUN_OUTPUT_DIR, paste0(file_stem, ".log"))))

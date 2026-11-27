@@ -5,7 +5,7 @@
   A single-file compilation of every documentation file shipped with the
   Neotree data cleaning pipeline.
 
-  Version   : 2.0.2  (see CHANGELOG.md)
+  Version   : 2.0.3  (see CHANGELOG.md)
   Source    : the README and documentation files in cleaning_pipeline_R/,
               reproduced here in full.
 
@@ -582,21 +582,24 @@ The first script writes the workbooks the cleaning modules read. The next three 
 
 ## Tests
 
-Two test scripts are in `tests/`. They are run with `Rscript` from the pipeline folder:
+Five test scripts are in `tests/`. They are run with `Rscript` from the pipeline folder:
 
 ```
 Rscript tests/test_input_naming.r
 Rscript tests/test_pii_guard.r
 Rscript tests/test_label_value_recovery.r
+Rscript tests/test_dedup_episode.r
+Rscript tests/test_hiv_fields_kept.r
 ```
 
-Both generate synthetic input from the dictionaries (column names and value-map codes) and run in a temporary copy of the pipeline under `tempdir()`. They do not read or write `input/` or `output/`. Both need `readr` and `readxl`, and both start full pipeline runs in separate R processes.
+The scripts that run the pipeline generate synthetic input from the dictionaries (column names and value-map codes) and run in a temporary copy of the pipeline under `tempdir()`; they start full pipeline runs in separate R processes. No script reads or writes `input/` or `output/`. They need `readr` and `readxl`.
 
 | Script | Covers |
 |--------|--------|
 | `test_input_naming.r` | File-name parsing in `run_all.r`; detection of the export style; resolution of the paired admissions/discharges file; a batch run on synthetic files in database, Metabase and mixed style; the datetime and number parsers and the boolean tokens of `00_setup.r`; the list encoding of Module 04; the derived column `hepbdate_date` of Module 14. |
 | `test_dedup_episode.r` | Episode mode of Module 10 on made-up admissions, discharges and births: collapsing only true repeats, baby and stay assignment, discharge linking, flags, known totals, the admissions key file and the datasets covered. |
 | `test_label_value_recovery.r` | The antenatal care parser of Module 05; a run on a synthetic Malawi admissions file with an empty value and a filled label, checking `antenatalcare`, `antenatalcare_source` and `antenatalcare_category` row by row; the same labels in a Zimbabwe file, where no rule applies. |
+| `test_hiv_fields_kept.r` | The built dictionaries: the HIV and syphilis clinical fields and Zimbabwe `ethnicity2` are not flagged confidential in admissions, discharges and PHC files of both countries; no field whose name looks HIV- or syphilis-related is flagged in any dictionary; names, contact details and dates of birth still are. |
 | `test_pii_guard.r` | The column-name and value patterns; a full run with the expected removals and redactions; the guard stopping when Module 00a is skipped, when the marker does not match the input file or dictionary, and when a personal-data column or value is added before the Module 15 write; the same checks through `run_all.r`. |
 
 Each script prints `[PASS]` or `[FAIL]` for every check and a summary line. The exit status is 0 when every check passes and 1 otherwise. After a failure the script prints the folder that holds the logs of the test runs.
@@ -1199,7 +1202,7 @@ The cleaning pipeline reads the base workbook, `dictionary_<country>_<dataset>.x
 | `harmonised_variable_name` | The key name in lower case with underscores between words. |
 | `use_in_analysis` | `FALSE` for free-text keys, summary-table keys and draft keys; `TRUE` otherwise. |
 | `weight_unit` | `grams` for weight variables; otherwise empty. |
-| `confidential` | Confidentiality flag of the key in the data-key export. |
+| `confidential` | Confidentiality flag of the key in the data-key export. The HIV and syphilis clinical fields listed in `HIV_CLINICAL_KEYS` and the fields in `OTHER_KEPT_KEYS` (Zimbabwe `ethnicity2`) in `00_build_dictionary.r` are set to `FALSE`, so the cleaned files keep them. |
 | `record_id_role` | Role of record-level system keys such as the record identifier, the facility and the timestamps; otherwise empty. |
 | `linkage_role` | `primary_linkage_key` for `uid`, `secondary_linkage_key` for `facility`; otherwise empty. |
 | `suggested_plausible_min` | Lowest accepted value of a numeric variable. Empty for no lower limit. |
@@ -1541,7 +1544,7 @@ Any completion marker left by an earlier run is deleted before the file is read.
 
 ### Tier 1: columns flagged in the dictionary
 
-Every column named in `cfg$pii_columns` is removed. These are the value and label columns of the variables flagged `confidential` in the dictionary.
+Every column named in `cfg$pii_columns` is removed. These are the value and label columns of the variables flagged `confidential` in the dictionary. The HIV and syphilis clinical fields and Zimbabwe `ethnicity2` are not flagged (see `HIV_CLINICAL_KEYS` and `OTHER_KEPT_KEYS` in `00_build_dictionary/00_build_dictionary.r`), so they are kept.
 
 ### Tier 2: columns matched by name
 

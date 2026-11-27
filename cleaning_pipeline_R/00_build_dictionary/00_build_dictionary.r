@@ -697,48 +697,46 @@ DERIVED_VARIABLES <- list(
 # Each entry: country, datasets (vector), question_key, changes (named list).
 # 'changes' maps column names to new values; NA_character_ clears a column.
 
-VARIABLE_PATCHES <- list(
+# -- PII classification overrides ---------------------------------------------
+# The web-editor data keys flag these fields confidential = TRUE, and Module
+# 00a drops every confidential column.  The entries built here clear the flag
+# and the PII tier so the columns are kept, in every dataset of the country
+# that has the field (an entry is skipped where the field is absent).
+# HIV_CLINICAL_KEYS are HIV and syphilis clinical fields; OTHER_KEPT_KEYS are
+# other fields kept on request (ZIM ethnicity2, "Other ethnicity").  Names,
+# addresses, phone numbers and dates of birth stay confidential.
 
-  # -- PII classification overrides ---------------------------------------------
-  # Clinical-outcome HIV-related fields flagged confidential=TRUE in the MWI
-  # web-editor JSON.  Module 00a drops every confidential=TRUE column; these
-  # entries clear the flag and the PII tier so the columns are kept.
+HIV_CLINICAL_KEYS <- list(
+  MWI = c("hivtestresult", "hivtestresultdc", "datehivtest", "haart",
+          "lengthhaart", "mathivstat"),
+  ZIM = c("hivtestresult", "datehivtest", "haart", "lengthhaart", "mahaart",
+          "hivmeds", "vlnumber", "hivpcrinfr", "isthebabyhivexposed",
+          "mathivpr", "dnapcrresult", "matpart", "matrprr", "matrprt",
+          "prophylaxis")
+)
+OTHER_KEPT_KEYS <- list(
+  ZIM = c("ethnicity2")
+)
+HIV_CLINICAL_DATASETS <- c("admissions", "discharges", "phc_admissions", "phc_discharges")
 
-  list(country = "MWI", datasets = c("admissions", "discharges"),
-       question_key = "hivtestresult",
-       changes = list(confidential = FALSE,
-                      pii_tier     = NA_character_,
-                      pii_category = NA_character_)),
+KEPT_KEYS <- lapply(c(MWI = "MWI", ZIM = "ZIM"), function(cc)
+  unique(c(HIV_CLINICAL_KEYS[[cc]], OTHER_KEPT_KEYS[[cc]])))
 
-  list(country = "MWI", datasets = c("discharges"),
-       question_key = "hivtestresultdc",
-       changes = list(confidential = FALSE,
-                      pii_tier     = NA_character_,
-                      pii_category = NA_character_)),
+HIV_CONFIDENTIAL_PATCHES <- unlist(lapply(names(KEPT_KEYS), function(cc) {
+  lapply(KEPT_KEYS[[cc]], function(k) list(
+    country = cc, datasets = HIV_CLINICAL_DATASETS, question_key = k,
+    changes = list(confidential = FALSE, pii_tier = NA_character_, pii_category = NA_character_)))
+}), recursive = FALSE)
 
-  list(country = "MWI", datasets = c("admissions", "discharges"),
-       question_key = "datehivtest",
-       changes = list(confidential = FALSE,
-                      pii_tier     = NA_character_,
-                      pii_category = NA_character_)),
+# Keys whose name looks HIV- or syphilis-related and that are still flagged
+# confidential after the patches.  The build warns about them.
+HIV_LIKE_PATTERN <- "hiv|haart|pcr|rpr|vdrl|syph|vlnumber|viral|prophylaxis|matpart|arv"
+hiv_like_confidential <- function(variables) {
+  conf <- !is.na(variables$confidential) & toupper(as.character(variables$confidential)) == "TRUE"
+  sort(unique(variables$question_key[conf & grepl(HIV_LIKE_PATTERN, variables$question_key, ignore.case = TRUE)]))
+}
 
-  list(country = "MWI", datasets = c("admissions", "discharges"),
-       question_key = "haart",
-       changes = list(confidential = FALSE,
-                      pii_tier     = NA_character_,
-                      pii_category = NA_character_)),
-
-  list(country = "MWI", datasets = c("admissions", "discharges"),
-       question_key = "lengthhaart",
-       changes = list(confidential = FALSE,
-                      pii_tier     = NA_character_,
-                      pii_category = NA_character_)),
-
-  list(country = "MWI", datasets = c("admissions"),
-       question_key = "mathivstat",
-       changes = list(confidential = FALSE,
-                      pii_tier     = NA_character_,
-                      pii_category = NA_character_)),
+VARIABLE_PATCHES <- c(HIV_CONFIDENTIAL_PATCHES, list(
 
   # -- r_type reclassifications: boolean -> categorical -------------------------
   # These fields use the yesno web-editor dataType, which PIPELINE_TYPE_MAP
@@ -774,7 +772,7 @@ VARIABLE_PATCHES <- list(
   list(country = "MWI", datasets = c("discharges"),
        question_key = "phototherapy",
        changes = list(r_type = "categorical"))
-)
+))
 
 # -- VALUEMAP_PATCHES ----------------------------------------------------------
 # Each entry: country, datasets (vector), question_key, action, ...
@@ -1835,6 +1833,14 @@ build_dictionary <- function(country         = "ZIM",
   }
   if (n_var_patches > 0)
     log_info("  VARIABLE_PATCHES applied: %d", n_var_patches)
+
+  # A field that looks HIV- or syphilis-related but is still confidential (for
+  # example a key renamed in a later export) would be dropped by Module 00a.
+  hiv_like_flagged <- hiv_like_confidential(variables)
+  if (length(hiv_like_flagged) > 0)
+    log_warn(paste("  HIV- or syphilis-like field(s) still confidential in %s x %s: %s.",
+                   "Module 00a will drop them; add them to HIV_CLINICAL_KEYS if they should be kept."),
+             country_up, dataset_lc, paste(hiv_like_flagged, collapse = ", "))
 
   # -- Apply VALUEMAP_PATCHES ---------------------------------------------------
   # Corrections to ValueMaps sheet: add rows, update canonical codes, or remove

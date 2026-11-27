@@ -59,7 +59,7 @@ The cleaning pipeline reads the base workbook, `dictionary_<country>_<dataset>.x
 | `harmonised_variable_name` | The key name in lower case with underscores between words. |
 | `use_in_analysis` | `FALSE` for free-text keys, summary-table keys and draft keys; `TRUE` otherwise. |
 | `weight_unit` | `grams` for weight variables; otherwise empty. |
-| `confidential` | Confidentiality flag of the key in the data-key export. |
+| `confidential` | Confidentiality flag of the key in the data-key export. The HIV and syphilis clinical fields listed in `HIV_CLINICAL_KEYS` and the fields in `OTHER_KEPT_KEYS` (Zimbabwe `ethnicity2`) in `00_build_dictionary.r` are set to `FALSE`, so the cleaned files keep them. |
 | `record_id_role` | Role of record-level system keys such as the record identifier, the facility and the timestamps; otherwise empty. |
 | `linkage_role` | `primary_linkage_key` for `uid`, `secondary_linkage_key` for `facility`; otherwise empty. |
 | `suggested_plausible_min` | Lowest accepted value of a numeric variable. Empty for no lower limit. |
